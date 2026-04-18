@@ -1,88 +1,160 @@
-"""Quoridor AI: alpha-beta minimax with shortest-path evaluation.
+"""Strong Quoridor AI.
 
-The evaluation is driven by the classic Quoridor heuristic:
-    score = (opponent_path - my_path) * W_PATH
-          + (my_walls - opp_walls)    * W_WALL
-          + (my_advance - opp_advance) * W_ADV
+Search
+------
+Iterative-deepening negamax with:
+  * alpha-beta + Principal Variation Search (PVS, a.k.a. NegaScout),
+  * Zobrist-hashed transposition table with EXACT / LOWER / UPPER bounds,
+  * killer-move heuristic (two slots per ply),
+  * move ordering:  TT best  ->  killer moves  ->  pawn moves that advance
+    toward the goal  ->  walls ordered by how much they lengthen the
+    opponent's shortest path (computed once per node).
 
-Wall moves are limited to "useful" placements (walls adjacent to either
-player's current shortest path) to keep the branching factor tractable;
-this is a standard practical pruning for Quoridor engines.
+Wall pruning
+------------
+Only wall anchors adjacent to a cell on *either* player's current shortest
+path are considered -- the standard practical pruning for Quoridor. This
+keeps the effective branching factor small enough for deep search.
+
+Evaluation (from the side-to-move's perspective)
+------------------------------------------------
+    f = (opp_path - my_path) * W_PATH
+      + (my_walls - opp_walls) * W_WALL
+      + (my_mobility - opp_mobility) * W_MOBILITY
+      + (my_advance - opp_advance) * W_ADV
+      + tempo                                       (+1 side-to-move bonus)
+
+Terminal states score +/- (WIN_SCORE - ply) so shorter wins beat longer ones.
+
+Public API (unchanged):  `find_best_move(board, max_depth, time_limit)`
 """
 
 from __future__ import annotations
 
+import random
 import time
 from collections import deque
-from typing import List, Optional, Set, Tuple
+from typing import Dict, List, Optional, Set, Tuple
 
 from .board import (
     BOARD_SIZE,
-    WALL_GRID,
     Board,
+    INITIAL_WALLS,
     MOVE_PAWN,
     Move,
+    WALL_GRID,
     WALL_H,
     WALL_V,
 )
 
-INF = 10**9
-WIN_SCORE = 10**7
+# ----------------------------------------------------------------------
+# Constants
+# ----------------------------------------------------------------------
+INF = 10 ** 9
+WIN_SCORE = 10 ** 7
 
 W_PATH = 100
-W_WALL = 3
+W_WALL = 6
+W_MOBILITY = 2
 W_ADV = 1
 
+# TT bound flags
+EXACT = 0
+LOWER = 1
+UPPER = 2
 
-# -------------------------------------------------------------------
+MAX_PLY = 64
+
+# ----------------------------------------------------------------------
+# Zobrist hashing
+# ----------------------------------------------------------------------
+_rng = random.Random(0xC0FFEE)
+_Z_PAWN = [
+    [_rng.getrandbits(64) for _ in range(BOARD_SIZE * BOARD_SIZE)]
+    for _ in range(2)
+]
+_Z_WALL_H = [
+    [_rng.getrandbits(64) for _ in range(WALL_GRID)]
+    for _ in range(WALL_GRID)
+]
+_Z_WALL_V = [
+    [_rng.getrandbits(64) for _ in range(WALL_GRID)]
+    for _ in range(WALL_GRID)
+]
+_Z_WALLS_LEFT = [
+    [_rng.getrandbits(64) for _ in range(INITIAL_WALLS + 1)]
+    for _ in range(2)
+]
+_Z_TURN = _rng.getrandbits(64)
+
+
+def zobrist(b: Board) -> int:
+    h = 0
+    for p in (0, 1):
+        r, c = b.pawns[p]
+        h ^= _Z_PAWN[p][r * BOARD_SIZE + c]
+        h ^= _Z_WALLS_LEFT[p][b.walls_left[p]]
+    for (r, c) in b.h_walls:
+        h ^= _Z_WALL_H[r][c]
+    for (r, c) in b.v_walls:
+        h ^= _Z_WALL_V[r][c]
+    if b.turn == 1:
+        h ^= _Z_TURN
+    return h
+
+
+# ----------------------------------------------------------------------
 # Evaluation
-# -------------------------------------------------------------------
+# ----------------------------------------------------------------------
+def evaluate(b: Board, player: Optional[int] = None) -> int:
+    """Static evaluation.
 
-def evaluate(board: Board, player: int) -> int:
-    """Static evaluation from `player`'s perspective."""
-    winner = board.winner()
-    if winner == player:
+    If ``player`` is given, return the score from that player's perspective
+    (used by external callers / tests). Otherwise, return from the
+    side-to-move's perspective (what the search uses internally).
+    """
+    me = b.turn if player is None else player
+    opp = 1 - me
+
+    w = b.winner()
+    if w == me:
         return WIN_SCORE
-    if winner is not None:
+    if w is not None:
         return -WIN_SCORE
 
-    my_path = board.shortest_path_length(player)
-    opp_path = board.shortest_path_length(1 - player)
-    if my_path is None:
+    my_p = b.shortest_path_length(me)
+    op_p = b.shortest_path_length(opp)
+    if my_p is None:
         return -WIN_SCORE
-    if opp_path is None:
+    if op_p is None:
         return WIN_SCORE
 
-    # Raw path advantage.
-    score = (opp_path - my_path) * W_PATH
-    # Walls in reserve are valuable.
-    score += (board.walls_left[player] - board.walls_left[1 - player]) * W_WALL
-    # Mild bias toward the goal row (tie-break when paths are equal).
-    my_r, _ = board.pawns[player]
-    opp_r, _ = board.pawns[1 - player]
-    my_adv = (BOARD_SIZE - 1 - my_r) if player == 0 else my_r
-    opp_adv = (BOARD_SIZE - 1 - opp_r) if (1 - player) == 0 else opp_r
-    score += (my_adv - opp_adv) * W_ADV
+    s = (op_p - my_p) * W_PATH
+    s += (b.walls_left[me] - b.walls_left[opp]) * W_WALL
+    s += (len(b.pawn_moves(me)) - len(b.pawn_moves(opp))) * W_MOBILITY
 
-    # Side-to-move tempo bonus: if it's `player`'s turn and paths are tied,
-    # `player` is slightly ahead.
-    if board.turn == player:
-        score += 1
+    my_r, _ = b.pawns[me]
+    op_r, _ = b.pawns[opp]
+    my_adv = (BOARD_SIZE - 1 - my_r) if me == 0 else my_r
+    op_adv = (BOARD_SIZE - 1 - op_r) if opp == 0 else op_r
+    s += (my_adv - op_adv) * W_ADV
+
+    # Tempo bonus for the side to move.
+    if b.turn == me:
+        s += 1
     else:
-        score -= 1
-    return score
+        s -= 1
+    return s
 
 
-# -------------------------------------------------------------------
-# Move generation with pruning
-# -------------------------------------------------------------------
-
-def _shortest_path_cells(board: Board, player: int) -> Set[Tuple[int, int]]:
-    """Return all cells on *any* shortest path from player to goal."""
-    start = board.pawns[player]
-    goal_r = board.goal_row(player)
-    # BFS distance from start.
-    dist_from_start = {start: 0}
+# ----------------------------------------------------------------------
+# Shortest-path helpers (for wall pruning)
+# ----------------------------------------------------------------------
+def _shortest_path_cells(b: Board, player: int) -> Set[Tuple[int, int]]:
+    """All cells lying on *some* shortest path from player to goal."""
+    start = b.pawns[player]
+    goal_r = b.goal_row(player)
+    dist: Dict[Tuple[int, int], int] = {start: 0}
     q: deque = deque([start])
     while q:
         r, c = q.popleft()
@@ -90,45 +162,37 @@ def _shortest_path_cells(board: Board, player: int) -> Set[Tuple[int, int]]:
             nr, nc = r + dr, c + dc
             if not (0 <= nr < BOARD_SIZE and 0 <= nc < BOARD_SIZE):
                 continue
-            if (nr, nc) in dist_from_start:
+            if (nr, nc) in dist:
                 continue
-            if board.is_blocked(r, c, nr, nc):
+            if b.is_blocked(r, c, nr, nc):
                 continue
-            dist_from_start[(nr, nc)] = dist_from_start[(r, c)] + 1
+            dist[(nr, nc)] = dist[(r, c)] + 1
             q.append((nr, nc))
-
-    goal_cells = [
-        (r, c) for (r, c) in dist_from_start if r == goal_r
-    ]
+    goal_cells = [cell for cell in dist if cell[0] == goal_r]
     if not goal_cells:
         return set()
-    best = min(dist_from_start[g] for g in goal_cells)
-    # Backtrack on predecessors: a cell is on a shortest path iff there is
-    # an unblocked neighbor whose distance is one less.
+    best = min(dist[g] for g in goal_cells)
     on_path: Set[Tuple[int, int]] = set()
-    targets = [g for g in goal_cells if dist_from_start[g] == best]
-    stack = list(targets)
+    stack = [g for g in goal_cells if dist[g] == best]
     while stack:
-        r, c = stack.pop()
-        if (r, c) in on_path:
+        cell = stack.pop()
+        if cell in on_path:
             continue
-        on_path.add((r, c))
-        d = dist_from_start[(r, c)]
+        on_path.add(cell)
+        r, c = cell
+        d = dist[cell]
         for dr, dc in ((-1, 0), (1, 0), (0, -1), (0, 1)):
             nr, nc = r + dr, c + dc
-            if (nr, nc) not in dist_from_start:
+            if (nr, nc) not in dist or dist[(nr, nc)] != d - 1:
                 continue
-            if dist_from_start[(nr, nc)] != d - 1:
-                continue
-            if board.is_blocked(r, c, nr, nc):
+            if b.is_blocked(r, c, nr, nc):
                 continue
             stack.append((nr, nc))
     return on_path
 
 
-def _candidate_wall_anchors(board: Board) -> Set[Tuple[int, int]]:
-    """Anchors worth considering: those adjacent to a shortest-path cell."""
-    hot = _shortest_path_cells(board, 0) | _shortest_path_cells(board, 1)
+def _candidate_wall_anchors(b: Board) -> Set[Tuple[int, int]]:
+    hot = _shortest_path_cells(b, 0) | _shortest_path_cells(b, 1)
     anchors: Set[Tuple[int, int]] = set()
     for r, c in hot:
         for ar in (r - 1, r):
@@ -138,123 +202,224 @@ def _candidate_wall_anchors(board: Board) -> Set[Tuple[int, int]]:
     return anchors
 
 
-def _pruned_legal_moves(board: Board) -> List[Move]:
-    player = board.turn
-    moves: List[Move] = [
-        Move(MOVE_PAWN, r, c) for (r, c) in board.pawn_moves(player)
-    ]
-    if board.walls_left[player] > 0:
-        for (r, c) in _candidate_wall_anchors(board):
-            if board._wall_h_shape_ok(r, c):
-                board.h_walls.add((r, c))
-                ok = board._paths_still_exist()
-                board.h_walls.discard((r, c))
-                if ok:
-                    moves.append(Move(WALL_H, r, c))
-            if board._wall_v_shape_ok(r, c):
-                board.v_walls.add((r, c))
-                ok = board._paths_still_exist()
-                board.v_walls.discard((r, c))
-                if ok:
-                    moves.append(Move(WALL_V, r, c))
-    return moves
+# ----------------------------------------------------------------------
+# Move generation
+# ----------------------------------------------------------------------
+def _generate_moves(b: Board) -> List[Tuple[Move, int]]:
+    """Return (move, ordering_score) pairs. Higher score searched first."""
+    player = b.turn
+    opp = 1 - player
+    goal_r = b.goal_row(player)
+    cur_r, _ = b.pawns[player]
+
+    out: List[Tuple[Move, int]] = []
+
+    # Pawn moves: score by how much they reduce distance to goal row.
+    for (r, c) in b.pawn_moves(player):
+        progress = abs(cur_r - goal_r) - abs(r - goal_r)
+        out.append((Move(MOVE_PAWN, r, c), 10_000 + progress * 100))
+
+    if b.walls_left[player] <= 0:
+        return out
+
+    cur_opp = b.shortest_path_length(opp) or 0
+    cur_me = b.shortest_path_length(player) or 0
+    anchors = _candidate_wall_anchors(b)
+
+    for (r, c) in anchors:
+        # Horizontal wall.
+        if b._wall_h_shape_ok(r, c):
+            b.h_walls.add((r, c))
+            new_me = b.shortest_path_length(player)
+            new_opp = b.shortest_path_length(opp)
+            b.h_walls.discard((r, c))
+            if new_me is not None and new_opp is not None:
+                disruption = (new_opp - cur_opp) - (new_me - cur_me)
+                # Favor walls that hurt opponent more than us.
+                out.append((Move(WALL_H, r, c), disruption * 80))
+        # Vertical wall.
+        if b._wall_v_shape_ok(r, c):
+            b.v_walls.add((r, c))
+            new_me = b.shortest_path_length(player)
+            new_opp = b.shortest_path_length(opp)
+            b.v_walls.discard((r, c))
+            if new_me is not None and new_opp is not None:
+                disruption = (new_opp - cur_opp) - (new_me - cur_me)
+                out.append((Move(WALL_V, r, c), disruption * 80))
+    return out
 
 
-# -------------------------------------------------------------------
-# Move ordering
-# -------------------------------------------------------------------
+# ----------------------------------------------------------------------
+# Transposition table + killer moves
+# ----------------------------------------------------------------------
+class _TT:
+    """Simple dict-backed transposition table: key -> (depth, flag, value, best_move)."""
+    __slots__ = ("table",)
 
-def _order_moves(board: Board, moves: List[Move], root_player: int) -> List[Move]:
-    """Order moves by quick heuristic: big path swings first."""
-    player = board.turn
-    goal_r = board.goal_row(player)
-    cur_r, _ = board.pawns[player]
+    def __init__(self) -> None:
+        self.table: Dict[int, Tuple[int, int, int, Optional[Move]]] = {}
 
-    def key(m: Move) -> int:
-        if m.kind == MOVE_PAWN:
-            # Prefer pawn moves that get closer to goal.
-            return -(abs(cur_r - goal_r) - abs(m.r - goal_r)) * 100
-        # Light ordering for walls — the search will sort out the rest.
-        return 50
+    def get(self, key: int):
+        return self.table.get(key)
 
-    return sorted(moves, key=key)
+    def put(
+        self,
+        key: int,
+        depth: int,
+        flag: int,
+        value: int,
+        best_move: Optional[Move],
+    ) -> None:
+        existing = self.table.get(key)
+        if existing is None or existing[0] <= depth:
+            self.table[key] = (depth, flag, value, best_move)
 
-
-# -------------------------------------------------------------------
-# Alpha-beta with iterative deepening and a time budget
-# -------------------------------------------------------------------
 
 class _Timeout(Exception):
     pass
 
 
-def _alpha_beta(
-    board: Board,
+# ----------------------------------------------------------------------
+# Move ordering
+# ----------------------------------------------------------------------
+def _order_moves(
+    scored: List[Tuple[Move, int]],
+    tt_move: Optional[Move],
+    killers: Tuple[Optional[Move], Optional[Move]],
+) -> List[Move]:
+    def key(item: Tuple[Move, int]) -> int:
+        m, s = item
+        if tt_move is not None and m == tt_move:
+            return 10 ** 9
+        if killers[0] is not None and m == killers[0]:
+            return 10 ** 8
+        if killers[1] is not None and m == killers[1]:
+            return 10 ** 8 - 1
+        return s
+
+    return [m for (m, _) in sorted(scored, key=key, reverse=True)]
+
+
+# ----------------------------------------------------------------------
+# Negamax search with PVS
+# ----------------------------------------------------------------------
+def _negamax(
+    b: Board,
     depth: int,
     alpha: int,
     beta: int,
-    root_player: int,
+    ply: int,
     deadline: Optional[float],
+    tt: _TT,
+    killers: List[List[Optional[Move]]],
 ) -> Tuple[int, Optional[Move]]:
     if deadline is not None and time.time() > deadline:
         raise _Timeout()
 
-    winner = board.winner()
-    if winner is not None or depth == 0:
-        return evaluate(board, root_player), None
+    # Terminal: score relative to side-to-move. Losing => negative.
+    w = b.winner()
+    if w is not None:
+        # b.turn has no move / has already lost if the opponent reached goal.
+        # winner == b.turn would mean side-to-move already won -- impossible
+        # since apply() flips turn. Treat either way safely.
+        if w == b.turn:
+            return WIN_SCORE - ply, None
+        return -(WIN_SCORE - ply), None
 
-    moves = _pruned_legal_moves(board)
-    if not moves:
-        return evaluate(board, root_player), None
-    moves = _order_moves(board, moves, root_player)
+    if depth <= 0:
+        return evaluate(b), None
 
+    alpha_orig = alpha
+    key = zobrist(b)
+    entry = tt.get(key)
+    tt_move: Optional[Move] = None
+    if entry is not None:
+        e_depth, e_flag, e_value, e_best = entry
+        if e_depth >= depth:
+            if e_flag == EXACT:
+                return e_value, e_best
+            if e_flag == LOWER and e_value > alpha:
+                alpha = e_value
+            elif e_flag == UPPER and e_value < beta:
+                beta = e_value
+            if alpha >= beta:
+                return e_value, e_best
+        tt_move = e_best
+
+    scored = _generate_moves(b)
+    if not scored:
+        return evaluate(b), None
+
+    k_slot = killers[ply] if ply < MAX_PLY else [None, None]
+    moves = _order_moves(scored, tt_move, (k_slot[0], k_slot[1]))
+
+    best = -INF
     best_move: Optional[Move] = moves[0]
-    if board.turn == root_player:
-        value = -INF
-        for m in moves:
-            child = board.apply(m)
-            v, _ = _alpha_beta(child, depth - 1, alpha, beta, root_player, deadline)
-            if v > value:
-                value = v
-                best_move = m
-            if value > alpha:
-                alpha = value
-            if alpha >= beta:
-                break
-        return value, best_move
+    first = True
+    for m in moves:
+        child = b.apply(m)
+        if first:
+            val, _ = _negamax(child, depth - 1, -beta, -alpha, ply + 1, deadline, tt, killers)
+            val = -val
+        else:
+            # Null (zero) window probe.
+            val, _ = _negamax(child, depth - 1, -alpha - 1, -alpha, ply + 1, deadline, tt, killers)
+            val = -val
+            if alpha < val < beta:
+                val, _ = _negamax(child, depth - 1, -beta, -val, ply + 1, deadline, tt, killers)
+                val = -val
+        first = False
+
+        if val > best:
+            best = val
+            best_move = m
+        if val > alpha:
+            alpha = val
+        if alpha >= beta:
+            # Beta cutoff: record killer if this was a wall (non-captures analog).
+            if m.kind != MOVE_PAWN and ply < MAX_PLY:
+                if k_slot[0] != m:
+                    k_slot[1] = k_slot[0]
+                    k_slot[0] = m
+            break
+
+    if best <= alpha_orig:
+        flag = UPPER
+    elif best >= beta:
+        flag = LOWER
     else:
-        value = INF
-        for m in moves:
-            child = board.apply(m)
-            v, _ = _alpha_beta(child, depth - 1, alpha, beta, root_player, deadline)
-            if v < value:
-                value = v
-                best_move = m
-            if value < beta:
-                beta = value
-            if alpha >= beta:
-                break
-        return value, best_move
+        flag = EXACT
+    tt.put(key, depth, flag, best, best_move)
+    return best, best_move
 
 
+# ----------------------------------------------------------------------
+# Public entry: iterative-deepening time-managed root search
+# ----------------------------------------------------------------------
 def find_best_move(
     board: Board,
-    max_depth: int = 3,
-    time_limit: Optional[float] = 5.0,
+    max_depth: int = 20,
+    time_limit: Optional[float] = 30.0,
 ) -> Optional[Move]:
-    """Iterative-deepening alpha-beta search. Returns the best move found."""
-    root_player = board.turn
+    """Iterative deepening negamax+PVS under a time budget.
+
+    The search runs depth 1, 2, 3, ... and keeps the best move found at
+    the deepest *completed* iteration before ``time_limit`` seconds elapse.
+    """
     deadline = time.time() + time_limit if time_limit else None
+    tt = _TT()
+    killers: List[List[Optional[Move]]] = [[None, None] for _ in range(MAX_PLY)]
     best: Optional[Move] = None
+
     for depth in range(1, max_depth + 1):
         try:
-            _, move = _alpha_beta(board, depth, -INF, INF, root_player, deadline)
-            if move is not None:
-                best = move
+            _, mv = _negamax(board, depth, -INF, INF, 0, deadline, tt, killers)
+            if mv is not None:
+                best = mv
         except _Timeout:
             break
+
     if best is None:
-        # Fall back to any legal move (shouldn't happen unless game is over).
         legal = board.legal_moves()
         best = legal[0] if legal else None
     return best

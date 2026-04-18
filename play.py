@@ -116,13 +116,13 @@ def render_board(
     human_player: Optional[int] = 1,
     color: Optional[bool] = None,
 ) -> str:
-    """Render with `human_player` at the bottom of the screen.
+    """Render with `human_player` at the top of the screen (AI at the bottom).
 
     `human_player` is 0 (P1/Red) or 1 (P2/Blue). Pass None for self-play
-    (defaults to P2 at bottom, matching the natural internal orientation).
+    (defaults to the natural internal orientation — internal row 0 at top).
     """
     col_on = _color_enabled(color)
-    flip = human_player == 0  # P1 (internal row 0) needs flip to appear bottom
+    flip = human_player == 1  # P2 (internal row 8) flips to appear at top
 
     row_order = list(range(BOARD_SIZE))
     if flip:

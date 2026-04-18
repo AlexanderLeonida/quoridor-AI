@@ -65,8 +65,8 @@ class QuoridorGUI:
         self.human_player: Optional[int] = None
         self.ai_busy: bool = False
         self.preview: Optional[Tuple[str, Move, bool]] = None  # (kind, move, legal?)
-        self.ai_depth: int = 3
-        self.ai_time: float = 4.0
+        self.ai_depth: int = 20
+        self.ai_time: float = 30.0
 
         self._build_ui()
         self.root.after(50, self._show_start_menu)
@@ -107,7 +107,7 @@ class QuoridorGUI:
         tk.Label(bot, text="Difficulty:", bg=COLOR_BG, fg=COLOR_TEXT).pack(
             side=tk.LEFT, padx=(14, 4)
         )
-        self.difficulty_var = tk.StringVar(value="Medium")
+        self.difficulty_var = tk.StringVar(value="Hard")
         tk.OptionMenu(
             bot, self.difficulty_var, "Easy", "Medium", "Hard",
             command=self._on_difficulty_change,
@@ -120,12 +120,15 @@ class QuoridorGUI:
         ).pack(side=tk.RIGHT)
 
     def _on_difficulty_change(self, val: str) -> None:
+        # `ai_depth` is a ceiling for iterative deepening; the real governor
+        # is `ai_time` -- the search stops at whatever depth it reaches before
+        # the time budget expires.
         if val == "Easy":
-            self.ai_depth, self.ai_time = 2, 1.0
-        elif val == "Hard":
-            self.ai_depth, self.ai_time = 4, 10.0
-        else:
-            self.ai_depth, self.ai_time = 3, 4.0
+            self.ai_depth, self.ai_time = 3, 2.0
+        elif val == "Medium":
+            self.ai_depth, self.ai_time = 20, 8.0
+        else:  # Hard
+            self.ai_depth, self.ai_time = 20, 30.0
 
     # -------------------------------------------------------------------
     # Start menu / game lifecycle
@@ -195,21 +198,22 @@ class QuoridorGUI:
 
     # -------------------------------------------------------------------
     # Coordinate mapping (internal <-> visual rows). Columns never flip.
+    # The human always appears at the top of the screen; the AI at bottom.
     # -------------------------------------------------------------------
     def _v_row(self, internal_r: int) -> int:
-        return (BOARD_SIZE - 1 - internal_r) if self.human_player == 0 else internal_r
+        return (BOARD_SIZE - 1 - internal_r) if self.human_player == 1 else internal_r
 
     def _i_row(self, visual_r: int) -> int:
-        return (BOARD_SIZE - 1 - visual_r) if self.human_player == 0 else visual_r
+        return (BOARD_SIZE - 1 - visual_r) if self.human_player == 1 else visual_r
 
     def _v_wall_r(self, internal_anchor_r: int) -> int:
         # Wall anchor r in [0,7]. When flipped, a wall between internal rows r
         # and r+1 is visually between visual rows (7-r) and (8-r) = (7-r)+1,
         # so its visual anchor (smaller visual row) is 7-r.
-        return (WALL_GRID - 1 - internal_anchor_r) if self.human_player == 0 else internal_anchor_r
+        return (WALL_GRID - 1 - internal_anchor_r) if self.human_player == 1 else internal_anchor_r
 
     def _i_wall_r(self, visual_anchor_r: int) -> int:
-        return (WALL_GRID - 1 - visual_anchor_r) if self.human_player == 0 else visual_anchor_r
+        return (WALL_GRID - 1 - visual_anchor_r) if self.human_player == 1 else visual_anchor_r
 
     def _cell_xy(self, internal_r: int, internal_c: int) -> Tuple[int, int]:
         x = MARGIN + internal_c * PITCH

@@ -20,7 +20,7 @@ python3 gui.py
 ```
 
 - A "Choose side" dialog appears first: click **Player 1 (Red)** or **Player 2 (Blue)**.
-- The board is flipped so that you are always at the bottom.
+- The board is oriented so that you are always at the top and the AI at the bottom.
 - **Move:** click one of the highlighted cells. Legal targets are marked with a small blue dot.
 - **Wall:** hover over the gap between two cells — horizontal gaps preview a horizontal wall, vertical gaps preview a vertical wall. Click to place. Previews are orange when legal, red when not.
 - The **Difficulty** dropdown controls AI search depth and time budget (Easy / Medium / Hard). **New Game** reopens the side dialog.
@@ -40,7 +40,7 @@ python3 play.py --no-color     # disable ANSI colors
 
 - Player 1 (**Red**, moves first) starts at `e1` and must reach row 9.
 - Player 2 (**Blue**, moves second) starts at `e9` and must reach row 1.
-- The display is flipped so that you (the human) are always at the bottom of the screen.
+- The display is oriented so that you (the human) are always at the top of the screen and the AI at the bottom.
 
 **Move notation at the prompt:**
 
@@ -54,10 +54,22 @@ python3 play.py --no-color     # disable ANSI colors
 
 ## How the AI works
 
-- **Search**: alpha-beta minimax with iterative deepening under a time budget.
-- **Evaluation**: `(opp_path − my_path) · 100 + wall_diff · 3 + advance_diff`, where paths are BFS shortest-path lengths to each player's goal row. `+∞/−∞` for terminal states.
-- **Pruning**: walls are only considered at anchors adjacent to cells on either player's current shortest path — this keeps the effective branching factor well under 20 in most positions.
-- **Legality check for walls**: placing a wall requires that both players still have a path to their goal (BFS after the tentative placement).
+- **Search**: iterative-deepening **negamax with Principal Variation Search (PVS)**. Hard difficulty is given a 30 s per-move budget and a depth ceiling of 20 — iterative deepening stops at whatever depth it completes before the clock expires.
+- **Transposition table**: 64-bit **Zobrist hashing** with EXACT / LOWER / UPPER bounds. The TT's best-move is used as the first move at every node (dominant ordering heuristic).
+- **Killer moves**: two slots per ply for moves that produced recent beta-cutoffs.
+- **Move ordering**: TT move → killers → pawn moves toward goal → walls ordered by **disruption** (how much the wall lengthens opponent's shortest path minus how much it lengthens ours).
+- **Wall pruning**: only anchors adjacent to a cell on either player's current shortest path are considered. This is the standard practical pruning for Quoridor and keeps the branching factor tractable.
+- **Evaluation (from the side-to-move's perspective)**:
+  `(opp_path − my_path) · 100 + wall_diff · 6 + mobility_diff · 2 + advance_diff + tempo`.
+- **Terminal scores** decay with ply (`WIN_SCORE − ply`) so the engine prefers shorter wins and longer losses.
+
+### Difficulty levels (gui.py)
+
+| Level  | Time budget | Depth ceiling |
+|--------|-------------|---------------|
+| Easy   | 2 s         | 3             |
+| Medium | 8 s         | 20 (time-bound) |
+| Hard   | 30 s        | 20 (time-bound) |
 
 ## Tests
 
