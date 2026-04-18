@@ -21,6 +21,7 @@ from typing import Optional, Tuple
 from quoridor import (
     BOARD_SIZE,
     Board,
+    GameRecorder,
     MOVE_PAWN,
     Move,
     WALL_GRID,
@@ -67,6 +68,7 @@ class QuoridorGUI:
         self.preview: Optional[Tuple[str, Move, bool]] = None  # (kind, move, legal?)
         self.ai_depth: int = 20
         self.ai_time: float = 30.0
+        self.recorder: Optional[GameRecorder] = None
 
         self._build_ui()
         self.root.after(50, self._show_start_menu)
@@ -187,14 +189,40 @@ class QuoridorGUI:
         dlg.focus_set()
 
     def _start_game(self, human_player: int) -> None:
+        # If an earlier game is still in progress, save it as aborted
+        # (winner=None) so we don't lose the moves played so far.
+        self._finalize_recorder(winner=None)
+
         self.human_player = human_player
         self.board = Board.initial()
         self.ai_busy = False
         self.preview = None
         self.msg_var.set("")
+
+        p1_source = "human" if human_player == 0 else "alphabeta"
+        p2_source = "human" if human_player == 1 else "alphabeta"
+        self.recorder = GameRecorder(
+            p1_source=p1_source,
+            p2_source=p2_source,
+            p1_time_limit=None if human_player == 0 else self.ai_time,
+            p2_time_limit=None if human_player == 1 else self.ai_time,
+            model_version="alphabeta-v2",
+            notes="gui",
+        )
+        self.recorder.start()
+
         self._render()
         # If the human is P2, the AI (P1) moves first.
         self.root.after(120, self._maybe_ai_move)
+
+    def _finalize_recorder(self, winner: Optional[int]) -> None:
+        if self.recorder is None:
+            return
+        try:
+            self.recorder.finish(winner=winner)
+        except Exception:  # noqa: BLE001
+            pass
+        self.recorder = None
 
     # -------------------------------------------------------------------
     # Coordinate mapping (internal <-> visual rows). Columns never flip.
@@ -437,6 +465,8 @@ class QuoridorGUI:
     # Applying moves & AI
     # -------------------------------------------------------------------
     def _apply_move(self, move: Move) -> None:
+        if self.recorder is not None:
+            self.recorder.record(move)
         self.board = self.board.apply(move)
         self.preview = None
         self._render()
@@ -487,6 +517,7 @@ class QuoridorGUI:
     def _end_game(self) -> None:
         self._update_status()
         winner = self.board.winner()
+        self._finalize_recorder(winner=winner)
         label = "Player 1 (Red)" if winner == 0 else "Player 2 (Blue)"
         messagebox.showinfo("Game over", f"{label} wins!")
 

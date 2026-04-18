@@ -7,10 +7,18 @@ A Quoridor engine and AI in pure Python (no dependencies).
 ```
 quoridor/
   board.py      rules, state, move generation, BFS
-  ai.py         alpha-beta minimax, iterative deepening, wall pruning
+  ai.py         negamax + PVS, TT, killers, wall pruning
+  encoding.py   state/move/action tensors for the neural net
+  database.py   SQLite store of played games (for training data)
+  net.py        PyTorch policy+value network (AlphaZero-style)
+  recorder.py   convenience wrapper that logs a game into the DB
+  mcts.py       AlphaZero MCTS (PUCT, Dirichlet noise, FPU)
 gui.py          Tkinter GUI (mouse play, hover preview)
 play.py         terminal play (human-vs-AI, AI-vs-AI)
+train.py        supervised trainer over the games DB
+selfplay.py     AlphaZero self-play pipeline (generate → train → gate)
 test_quoridor.py
+test_ml.py
 ```
 
 ## GUI
@@ -71,8 +79,99 @@ python3 play.py --no-color     # disable ANSI colors
 | Medium | 8 s         | 20 (time-bound) |
 | Hard   | 30 s        | 20 (time-bound) |
 
+## Learning from past games
+
+Every game played via `play.py` or `gui.py` is automatically logged to a
+SQLite database at `data/quoridor.db`. Pass `--no-record` to `play.py` to
+disable logging for a single session.
+
+### Database
+
+Schema (see `quoridor/database.py`):
+
+- `games(id, created_at, finished_at, winner, num_plies, p1_source, p2_source, p1_time_limit, p2_time_limit, model_version, notes)`
+- `moves(id, game_id, ply, side, move_kind, move_r, move_c, elapsed_ms, policy_blob)`
+
+Only move lists are stored (not tensors). States are re-materialized on
+demand by replaying from the initial position, which keeps the DB ~40×
+smaller and robust to encoding changes.
+
+```python
+from quoridor import GameDB
+with GameDB() as db:
+    print(db.count_games(), "games,", db.count_positions(), "positions")
+    for board, move, z in db.iter_training_samples():
+        ...   # z is +1/-1 from the side-to-move's POV
+```
+
+### Neural network
+
+`quoridor/net.py` defines an AlphaZero-style residual conv net:
+
+- **Input**: `(7, 9, 9)` canonical tensor — side-to-move is always P0.
+  Planes: my pawn, opp pawn, h-walls, v-walls, my walls-left / 10,
+  opp walls-left / 10, all-ones bias.
+- **Trunk**: 3×3 conv stem → N residual blocks (default `blocks=6`, `filters=64`).
+- **Policy head**: 1×1 conv → FC → 209 logits over the flat action space
+  (81 pawn cells + 64 H-walls + 64 V-walls).
+- **Value head**: 1×1 conv → FC(64) → FC(1) → `tanh`.
+
+PyTorch is imported lazily, so the engine/DB/encoding still work on a
+machine without `torch` installed.
+
+### Training (supervised / behaviour cloning)
+
+```sh
+pip install -r requirements.txt
+python3 train.py --epochs 10 --batch-size 256 --lr 1e-3 \
+                 --out checkpoints/v1.pt
+# resume from a previous checkpoint
+python3 train.py --resume checkpoints/v1.pt --epochs 5
+```
+
+Training minimises `CE(policy, action_taken) + MSE(value, z)`. It picks
+the best available device automatically (CUDA → MPS → CPU); override with
+`--device`.
+
+### Self-play training (AlphaZero loop)
+
+`selfplay.py` implements the full AlphaZero training pipeline:
+
+1. **Self-play** — generate games using MCTS guided by the current
+   neural network.  MCTS visit-count distributions are stored as soft
+   policy targets in the DB's `policy_blob` column.
+2. **Training** — update the network on recent games with soft
+   cross-entropy (policy) + MSE (value) + L2 regularisation, gradient
+   clipping, and cosine LR annealing.
+3. **Evaluation / gating** — pit the new network against the current
+   best via greedy MCTS.  Promote only when win-rate > 55 %.
+4. **Repeat.**
+
+```sh
+# Start from scratch (random network):
+python3 selfplay.py --iterations 100 --games-per-iter 50 \
+                    --simulations 400 --checkpoint-dir checkpoints/
+
+# Resume from a checkpoint:
+python3 selfplay.py --resume checkpoints/best.pt --iterations 50
+
+# Quick smoke-test:
+python3 selfplay.py --iterations 2 --games-per-iter 4 \
+                    --simulations 50 --eval-games 4 --epochs 2
+```
+
+**MCTS details** (`quoridor/mcts.py`):
+
+- PUCT exploration with log-scaling c\_puct (MuZero formula)
+- Dirichlet noise at root (α = 0.3, ε = 0.25)
+- First Play Urgency (FPU) reduction for unvisited children
+- Temperature schedule: proportional sampling for the first 15 full
+  moves, then greedy
+- Correct negamax value propagation for the two-player zero-sum game
+
 ## Tests
 
 ```sh
-python3 test_quoridor.py
+python3 test_quoridor.py   # engine + alpha-beta
+python3 test_ml.py         # encoding round-trips + DB round-trip
 ```

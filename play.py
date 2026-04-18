@@ -31,6 +31,7 @@ from typing import List, Optional, Tuple
 from quoridor import (
     BOARD_SIZE,
     Board,
+    GameRecorder,
     MOVE_PAWN,
     Move,
     WALL_GRID,
@@ -195,17 +196,18 @@ def ask_side(color_on: bool) -> int:
         print("Enter 1 or 2.")
 
 
-def human_turn(board: Board) -> Board:
+def human_move(board: Board) -> Optional[Move]:
+    """Ask the human for a move. Returns None if they want to quit."""
     while True:
         try:
             raw = input("your move > ").strip()
         except (EOFError, KeyboardInterrupt):
             print()
-            sys.exit(0)
+            return None
         if not raw:
             continue
         if raw in ("q", "quit", "exit"):
-            sys.exit(0)
+            return None
         if raw == "moves":
             legal = board.legal_moves()
             print(f"{len(legal)} legal moves:")
@@ -218,18 +220,18 @@ def human_turn(board: Board) -> Board:
         if not board.is_legal(m):
             print("Illegal move.")
             continue
-        return board.apply(m)
+        return m
 
 
-def ai_turn(board: Board, depth: int, time_limit: float) -> Board:
+def ai_move(board: Board, depth: int, time_limit: float) -> Optional[Move]:
     label = "P1(R)" if board.turn == 0 else "P2(B)"
     print(f"AI ({label}) thinking...")
     move = find_best_move(board, max_depth=depth, time_limit=time_limit)
     if move is None:
         print("AI has no moves; game over.")
-        sys.exit(0)
+        return None
     print(f"AI plays: {format_move(move)}")
-    return board.apply(move)
+    return move
 
 
 def main() -> None:
@@ -244,6 +246,10 @@ def main() -> None:
                         help="Per-move AI time budget in seconds (default 5).")
     parser.add_argument("--no-color", action="store_true",
                         help="Disable ANSI colors.")
+    parser.add_argument("--no-record", action="store_true",
+                        help="Do not persist this game to the database.")
+    parser.add_argument("--notes", type=str, default=None,
+                        help="Optional notes to store with the game record.")
     args = parser.parse_args()
 
     color_on = False if args.no_color else sys.stdout.isatty()
@@ -265,18 +271,57 @@ def main() -> None:
     render_side = 1 if human_player is None else human_player
     color_kw = False if args.no_color else None
 
+    # Set up recorder unless disabled.
+    recorder: Optional[GameRecorder] = None
+    if not args.no_record:
+        def _source(side: int) -> str:
+            if human_player is None:
+                return "alphabeta"
+            return "human" if side == human_player else "alphabeta"
+
+        def _time_limit(side: int) -> Optional[float]:
+            if human_player is None:
+                return args.time
+            return None if side == human_player else args.time
+
+        recorder = GameRecorder(
+            p1_source=_source(0),
+            p2_source=_source(1),
+            p1_time_limit=_time_limit(0),
+            p2_time_limit=_time_limit(1),
+            model_version="alphabeta-v2",
+            notes=args.notes,
+        )
+        recorder.start()
+
     print()
     print(render_board(board, render_side, color_kw))
 
-    while board.winner() is None:
-        if human_player is not None and board.turn == human_player:
-            board = human_turn(board)
-        else:
-            board = ai_turn(board, args.depth, args.time)
-        print()
-        print(render_board(board, render_side, color_kw))
+    try:
+        while board.winner() is None:
+            if human_player is not None and board.turn == human_player:
+                move = human_move(board)
+            else:
+                move = ai_move(board, args.depth, args.time)
+            if move is None:
+                # User quit or AI had no legal moves.
+                break
+            if recorder is not None:
+                recorder.record(move)
+            board = board.apply(move)
+            print()
+            print(render_board(board, render_side, color_kw))
+    finally:
+        if recorder is not None:
+            gid = recorder.finish(winner=board.winner())
+            if gid is not None:
+                print(f"(game saved as id={gid})")
 
     winner = board.winner()
+    if winner is None:
+        print()
+        print("Game ended without a winner.")
+        return
     label = "P1 (Red)" if winner == 0 else "P2 (Blue)"
     print()
     print(f"*** {label} wins! ***")

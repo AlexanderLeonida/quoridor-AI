@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Game data / trained models (kept out of git; can grow large)
+data/
+checkpoints/
+*.pt
+*.pth
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
