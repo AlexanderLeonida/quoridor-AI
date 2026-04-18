@@ -6,11 +6,24 @@ A Quoridor engine and AI in pure Python (no dependencies).
 
 ```
 quoridor/
-  board.py      rules, state, move generation, BFS, rendering
+  board.py      rules, state, move generation, BFS
   ai.py         alpha-beta minimax, iterative deepening, wall pruning
+gui.py          Tkinter GUI (mouse play, hover preview)
 play.py         terminal play (human-vs-AI, AI-vs-AI)
 test_quoridor.py
 ```
+
+## GUI
+
+```sh
+python3 gui.py
+```
+
+- A "Choose side" dialog appears first: click **Player 1 (Red)** or **Player 2 (Blue)**.
+- The board is flipped so that you are always at the bottom.
+- **Move:** click one of the highlighted cells. Legal targets are marked with a small blue dot.
+- **Wall:** hover over the gap between two cells — horizontal gaps preview a horizontal wall, vertical gaps preview a vertical wall. Click to place. Previews are orange when legal, red when not.
+- The **Difficulty** dropdown controls AI search depth and time budget (Easy / Medium / Hard). **New Game** reopens the side dialog.
 
 ## Play
 
