@@ -103,14 +103,31 @@ def _draw_z(
     final_board: Board,
     side: int,
     draw_penalty: float,
+    *,
+    game_length: Optional[int] = None,
+    max_moves: Optional[int] = None,
+    stall_weight: float = 0.4,
     progress_weight: float = 0.3,
 ) -> float:
     """Compute the value target for a drawn game from *side*'s POV.
 
-    Base: -draw_penalty (both sides are slightly penalised for drawing).
-    Bonus: shortest-path advantage at the final position gives partial
-    credit — the side closer to its goal gets a less negative z.
+    Base: ``-draw_penalty`` (both sides penalised for drawing).
+
+    Stall scaling (when ``game_length`` and ``max_moves`` are given):
+        effective_penalty = draw_penalty + stall_weight * (plies / max_moves)
+
+    So a 30-ply premature draw is penalised less than a 90-ply
+    max-cutoff stall.  This teaches the net that letting the game run
+    to the cutoff is strictly worse than an earlier decisive stall.
+
+    Progress bonus: the side whose shortest path is shorter at the
+    final position gets partial credit — a less negative ``z``.
     """
+    effective_penalty = draw_penalty
+    if game_length is not None and max_moves is not None and max_moves > 0:
+        stall_factor = min(game_length / max_moves, 1.0)
+        effective_penalty += stall_weight * stall_factor
+
     d0 = final_board.shortest_path_length(0)
     d1 = final_board.shortest_path_length(1)
     # Positive when P0 is closer to winning.
@@ -118,7 +135,7 @@ def _draw_z(
     progress = math.tanh(raw_progress)  # squash to (-1, 1)
     # From P0's POV the bonus is +progress; from P1's POV it's -progress.
     bonus = progress if side == 0 else -progress
-    return float(np.clip(-draw_penalty + bonus * progress_weight, -1.0, 1.0))
+    return float(np.clip(-effective_penalty + bonus * progress_weight, -1.0, 1.0))
 
 
 # ======================================================================
@@ -429,6 +446,7 @@ def train_on_recent_games(
     weight_decay: float = 1e-4,
     val_frac: float = 0.05,
     draw_penalty: float = 0.1,
+    max_moves: int = 90,
 ) -> Tuple:
     """Train *net* on the most recent games from *db*.
 
@@ -495,7 +513,10 @@ def train_on_recent_games(
                 if winner is not None:
                     z = 1.0 if winner == brd.turn else -1.0
                 else:
-                    z = _draw_z(final_board, brd.turn, draw_penalty)
+                    z = _draw_z(
+                        final_board, brd.turn, draw_penalty,
+                        game_length=len(moves), max_moves=max_moves,
+                    )
                 vals_l.append(z)
                 weights_l.append(w)
         return states_l, pols_l, vals_l, weights_l
@@ -694,6 +715,7 @@ def run_pipeline(args) -> None:
     print(f"Games/iteration:   {args.games_per_iter}")
     print(f"Training epochs:   {args.epochs}")
     print(f"Eval games:        {args.eval_games}")
+    print(f"Training window:   {args.window} games")
     print(f"Max game length:   {args.max_moves}")
     print(f"Opening random:    {args.opening_random}")
     print(f"Draw penalty:      {args.draw_penalty}")
@@ -784,6 +806,7 @@ def run_pipeline(args) -> None:
                 lr=args.lr,
                 weight_decay=args.weight_decay,
                 draw_penalty=args.draw_penalty,
+                max_moves=args.max_moves,
             )
 
             # --- 3. Evaluation ---
@@ -889,16 +912,21 @@ def main() -> None:
     g.add_argument("--lr", type=float, default=2e-3,
                    help="Learning rate (default 2e-3).")
     g.add_argument("--weight-decay", type=float, default=1e-4)
-    g.add_argument("--window", type=int, default=1000,
-                   help="Train on the N most recent games (default 1000).")
+    g.add_argument("--window", type=int, default=5000,
+                   help="Train on the N most recent games (default 5000). "
+                        "Larger windows = more position diversity = less "
+                        "overfitting, at the cost of slightly slower epochs.")
     g.add_argument("--draw-penalty", type=float, default=0.3,
                    help="Base value penalty for draws (default 0.3). "
                         "Higher values push the net to play for wins.")
 
     # --- evaluation ---
     g = p.add_argument_group("evaluation")
-    g.add_argument("--eval-games", type=int, default=20,
-                   help="Games for net-vs-net evaluation (0 to disable gating).")
+    g.add_argument("--eval-games", type=int, default=50,
+                   help="Games for net-vs-net evaluation (0 to disable "
+                        "gating; default 50). Fewer than ~40 games give "
+                        "binomial noise large enough to mask real "
+                        "improvements — keep at 50+ for reliable gating.")
     g.add_argument("--gate-threshold", type=float, default=0.55,
                    help="Min score to promote the new net (default 0.55). "
                         "Score: win=1, draw=0.5, loss=0.")
