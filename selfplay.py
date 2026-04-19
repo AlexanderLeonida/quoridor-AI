@@ -40,6 +40,7 @@ from __future__ import annotations
 
 import argparse
 import copy
+import json
 import math
 import os
 import random
@@ -514,8 +515,12 @@ def train_on_recent_games(
             final_board = board
             # Per-position weight: inversely proportional to game length
             # so that shorter decisive games aren't drowned by long draws.
+            # Additionally upweight decisive games 2× so that the training
+            # signal isn't dominated by draw positions (draws tend to be
+            # long, and their value targets are uncertain by construction).
             game_len = max(len(moves), 1)
-            w = 1.0 / game_len
+            decisive_mult = 2.0 if winner is not None else 1.0
+            w = decisive_mult / game_len
             for brd, move, blob in zip(boards_in_game, moves, blobs):
                 states_l.append(encode_state(brd))
                 if blob is not None:
@@ -582,6 +587,12 @@ def train_on_recent_games(
     )
 
     # --- training loop ---
+    # Track best-val weights so the candidate we ship is the best snapshot
+    # we saw during training, not the (typically overfit) end-of-training
+    # one.  Without this, val loss tends to rise monotonically after
+    # epoch 1 and we ship a degraded net to the gating match.
+    best_val_loss: Optional[float] = None
+    best_val_state: Optional[dict] = None
     for epoch in range(1, epochs + 1):
         net.train()
         tl = tp = tv = 0.0
@@ -632,10 +643,25 @@ def train_on_recent_games(
                     vv += lv.item() * bs
                     vn += bs
             line += f"  val={vl/vn:.4f} (p={vp2/vn:.4f} v={vv/vn:.4f})"
+            cur_val = vl / vn
+            if best_val_loss is None or cur_val < best_val_loss:
+                best_val_loss = cur_val
+                best_val_state = {
+                    k: v.detach().cpu().clone()
+                    for k, v in net.state_dict().items()
+                }
+                line += "  [best]"
 
         print(line)
 
+    # Restore the best-val weights (if validation was enabled) so the
+    # gating match sees the best snapshot rather than the final one.
+    if best_val_state is not None:
+        net.load_state_dict(best_val_state)
+
     metrics = {"train_loss": tl / tn, "policy_loss": tp / tn, "value_loss": tv / tn}
+    if best_val_loss is not None:
+        metrics["best_val_loss"] = best_val_loss
     return net, metrics
 
 
@@ -669,6 +695,7 @@ def evaluate_nets(
     net_old.eval()
 
     score = 0.0
+    n_wins = n_losses = n_draws = 0
     for g in range(num_games):
         if g % 2 == 0:
             nets = {0: net_new, 1: net_old}
@@ -700,19 +727,26 @@ def evaluate_nets(
         if winner is not None and winner == new_side:
             score += 1.0
             tag = "W"
+            n_wins += 1
         elif winner is not None and winner != new_side:
             tag = "L"
+            n_losses += 1
         else:
             score += 0.5
             tag = "D"
+            n_draws += 1
 
+        done = g + 1
+        pct = score / done
         print(
-            f"    eval game {g+1}/{num_games}  "
+            f"    eval game {done}/{num_games}  "
             f"new={'P1' if new_side==0 else 'P2'}  "
-            f"moves={move_count}  {tag}"
+            f"moves={move_count}  {tag}  "
+            f"({pct:.0%} W{n_wins}/L{n_losses}/D{n_draws})"
         )
 
-    return score / num_games
+    return {"score": score / num_games, "wins": n_wins,
+            "losses": n_losses, "draws": n_draws}
 
 
 # ======================================================================
@@ -852,6 +886,7 @@ def evaluate_nets_parallel(
 
     ctx = mp.get_context("spawn")
     score = 0.0
+    n_wins = n_losses = n_draws = 0
     done = 0
     print(f"    (parallel evaluation on {num_workers} CPU workers)")
     with ctx.Pool(
@@ -864,12 +899,103 @@ def evaluate_nets_parallel(
         ):
             score += s
             done += 1
+            if tag == "W":
+                n_wins += 1
+            elif tag == "L":
+                n_losses += 1
+            else:
+                n_draws += 1
+            pct = score / done
             print(
                 f"    eval game {done}/{num_games}  "
                 f"(idx {g})  new={'P1' if new_side==0 else 'P2'}  "
-                f"moves={move_count}  {tag}"
+                f"moves={move_count}  {tag}  "
+                f"({pct:.0%} W{n_wins}/L{n_losses}/D{n_draws})"
             )
-    return score / num_games
+    return {"score": score / num_games, "wins": n_wins,
+            "losses": n_losses, "draws": n_draws}
+
+
+# ======================================================================
+# Confidence interval for evaluation
+# ======================================================================
+
+def wilson_ci(wins: float, n: int, z: float = 1.96) -> Tuple[float, float]:
+    """Wilson score 95% confidence interval for a proportion.
+
+    *wins* can be fractional (draws count as 0.5) so we treat it as the
+    number of "successes" in *n* Bernoulli trials.
+    """
+    if n == 0:
+        return 0.0, 1.0
+    p_hat = wins / n
+    denom = 1 + z * z / n
+    centre = p_hat + z * z / (2 * n)
+    spread = z * math.sqrt((p_hat * (1 - p_hat) + z * z / (4 * n)) / n)
+    lo = (centre - spread) / denom
+    hi = (centre + spread) / denom
+    return max(0.0, lo), min(1.0, hi)
+
+
+# ======================================================================
+# Elo tracking
+# ======================================================================
+
+class EloTracker:
+    """Simple Elo rating tracker persisted to a JSON file.
+
+    Each model version gets a rating.  After each evaluation match the
+    ratings of both participants are updated with the standard Elo
+    formula (K=32).  The initial rating is 1000.
+    """
+
+    def __init__(self, path: str, k: float = 32.0):
+        self.path = path
+        self.k = k
+        self.ratings: Dict[str, float] = {}
+        self._load()
+
+    def _load(self) -> None:
+        if os.path.exists(self.path):
+            with open(self.path, "r") as f:
+                self.ratings = json.load(f)
+
+    def _save(self) -> None:
+        with open(self.path, "w") as f:
+            json.dump(self.ratings, f, indent=2)
+
+    def _ensure(self, name: str) -> None:
+        if name not in self.ratings:
+            self.ratings[name] = 1000.0
+
+    def update(self, player_a: str, player_b: str, score_a: float) -> Tuple[float, float]:
+        """Update ratings after a match.  *score_a* is in [0, 1].
+
+        Returns (new_rating_a, new_rating_b).
+        """
+        self._ensure(player_a)
+        self._ensure(player_b)
+        ra, rb = self.ratings[player_a], self.ratings[player_b]
+        ea = 1.0 / (1.0 + 10.0 ** ((rb - ra) / 400.0))
+        eb = 1.0 - ea
+        self.ratings[player_a] = ra + self.k * (score_a - ea)
+        self.ratings[player_b] = rb + self.k * ((1.0 - score_a) - eb)
+        self._save()
+        return self.ratings[player_a], self.ratings[player_b]
+
+    def get(self, name: str) -> float:
+        self._ensure(name)
+        return self.ratings[name]
+
+    def summary(self, n: int = 10) -> str:
+        """Return a formatted string of the top-N rated models."""
+        if not self.ratings:
+            return "  (no ratings yet)"
+        ranked = sorted(self.ratings.items(), key=lambda x: -x[1])
+        lines = []
+        for i, (name, elo) in enumerate(ranked[:n], 1):
+            lines.append(f"  {i:>2}. {name:<25s} {elo:7.1f}")
+        return "\n".join(lines)
 
 
 # ======================================================================
@@ -929,6 +1055,8 @@ def run_pipeline(args) -> None:
     )
 
     db = GameDB(args.db)
+    elo = EloTracker(os.path.join(args.checkpoint_dir, "elo.json"))
+    best_version = f"selfplay-v{start_iter}" if start_iter > 0 else "init"
 
     try:
         for it in range(1, args.iterations + 1):
@@ -985,9 +1113,9 @@ def run_pipeline(args) -> None:
             # --- 3. Evaluation ---
             if args.eval_games > 0:
                 print("\n[3/3] Evaluation")
-                eval_sims = max(args.simulations // 4, 50)
+                eval_sims = args.simulations
                 if args.workers > 1:
-                    score = evaluate_nets_parallel(
+                    eval_result = evaluate_nets_parallel(
                         candidate, best_net,
                         checkpoint_dir=args.checkpoint_dir,
                         num_games=args.eval_games,
@@ -997,18 +1125,38 @@ def run_pipeline(args) -> None:
                         num_workers=args.workers,
                     )
                 else:
-                    score = evaluate_nets(
+                    eval_result = evaluate_nets(
                         candidate, best_net, device,
                         num_games=args.eval_games,
                         simulations=eval_sims,
                         opening_random=args.opening_random,
                         max_moves=args.max_moves,
                     )
-                print(f"  New net score: {score:.1%}")
+                score = eval_result["score"]
+                e_w = eval_result["wins"]
+                e_l = eval_result["losses"]
+                e_d = eval_result["draws"]
+                ci_lo, ci_hi = wilson_ci(
+                    eval_result["wins"] + eval_result["draws"] * 0.5,
+                    args.eval_games,
+                )
+                print(
+                    f"  New net score: {score:.1%}  "
+                    f"(W{e_w}/L{e_l}/D{e_d})  "
+                    f"95% CI: [{ci_lo:.1%}, {ci_hi:.1%}]"
+                )
+
+                # Elo update: candidate vs current best.
+                elo_new, elo_old = elo.update(version, best_version, score)
+                print(
+                    f"  Elo: {version}={elo_new:.0f}  "
+                    f"{best_version}={elo_old:.0f}"
+                )
 
                 if score > args.gate_threshold:
                     print("  >>> Promoted new network!")
                     best_net = candidate
+                    best_version = version
                 else:
                     print("  --- Keeping previous network.")
             else:
@@ -1031,6 +1179,9 @@ def run_pipeline(args) -> None:
                 **metrics,
             )
             print(f"  Saved {ckpt_path}")
+
+            # Print Elo leaderboard.
+            print(f"\n  Elo ratings (top 10):\n{elo.summary(10)}")
 
     finally:
         db.close()
@@ -1107,11 +1258,10 @@ def main() -> None:
 
     # --- evaluation ---
     g = p.add_argument_group("evaluation")
-    g.add_argument("--eval-games", type=int, default=50,
+    g.add_argument("--eval-games", type=int, default=200,
                    help="Games for net-vs-net evaluation (0 to disable "
-                        "gating; default 50). Fewer than ~40 games give "
-                        "binomial noise large enough to mask real "
-                        "improvements — keep at 50+ for reliable gating.")
+                        "gating; default 200). At N=200 the standard error "
+                        "is ~3.5%%, giving reliable gating signal.")
     g.add_argument("--gate-threshold", type=float, default=0.55,
                    help="Min score to promote the new net (default 0.55). "
                         "Score: win=1, draw=0.5, loss=0.")

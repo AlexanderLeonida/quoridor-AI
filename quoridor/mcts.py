@@ -357,7 +357,25 @@ def search(
     # ends with 1 + num_simulations visits, so that's the target.
     target_visits = 1 + config.num_simulations
     remaining = max(0, target_visits - root.visit_count)
-    for _ in range(remaining):
+    for sim in range(remaining):
+        # EARLY TERMINATION: if the leading child's visit count is
+        # already unreachable by the runner-up even if all remaining
+        # simulations go to it, the search result is decided.
+        # Check every 16 sims to avoid the overhead of scanning
+        # children on every iteration.
+        if sim > 0 and sim % 16 == 0 and len(root.children) > 1:
+            sims_left = remaining - sim
+            best_visits = -1
+            second_visits = -1
+            for child in root.children.values():
+                if child.visit_count > best_visits:
+                    second_visits = best_visits
+                    best_visits = child.visit_count
+                elif child.visit_count > second_visits:
+                    second_visits = child.visit_count
+            if second_visits + sims_left < best_visits:
+                break
+
         node = root
         scratch = board  # Board.apply returns new objects; *board* is safe.
         path: List[Node] = [root]
