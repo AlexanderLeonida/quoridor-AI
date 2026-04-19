@@ -296,6 +296,7 @@ def search(
     *,
     add_noise: bool = True,
     cache: Optional[EvalCache] = None,
+    reuse_root: Optional[Node] = None,
 ) -> Node:
     """Run a full MCTS search from *board*.  Returns the root ``Node``.
 
@@ -312,26 +313,51 @@ def search(
     add_noise : bool
         Whether to mix Dirichlet noise into the root priors (True for
         self-play, False for evaluation / competitive play).
+    reuse_root : Node, optional
+        A previously-searched node (typically the child corresponding to
+        the last move played) whose accumulated statistics should be
+        carried forward as the new root.  This is the canonical
+        AlphaZero subtree-reuse optimisation: visits already invested
+        under this node become "free" simulations, so the target total
+        visit count is reached faster.
     """
-    root = Node()
+    # --- establish root (fresh or inherited) ---
+    if (
+        reuse_root is not None
+        and reuse_root.expanded
+        and not reuse_root.is_terminal
+    ):
+        # Subtree reuse: node was expanded during the previous search.
+        # Its priors are already the NN's (correct) predictions; its
+        # visit counts and value sums are still valid statistics for
+        # this position, so we just reseed Dirichlet noise at the new
+        # root for exploration.
+        root = reuse_root
+        if add_noise:
+            _add_dirichlet_noise(root, config)
+    else:
+        root = Node()
+        policy_logits, value = _evaluate(board, net, device, cache=cache)
+        value = _expand(root, board, policy_logits, value)
 
-    # --- expand root ---
-    policy_logits, value = _evaluate(board, net, device, cache=cache)
-    value = _expand(root, board, policy_logits, value)
+        if root.is_terminal:
+            root.visit_count = 1
+            root.value_sum = root.terminal_value
+            return root
 
-    if root.is_terminal:
         root.visit_count = 1
-        root.value_sum = root.terminal_value
-        return root
+        root.value_sum = value
 
-    root.visit_count = 1
-    root.value_sum = value
-
-    if add_noise:
-        _add_dirichlet_noise(root, config)
+        if add_noise:
+            _add_dirichlet_noise(root, config)
 
     # --- simulations ---
-    for _ in range(config.num_simulations):
+    # Target the same TOTAL visit count whether the tree is fresh or
+    # reused — this is where the speedup comes from.  A fresh search
+    # ends with 1 + num_simulations visits, so that's the target.
+    target_visits = 1 + config.num_simulations
+    remaining = max(0, target_visits - root.visit_count)
+    for _ in range(remaining):
         node = root
         scratch = board  # Board.apply returns new objects; *board* is safe.
         path: List[Node] = [root]

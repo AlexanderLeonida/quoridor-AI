@@ -175,8 +175,16 @@ def play_game(
     # identifies the state.
     cache = EvalCache() if use_cache else None
 
+    # Tree reuse: keep the subtree under the chosen action as the next
+    # search's root.  Saves all the NN evaluations already invested
+    # under that node — typically 30–50% of simulations are inherited.
+    next_root: Optional["Node"] = None  # noqa: F821  (Node imported via mcts)
+
     while board.winner() is None and move_num < max_moves:
-        root = search(board, net, config, device, add_noise=True, cache=cache)
+        root = search(
+            board, net, config, device,
+            add_noise=True, cache=cache, reuse_root=next_root,
+        )
 
         temp = 1.0 if move_num < temp_threshold else 0.0
         policy = get_policy(root, temp)
@@ -185,6 +193,14 @@ def play_game(
         boards.append(board)
         policies.append(policy)
         actions.append(action)
+
+        # Preserve the chosen child's subtree for the next move.
+        # If the child wasn't expanded (shouldn't happen when action is
+        # sampled from root.children, but be defensive), fall back to a
+        # fresh search next move.
+        next_root = root.children.get(action)
+        if next_root is not None and not next_root.expanded:
+            next_root = None
 
         _, _, _, _, _, _, flipped = canonical_view(board)
         move = action_to_move(action, flipped)
@@ -700,6 +716,163 @@ def evaluate_nets(
 
 
 # ======================================================================
+# Parallel evaluation
+# ======================================================================
+#
+# At --eval-games 50 the serial evaluator dominates each iteration's
+# wall-clock.  Games between the two fixed nets are independent, so
+# parallelising is safe (identical outcome distribution) and scales
+# near-linearly with workers.
+
+_EVAL_NEW_NET = None
+_EVAL_OLD_NET = None
+_EVAL_CFG: Optional[MCTSConfig] = None
+_EVAL_KWARGS: Optional[Dict] = None
+_EVAL_DEVICE = None
+
+
+def _eval_worker_init(
+    new_ckpt: str,
+    old_ckpt: str,
+    mcts_kwargs: Dict,
+    eval_kwargs: Dict,
+    seed_base: int,
+) -> None:
+    """Pool initializer: load both nets once per worker process."""
+    global _EVAL_NEW_NET, _EVAL_OLD_NET, _EVAL_CFG, _EVAL_KWARGS, _EVAL_DEVICE
+    import os as _os
+
+    import torch  # noqa: WPS433
+
+    torch.set_num_threads(1)
+
+    pid = _os.getpid()
+    seed = (seed_base + pid) & 0x7FFFFFFF
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+
+    new_net, _ = load_checkpoint(new_ckpt, map_location="cpu")
+    new_net.to("cpu")
+    new_net.eval()
+    old_net, _ = load_checkpoint(old_ckpt, map_location="cpu")
+    old_net.to("cpu")
+    old_net.eval()
+
+    _EVAL_NEW_NET = new_net
+    _EVAL_OLD_NET = old_net
+    _EVAL_CFG = MCTSConfig(**mcts_kwargs)
+    _EVAL_KWARGS = eval_kwargs
+    _EVAL_DEVICE = torch.device("cpu")
+
+
+def _eval_worker_play_one(g: int) -> Tuple[int, float, str, int, int]:
+    """Play one eval game from global state.
+
+    Returns (game_idx, score_for_new, tag, move_count, new_side).
+    """
+    import torch  # noqa: WPS433
+
+    assert _EVAL_NEW_NET is not None and _EVAL_OLD_NET is not None
+    assert _EVAL_CFG is not None and _EVAL_KWARGS is not None
+
+    # Alternate colors deterministically by game index — same contract
+    # as the serial evaluator so the distribution of (new_side) matches.
+    if g % 2 == 0:
+        nets = {0: _EVAL_NEW_NET, 1: _EVAL_OLD_NET}
+        new_side = 0
+    else:
+        nets = {0: _EVAL_OLD_NET, 1: _EVAL_NEW_NET}
+        new_side = 1
+
+    opening_random = _EVAL_KWARGS["opening_random"]
+    max_moves = _EVAL_KWARGS["max_moves"]
+
+    board = Board.initial()
+    if opening_random > 0:
+        board, _ = _randomise_opening(board, opening_random)
+
+    # Per-side caches: each net gets its own memoization (cache hits
+    # are only meaningful within one net's turn set).
+    caches = {0: EvalCache(), 1: EvalCache()}
+    move_count = 0
+    while board.winner() is None and move_count < max_moves:
+        cur_net = nets[board.turn]
+        root = search(
+            board, cur_net, _EVAL_CFG, _EVAL_DEVICE,
+            add_noise=False, cache=caches[board.turn],
+        )
+        action = select_action(root, temperature=0.0)
+        _, _, _, _, _, _, flipped = canonical_view(board)
+        move = action_to_move(action, flipped)
+        board = board.apply(move)
+        move_count += 1
+
+    winner = board.winner()
+    if winner is not None and winner == new_side:
+        return g, 1.0, "W", move_count, new_side
+    if winner is not None and winner != new_side:
+        return g, 0.0, "L", move_count, new_side
+    return g, 0.5, "D", move_count, new_side
+
+
+def evaluate_nets_parallel(
+    net_new,
+    net_old,
+    checkpoint_dir: str,
+    *,
+    num_games: int,
+    simulations: int,
+    opening_random: int,
+    max_moves: int,
+    num_workers: int,
+) -> float:
+    """Parallel net-vs-net evaluation.  Returns *net_new*'s score in [0, 1]."""
+    import multiprocessing as mp
+    from dataclasses import asdict
+
+    os.makedirs(checkpoint_dir, exist_ok=True)
+    new_ckpt = os.path.join(checkpoint_dir, "_eval_new.pt")
+    old_ckpt = os.path.join(checkpoint_dir, "_eval_old.pt")
+    save_checkpoint(net_new, new_ckpt, iteration=-1, note="eval_new")
+    save_checkpoint(net_old, old_ckpt, iteration=-1, note="eval_old")
+
+    eval_cfg = MCTSConfig(
+        num_simulations=simulations,
+        dirichlet_epsilon=0.0,
+    )
+    eval_kwargs = {
+        "opening_random": opening_random,
+        "max_moves": max_moves,
+    }
+    seed_base = random.randint(0, 2**30)
+    initargs = (
+        new_ckpt, old_ckpt, asdict(eval_cfg), eval_kwargs, seed_base,
+    )
+
+    ctx = mp.get_context("spawn")
+    score = 0.0
+    done = 0
+    print(f"    (parallel evaluation on {num_workers} CPU workers)")
+    with ctx.Pool(
+        processes=num_workers,
+        initializer=_eval_worker_init,
+        initargs=initargs,
+    ) as pool:
+        for g, s, tag, move_count, new_side in pool.imap_unordered(
+            _eval_worker_play_one, range(num_games)
+        ):
+            score += s
+            done += 1
+            print(
+                f"    eval game {done}/{num_games}  "
+                f"(idx {g})  new={'P1' if new_side==0 else 'P2'}  "
+                f"moves={move_count}  {tag}"
+            )
+    return score / num_games
+
+
+# ======================================================================
 # Pipeline orchestration
 # ======================================================================
 
@@ -812,13 +985,25 @@ def run_pipeline(args) -> None:
             # --- 3. Evaluation ---
             if args.eval_games > 0:
                 print("\n[3/3] Evaluation")
-                score = evaluate_nets(
-                    candidate, best_net, device,
-                    num_games=args.eval_games,
-                    simulations=max(args.simulations // 4, 50),
-                    opening_random=args.opening_random,
-                    max_moves=args.max_moves,
-                )
+                eval_sims = max(args.simulations // 4, 50)
+                if args.workers > 1:
+                    score = evaluate_nets_parallel(
+                        candidate, best_net,
+                        checkpoint_dir=args.checkpoint_dir,
+                        num_games=args.eval_games,
+                        simulations=eval_sims,
+                        opening_random=args.opening_random,
+                        max_moves=args.max_moves,
+                        num_workers=args.workers,
+                    )
+                else:
+                    score = evaluate_nets(
+                        candidate, best_net, device,
+                        num_games=args.eval_games,
+                        simulations=eval_sims,
+                        opening_random=args.opening_random,
+                        max_moves=args.max_moves,
+                    )
                 print(f"  New net score: {score:.1%}")
 
                 if score > args.gate_threshold:
