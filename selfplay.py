@@ -1036,11 +1036,15 @@ def run_pipeline(args) -> None:
         print(f"Resuming from {resume_path}")
         best_net, meta = load_checkpoint(resume_path, map_location=str(device))
         start_iter = meta.get("iteration", 0)
+        # best_iteration tracks when the best net was actually promoted,
+        # not the latest iteration number (which advances even on rejection).
+        best_iteration = meta.get("best_iteration", start_iter)
         print(f"  meta: {meta}")
     else:
         print("Starting with a randomly initialised network.")
         best_net = build_net()
         start_iter = 0
+        best_iteration = 0
     best_net.to(device)
     best_net.eval()
 
@@ -1056,7 +1060,7 @@ def run_pipeline(args) -> None:
 
     db = GameDB(args.db)
     elo = EloTracker(os.path.join(args.checkpoint_dir, "elo.json"))
-    best_version = f"selfplay-v{start_iter}" if start_iter > 0 else "init"
+    best_version = f"selfplay-v{best_iteration}" if best_iteration > 0 else "init"
 
     try:
         for it in range(1, args.iterations + 1):
@@ -1157,11 +1161,13 @@ def run_pipeline(args) -> None:
                     print("  >>> Promoted new network!")
                     best_net = candidate
                     best_version = version
+                    best_iteration = global_it
                 else:
                     print("  --- Keeping previous network.")
             else:
                 # No gating; always accept.
                 best_net = candidate
+                best_iteration = global_it
 
             # Save checkpoint.
             ckpt_path = os.path.join(
@@ -1171,11 +1177,13 @@ def run_pipeline(args) -> None:
             save_checkpoint(
                 best_net, ckpt_path,
                 iteration=global_it,
+                best_iteration=best_iteration,
                 **metrics,
             )
             save_checkpoint(
                 best_net, best_path,
                 iteration=global_it,
+                best_iteration=best_iteration,
                 **metrics,
             )
             print(f"  Saved {ckpt_path}")
