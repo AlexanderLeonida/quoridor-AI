@@ -59,6 +59,7 @@ from quoridor.encoding import (
     serialize_policy,
 )
 from quoridor.mcts import (
+    EvalCache,
     MCTSConfig,
     get_policy,
     root_value,
@@ -132,6 +133,7 @@ def play_game(
     temp_threshold: int = 15,
     max_moves: int = 120,
     opening_random: int = 0,
+    use_cache: bool = True,
 ) -> Tuple[List[Board], List[np.ndarray], List[int], Optional[int], Board]:
     """Play one self-play game using MCTS.
 
@@ -151,8 +153,13 @@ def play_game(
     actions: List[int] = []
     move_num = 0
 
+    # One NN-eval cache per game so transpositions within the tree and
+    # across successive moves reuse forwards. Safe: Zobrist key fully
+    # identifies the state.
+    cache = EvalCache() if use_cache else None
+
     while board.winner() is None and move_num < max_moves:
-        root = search(board, net, config, device, add_noise=True)
+        root = search(board, net, config, device, add_noise=True, cache=cache)
 
         temp = 1.0 if move_num < temp_threshold else 0.0
         policy = get_policy(root, temp)
@@ -249,6 +256,164 @@ def generate_games(
 
 
 # ======================================================================
+# Parallel self-play (multiprocessing)
+# ======================================================================
+#
+# Self-play is the dominant cost in the pipeline (100 games * ~60s).
+# Games are fully independent, so parallelising across CPU worker
+# processes is a safe pure-throughput win — same data, same learning
+# curve, just generated faster.
+#
+# Design:
+#   - Main process saves the current best net to a checkpoint file.
+#   - Each worker is initialised once with that checkpoint, loading the
+#     net to CPU (the net is tiny; MPS is not worth the cross-process
+#     sharing complexity and small-batch overhead).
+#   - Workers play games independently and return the compact (moves,
+#     policy_blobs, winner, n_plies, elapsed) tuple.
+#   - Main process does all DB writes (SQLite + multiprocess = pain),
+#     so this avoids any concurrency concerns on the DB side.
+#   - Progress is printed as games stream back via imap_unordered.
+
+_WORKER_NET = None
+_WORKER_CONFIG: Optional[MCTSConfig] = None
+_WORKER_PLAY_KWARGS: Optional[Dict] = None
+_WORKER_DEVICE = None
+
+
+def _worker_init(
+    ckpt_path: str,
+    mcts_kwargs: Dict,
+    play_kwargs: Dict,
+    seed_base: int,
+) -> None:
+    """Pool initializer: load the net once per worker process."""
+    global _WORKER_NET, _WORKER_CONFIG, _WORKER_PLAY_KWARGS, _WORKER_DEVICE
+    import os as _os
+
+    import torch  # noqa: WPS433
+
+    # Prevent thread oversubscription when N workers run concurrently.
+    torch.set_num_threads(1)
+
+    # Per-worker seeding so parallel games aren't correlated.
+    pid = _os.getpid()
+    seed = (seed_base + pid) & 0x7FFFFFFF
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+
+    net, _ = load_checkpoint(ckpt_path, map_location="cpu")
+    net.to("cpu")
+    net.eval()
+    _WORKER_NET = net
+    _WORKER_CONFIG = MCTSConfig(**mcts_kwargs)
+    _WORKER_PLAY_KWARGS = play_kwargs
+    _WORKER_DEVICE = torch.device("cpu")
+
+
+def _worker_play_one(_idx: int):
+    """Play one self-play game and return a picklable result tuple."""
+    import torch  # noqa: WPS433
+
+    assert _WORKER_NET is not None
+    assert _WORKER_CONFIG is not None
+    assert _WORKER_PLAY_KWARGS is not None
+
+    t0 = time.perf_counter()
+    boards, policies, actions, winner, _final = play_game(
+        _WORKER_NET,
+        _WORKER_CONFIG,
+        _WORKER_DEVICE,
+        **_WORKER_PLAY_KWARGS,
+    )
+    # Convert to (moves, blobs) since the Move objects and bytes are
+    # cheap to pickle; raw Boards/tensors are not.
+    moves = []
+    blobs = []
+    for board, policy, action in zip(boards, policies, actions):
+        _, _, _, _, _, _, flipped = canonical_view(board)
+        moves.append(action_to_move(action, flipped))
+        blobs.append(serialize_policy(policy))
+    return moves, blobs, winner, len(actions), time.perf_counter() - t0
+
+
+def generate_games_parallel(
+    best_net,
+    config: MCTSConfig,
+    db: GameDB,
+    num_games: int,
+    model_version: str,
+    checkpoint_dir: str,
+    *,
+    temp_threshold: int,
+    max_moves: int,
+    opening_random: int,
+    num_workers: int,
+) -> Dict[str, int]:
+    """Parallel self-play across *num_workers* CPU processes."""
+    import multiprocessing as mp
+    from dataclasses import asdict
+
+    # Snapshot the current net to disk for workers to load.
+    os.makedirs(checkpoint_dir, exist_ok=True)
+    snap_path = os.path.join(checkpoint_dir, "_worker_net.pt")
+    save_checkpoint(best_net, snap_path, iteration=-1, note="worker_snapshot")
+
+    play_kwargs = {
+        "temp_threshold": temp_threshold,
+        "max_moves": max_moves,
+        "opening_random": opening_random,
+    }
+    seed_base = random.randint(0, 2**30)
+    initargs = (snap_path, asdict(config), play_kwargs, seed_base)
+
+    ctx = mp.get_context("spawn")
+    stats: Dict[str, int] = {
+        "games": 0, "p1_wins": 0, "p2_wins": 0,
+        "draws": 0, "total_moves": 0,
+    }
+
+    print(f"  (parallel self-play on {num_workers} CPU workers)")
+    with ctx.Pool(
+        processes=num_workers,
+        initializer=_worker_init,
+        initargs=initargs,
+    ) as pool:
+        for moves, blobs, winner, n_plies, elapsed in pool.imap_unordered(
+            _worker_play_one, range(num_games)
+        ):
+            gid = db.save_game(
+                moves,
+                winner=winner,
+                p1_source="selfplay_nn",
+                p2_source="selfplay_nn",
+                model_version=model_version,
+                notes="mcts_selfplay",
+                policies=blobs,
+            )
+            stats["games"] += 1
+            stats["total_moves"] += n_plies
+            if winner == 0:
+                stats["p1_wins"] += 1
+            elif winner == 1:
+                stats["p2_wins"] += 1
+            else:
+                stats["draws"] += 1
+            outcome = "P1" if winner == 0 else ("P2" if winner == 1 else "draw")
+            avg = stats["total_moves"] / stats["games"]
+            print(
+                f"  game {stats['games']:>3}/{num_games}  id={gid:<5}  "
+                f"plies={n_plies:<4}  winner={outcome:<5}  "
+                f"{elapsed:.1f}s  avg_len={avg:.0f}"
+            )
+
+    # Snapshot is regenerated every iteration; leave it in place so the
+    # most recent weights remain inspectable, but it's not essential.
+    return stats
+
+
+# ======================================================================
 # Training on self-play data
 # ======================================================================
 
@@ -273,75 +438,104 @@ def train_on_recent_games(
     import torch.nn.functional as F
     from torch.utils.data import DataLoader, TensorDataset
 
-    # --- materialise dataset ---
-    games = list(db.iter_games(finished_only=False))
-    games = games[-max_games:]
-    if not games:
+    # --- materialise dataset (game-level train/val split) ---
+    # Only use self-play games (exclude human/alphabeta games that may be
+    # in the same DB).  We keep draws (winner=None) from self-play since
+    # max-moves cutoffs are legitimate training data with progress-aware
+    # value targets.  The source filter already excludes aborted human
+    # games whose winner=None would inject noisy labels.
+    all_games = [
+        row for row in db.iter_games(finished_only=False)
+        if row[5] == "selfplay_nn" and row[6] == "selfplay_nn"
+    ]
+    all_games = all_games[-max_games:]
+    if not all_games:
         print("  No games to train on.")
         return net, {}
 
-    states_list: List[np.ndarray] = []
-    policies_list: List[np.ndarray] = []
-    values_list: List[float] = []
+    # Split at the GAME level to avoid position leakage.
+    game_idx = np.arange(len(all_games))
+    np.random.shuffle(game_idx)
+    n_val_games = max(1, int(len(all_games) * val_frac)) if (
+        val_frac > 0 and len(all_games) > 10
+    ) else 0
+    val_game_set = set(game_idx[:n_val_games].tolist())
 
-    for row in games:
-        game_id = row[0]
-        winner = row[3]
-        moves = db.load_moves(game_id)
-        blobs = db.load_policy_blobs(game_id)
+    def _load_games(game_rows):
+        states_l: List[np.ndarray] = []
+        pols_l: List[np.ndarray] = []
+        vals_l: List[float] = []
+        weights_l: List[float] = []
+        for row in game_rows:
+            game_id = row[0]
+            winner = row[3]
+            moves = db.load_moves(game_id)
+            blobs = db.load_policy_blobs(game_id)
+            # Replay to find final board.
+            board = Board.initial()
+            boards_in_game: List[Board] = []
+            for move in moves:
+                boards_in_game.append(board)
+                board = board.apply(move)
+            final_board = board
+            # Per-position weight: inversely proportional to game length
+            # so that shorter decisive games aren't drowned by long draws.
+            game_len = max(len(moves), 1)
+            w = 1.0 / game_len
+            for brd, move, blob in zip(boards_in_game, moves, blobs):
+                states_l.append(encode_state(brd))
+                if blob is not None:
+                    pols_l.append(deserialize_policy(blob))
+                else:
+                    _, _, _, _, _, _, flipped = canonical_view(brd)
+                    act = move_to_action(move, flipped)
+                    onehot = np.zeros(ACTION_SPACE, dtype=np.float32)
+                    onehot[act] = 1.0
+                    pols_l.append(onehot)
+                if winner is not None:
+                    z = 1.0 if winner == brd.turn else -1.0
+                else:
+                    z = _draw_z(final_board, brd.turn, draw_penalty)
+                vals_l.append(z)
+                weights_l.append(w)
+        return states_l, pols_l, vals_l, weights_l
 
-        # Replay to find the final board (for progress-aware draw z).
-        board = Board.initial()
-        boards_in_game: List[Board] = []
-        for move in moves:
-            boards_in_game.append(board)
-            board = board.apply(move)
-        final_board = board
+    train_games = [all_games[i] for i in range(len(all_games)) if i not in val_game_set]
+    val_games = [all_games[i] for i in val_game_set]
 
-        for idx, (brd, move, blob) in enumerate(zip(boards_in_game, moves, blobs)):
-            states_list.append(encode_state(brd))
-            if blob is not None:
-                policies_list.append(deserialize_policy(blob))
-            else:
-                _, _, _, _, _, _, flipped = canonical_view(brd)
-                act = move_to_action(move, flipped)
-                onehot = np.zeros(ACTION_SPACE, dtype=np.float32)
-                onehot[act] = 1.0
-                policies_list.append(onehot)
-
-            if winner is not None:
-                z = 1.0 if winner == brd.turn else -1.0
-            else:
-                z = _draw_z(final_board, brd.turn, draw_penalty)
-            values_list.append(z)
-
-    n = len(states_list)
+    tr_s, tr_p, tr_v, tr_w = _load_games(train_games)
+    n = len(tr_s)
     if n == 0:
         print("  No training positions.")
         return net, {}
 
-    n_draws = sum(1 for r in games if r[3] is None)
-    n_decisive = len(games) - n_draws
+    n_draws = sum(1 for r in all_games if r[3] is None)
+    n_decisive = len(all_games) - n_draws
     print(
-        f"  {n:,} positions from {len(games)} game(s) "
-        f"({n_decisive} decisive, {n_draws} draws)"
+        f"  {n + sum(len(db.load_moves(g[0])) for g in val_games):,} positions "
+        f"from {len(all_games)} game(s) ({n_decisive} decisive, {n_draws} draws)"
     )
 
-    states = torch.from_numpy(np.stack(states_list))
-    pols = torch.from_numpy(np.stack(policies_list))
-    vals = torch.from_numpy(np.array(values_list, dtype=np.float32))
+    states = torch.from_numpy(np.stack(tr_s))
+    pols = torch.from_numpy(np.stack(tr_p))
+    vals = torch.from_numpy(np.array(tr_v, dtype=np.float32))
+    sample_weights = torch.from_numpy(np.array(tr_w, dtype=np.float32))
+    # Normalise weights so they average to 1.
+    sample_weights = sample_weights / sample_weights.mean()
 
-    # --- split ---
-    idx = np.arange(n)
-    np.random.shuffle(idx)
-    n_val = max(1, int(n * val_frac)) if val_frac > 0 and n > 20 else 0
+    val_loader = None
+    if val_games:
+        vs, vp, vv, _ = _load_games(val_games)
+        if vs:
+            val_ds = TensorDataset(
+                torch.from_numpy(np.stack(vs)),
+                torch.from_numpy(np.stack(vp)),
+                torch.from_numpy(np.array(vv, dtype=np.float32)),
+            )
+            val_loader = DataLoader(val_ds, batch_size=batch_size, shuffle=False)
 
-    def loader(sel, shuf):
-        ds = TensorDataset(states[sel], pols[sel], vals[sel])
-        return DataLoader(ds, batch_size=batch_size, shuffle=shuf, drop_last=False)
-
-    train_loader = loader(idx[n_val:], True)
-    val_loader = loader(idx[:n_val], False) if n_val else None
+    train_ds = TensorDataset(states, pols, vals, sample_weights)
+    train_loader = DataLoader(train_ds, batch_size=batch_size, shuffle=True)
 
     # --- optimiser ---
     net.to(device)
@@ -355,12 +549,18 @@ def train_on_recent_games(
         net.train()
         tl = tp = tv = 0.0
         tn = 0
-        for xb, pb, vb in train_loader:
-            xb, pb, vb = xb.to(device), pb.to(device), vb.to(device)
+        for xb, pb, vb, wb in train_loader:
+            xb = xb.to(device)
+            pb = pb.to(device)
+            vb = vb.to(device)
+            wb = wb.to(device)
             p_logits, v_pred = net(xb)
             log_p = F.log_softmax(p_logits, dim=1)
-            loss_p = -(pb * log_p).sum(dim=1).mean()
-            loss_v = F.mse_loss(v_pred, vb)
+            # Per-sample weighted losses.
+            loss_p_per = -(pb * log_p).sum(dim=1)
+            loss_v_per = (v_pred - vb) ** 2
+            loss_p = (loss_p_per * wb).mean()
+            loss_v = (loss_v_per * wb).mean()
             loss = loss_p + loss_v
             opt.zero_grad(set_to_none=True)
             loss.backward()
@@ -419,13 +619,14 @@ def evaluate_nets(
     """Play *num_games* between two networks, return *net_new*'s score.
 
     Score: win = 1, draw = 0.5, loss = 0 (normalised to [0, 1]).
-    Colors alternate each game.  Eval games use randomised openings
-    and a small temperature (0.1) to break deterministic mirror play.
+    Colors alternate each game.  Evaluation uses **no root noise** and
+    **greedy** (temperature = 0) play so that the result reflects true
+    model strength, not MCTS randomness.  Randomised openings still
+    break symmetry.
     """
     eval_cfg = MCTSConfig(
         num_simulations=simulations,
-        dirichlet_alpha=0.15,       # lighter noise than self-play
-        dirichlet_epsilon=0.15,
+        dirichlet_epsilon=0.0,  # NO exploration noise in eval
     )
     net_new.eval()
     net_old.eval()
@@ -440,16 +641,19 @@ def evaluate_nets(
             new_side = 1
 
         board = Board.initial()
-        # Randomised opening — same sequence for both sides in this game.
         if opening_random > 0:
             board, _ = _randomise_opening(board, opening_random)
 
+        # Per-side caches so hits are net-specific (two nets playing).
+        caches = {0: EvalCache(), 1: EvalCache()}
         move_count = 0
         while board.winner() is None and move_count < max_moves:
             cur_net = nets[board.turn]
-            root = search(board, cur_net, eval_cfg, device, add_noise=True)
-            # Small temperature to avoid fully deterministic play.
-            action = select_action(root, temperature=0.1)
+            root = search(
+                board, cur_net, eval_cfg, device,
+                add_noise=False, cache=caches[board.turn],
+            )
+            action = select_action(root, temperature=0.0)  # greedy
             _, _, _, _, _, _, flipped = canonical_view(board)
             move = action_to_move(action, flipped)
             board = board.apply(move)
@@ -462,7 +666,7 @@ def evaluate_nets(
         elif winner is not None and winner != new_side:
             tag = "L"
         else:
-            score += 0.5  # draw = half point
+            score += 0.5
             tag = "D"
 
         print(
@@ -485,6 +689,7 @@ def run_pipeline(args) -> None:
         torch.device(args.device) if args.device else best_available_device()
     )
     print(f"Device:            {device}")
+    print(f"Workers:           {args.workers}")
     print(f"Simulations/move:  {args.simulations}")
     print(f"Games/iteration:   {args.games_per_iter}")
     print(f"Training epochs:   {args.epochs}")
@@ -498,10 +703,17 @@ def run_pipeline(args) -> None:
     np.random.seed(args.seed)
     random.seed(args.seed)
 
-    # --- network ---
-    if args.resume and os.path.exists(args.resume):
-        print(f"Resuming from {args.resume}")
-        best_net, meta = load_checkpoint(args.resume, map_location=str(device))
+    # --- network (auto-resume from best.pt if no explicit --resume) ---
+    resume_path = args.resume
+    if resume_path is None:
+        auto_best = os.path.join(args.checkpoint_dir, "best.pt")
+        if os.path.exists(auto_best):
+            resume_path = auto_best
+            print(f"Auto-resuming from {auto_best}  (use --resume to override)")
+
+    if resume_path and os.path.exists(resume_path):
+        print(f"Resuming from {resume_path}")
+        best_net, meta = load_checkpoint(resume_path, map_location=str(device))
         start_iter = meta.get("iteration", 0)
         print(f"  meta: {meta}")
     else:
@@ -533,14 +745,26 @@ def run_pipeline(args) -> None:
 
             # --- 1. Self-play ---
             print("\n[1/3] Self-play")
-            stats = generate_games(
-                best_net, mcts_cfg, device, db,
-                num_games=args.games_per_iter,
-                model_version=version,
-                temp_threshold=args.temp_threshold,
-                max_moves=args.max_moves,
-                opening_random=args.opening_random,
-            )
+            if args.workers > 1:
+                stats = generate_games_parallel(
+                    best_net, mcts_cfg, db,
+                    num_games=args.games_per_iter,
+                    model_version=version,
+                    checkpoint_dir=args.checkpoint_dir,
+                    temp_threshold=args.temp_threshold,
+                    max_moves=args.max_moves,
+                    opening_random=args.opening_random,
+                    num_workers=args.workers,
+                )
+            else:
+                stats = generate_games(
+                    best_net, mcts_cfg, device, db,
+                    num_games=args.games_per_iter,
+                    model_version=version,
+                    temp_threshold=args.temp_threshold,
+                    max_moves=args.max_moves,
+                    opening_random=args.opening_random,
+                )
             total = db.count_games()
             total_pos = db.count_positions(finished_only=False)
             print(
@@ -631,18 +855,27 @@ def main() -> None:
 
     # --- self-play ---
     g = p.add_argument_group("self-play")
-    g.add_argument("--games-per-iter", type=int, default=50,
-                   help="Self-play games per iteration (default 50).")
-    g.add_argument("--simulations", type=int, default=400,
-                   help="MCTS simulations per move (default 400).")
-    g.add_argument("--max-moves", type=int, default=120,
-                   help="Max plies per game before draw (default 120).")
-    g.add_argument("--temp-threshold", type=int, default=15,
+    g.add_argument("--games-per-iter", type=int, default=100,
+                   help="Self-play games per iteration (default 100).")
+    g.add_argument("--simulations", type=int, default=200,
+                   help="MCTS simulations per move (default 200). "
+                        "Lower early on for more exploration diversity.")
+    g.add_argument("--max-moves", type=int, default=90,
+                   help="Max plies per game before draw (default 90). "
+                        "Shorter forces decisive play.")
+    g.add_argument("--temp-threshold", type=int, default=20,
                    help="Use proportional sampling for first N full moves, "
-                        "then greedy (default 15).")
-    g.add_argument("--opening-random", type=int, default=4,
+                        "then greedy (default 20).")
+    g.add_argument("--opening-random", type=int, default=12,
                    help="Play N random moves at the start to break symmetry "
-                        "(default 4).")
+                        "(default 12).")
+    g.add_argument("--workers", type=int, default=1,
+                   help="Parallel self-play worker processes (default 1). "
+                        "Each worker plays games on CPU; net snapshot is "
+                        "shared via a checkpoint file. Games are "
+                        "independent so this does not affect the learning "
+                        "curve — pure throughput win. Try 4–8 on a "
+                        "multi-core Mac.")
     g.add_argument("--dirichlet-alpha", type=float, default=0.3,
                    help="Dirichlet noise alpha (default 0.3).")
     g.add_argument("--c-init", type=float, default=1.25,
@@ -658,9 +891,9 @@ def main() -> None:
     g.add_argument("--weight-decay", type=float, default=1e-4)
     g.add_argument("--window", type=int, default=1000,
                    help="Train on the N most recent games (default 1000).")
-    g.add_argument("--draw-penalty", type=float, default=0.1,
-                   help="Base value penalty for draws (default 0.1). "
-                        "Progress-aware bonus is layered on top.")
+    g.add_argument("--draw-penalty", type=float, default=0.3,
+                   help="Base value penalty for draws (default 0.3). "
+                        "Higher values push the net to play for wins.")
 
     # --- evaluation ---
     g = p.add_argument_group("evaluation")

@@ -22,6 +22,7 @@ from typing import Dict, List, Optional, Tuple
 
 import numpy as np
 
+from .ai import zobrist
 from .board import Board, Move
 from .encoding import (
     ACTION_SPACE,
@@ -30,6 +31,53 @@ from .encoding import (
     encode_state,
     legal_action_mask,
 )
+
+
+# ======================================================================
+# Evaluation cache (transposition table for NN forward passes)
+# ======================================================================
+
+class EvalCache:
+    """Bounded cache of (policy_logits, value) keyed on Zobrist hash.
+
+    Quoridor has real transpositions (e.g. pawn-then-wall vs wall-then-
+    pawn), so within a single MCTS tree — and across successive searches
+    in the same game — the same position is evaluated multiple times.
+    This cache skips the NN forward on repeats.
+
+    Safety: the Zobrist key fully identifies the board state (pawns,
+    walls, walls-left, side-to-move), and ``encode_state`` is a pure
+    function of the state, so cache hits are bit-identical to fresh
+    forwards. Zero impact on learning.
+    """
+
+    __slots__ = ("_store", "_max_size", "hits", "misses")
+
+    def __init__(self, max_size: int = 20_000):
+        self._store: Dict[int, Tuple[np.ndarray, float]] = {}
+        self._max_size = max_size
+        self.hits = 0
+        self.misses = 0
+
+    def get(self, key: int):
+        val = self._store.get(key)
+        if val is None:
+            self.misses += 1
+        else:
+            self.hits += 1
+        return val
+
+    def put(self, key: int, value: Tuple[np.ndarray, float]) -> None:
+        if len(self._store) >= self._max_size:
+            # FIFO-ish eviction: drop the oldest half in bulk.
+            for k in list(self._store.keys())[: self._max_size // 2]:
+                del self._store[k]
+        self._store[key] = value
+
+    def clear(self) -> None:
+        self._store.clear()
+        self.hits = 0
+        self.misses = 0
 
 
 # ======================================================================
@@ -196,15 +244,33 @@ def _expand(
     return value
 
 
-def _evaluate(board: Board, net, device) -> Tuple[np.ndarray, float]:
-    """Run the neural network on *board* and return (policy_logits, value)."""
+def _evaluate(
+    board: Board,
+    net,
+    device,
+    cache: Optional[EvalCache] = None,
+) -> Tuple[np.ndarray, float]:
+    """Run the neural network on *board* and return (policy_logits, value).
+
+    If *cache* is provided, transposed positions reuse prior forwards.
+    """
+    if cache is not None:
+        key = zobrist(board)
+        hit = cache.get(key)
+        if hit is not None:
+            return hit
+
     import torch
 
     state = encode_state(board)  # canonical (7, 9, 9)
     state_t = torch.from_numpy(state).unsqueeze(0).to(device)
     with torch.no_grad():
         p_logits, v = net(state_t)
-    return p_logits.squeeze(0).cpu().numpy(), float(v.item())
+    result = (p_logits.squeeze(0).cpu().numpy(), float(v.item()))
+
+    if cache is not None:
+        cache.put(key, result)
+    return result
 
 
 def _backup(
@@ -229,6 +295,7 @@ def search(
     device,
     *,
     add_noise: bool = True,
+    cache: Optional[EvalCache] = None,
 ) -> Node:
     """Run a full MCTS search from *board*.  Returns the root ``Node``.
 
@@ -249,7 +316,7 @@ def search(
     root = Node()
 
     # --- expand root ---
-    policy_logits, value = _evaluate(board, net, device)
+    policy_logits, value = _evaluate(board, net, device, cache=cache)
     value = _expand(root, board, policy_logits, value)
 
     if root.is_terminal:
@@ -282,7 +349,7 @@ def search(
         if node.is_terminal:
             leaf_value = node.terminal_value
         else:
-            p_logits, v = _evaluate(scratch, net, device)
+            p_logits, v = _evaluate(scratch, net, device, cache=cache)
             leaf_value = _expand(node, scratch, p_logits, v)
             if node.is_terminal:
                 leaf_value = node.terminal_value
