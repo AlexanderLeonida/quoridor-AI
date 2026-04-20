@@ -7,9 +7,10 @@ Architecture
     Policy head: Conv1x1 -> BN -> ReLU -> FC -> 209 logits.
     Value head:  Conv1x1 -> BN -> ReLU -> FC(64) -> ReLU -> FC(1) -> tanh.
 
-Defaults (6 residual blocks, 64 filters) are sized for Quoridor: big
-enough to learn meaningfully, small enough to train on CPU / MPS without
-a GPU cluster. Bump `blocks`/`filters` later if we outgrow them.
+Defaults (10 residual blocks, 128 filters) give the network enough
+capacity to learn wall-placement tactics and long-range path planning
+on the 9x9 board while remaining trainable on Apple Silicon / mid-range
+GPUs.
 
 PyTorch is imported *lazily*: the rest of the package (engine, DB,
 encoding) works on a machine with no torch installed.
@@ -33,7 +34,7 @@ def _lazy_torch():
     return torch, nn, F
 
 
-def build_net(blocks: int = 6, filters: int = 64):
+def build_net(blocks: int = 10, filters: int = 128):
     torch, nn, F = _lazy_torch()
     from .encoding import ACTION_SPACE, BOARD_SIZE, NUM_PLANES
 
@@ -67,20 +68,23 @@ def build_net(blocks: int = 6, filters: int = 64):
             )
             self.tower = nn.Sequential(*[ResBlock(filters) for _ in range(blocks)])
             # Policy head
+            p_ch = max(32, filters // 2)
             self.p_conv = nn.Sequential(
-                nn.Conv2d(filters, 32, 1, bias=False),
-                nn.BatchNorm2d(32),
+                nn.Conv2d(filters, p_ch, 1, bias=False),
+                nn.BatchNorm2d(p_ch),
                 nn.ReLU(inplace=True),
             )
-            self.p_fc = nn.Linear(32 * BOARD_SIZE * BOARD_SIZE, ACTION_SPACE)
+            self.p_fc = nn.Linear(p_ch * BOARD_SIZE * BOARD_SIZE, ACTION_SPACE)
             # Value head
+            v_ch = max(16, filters // 4)
             self.v_conv = nn.Sequential(
-                nn.Conv2d(filters, 16, 1, bias=False),
-                nn.BatchNorm2d(16),
+                nn.Conv2d(filters, v_ch, 1, bias=False),
+                nn.BatchNorm2d(v_ch),
                 nn.ReLU(inplace=True),
             )
-            self.v_fc1 = nn.Linear(16 * BOARD_SIZE * BOARD_SIZE, 64)
-            self.v_fc2 = nn.Linear(64, 1)
+            v_hidden = max(64, filters)
+            self.v_fc1 = nn.Linear(v_ch * BOARD_SIZE * BOARD_SIZE, v_hidden)
+            self.v_fc2 = nn.Linear(v_hidden, 1)
 
         def forward(self, x):
             x = self.stem(x)
@@ -111,8 +115,8 @@ def load_checkpoint(path: str, map_location: Optional[str] = None):
     ckpt = torch.load(path, map_location=map_location or "cpu")
     cfg = ckpt.get("config", {})
     net = build_net(
-        blocks=cfg.get("blocks", 6),
-        filters=cfg.get("filters", 64),
+        blocks=cfg.get("blocks", 10),
+        filters=cfg.get("filters", 128),
     )
     net.load_state_dict(ckpt["state_dict"])
     return net, ckpt.get("meta", {})

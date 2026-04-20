@@ -464,10 +464,14 @@ def train_on_recent_games(
     val_frac: float = 0.05,
     draw_penalty: float = 0.1,
     max_moves: int = 90,
+    policy_temp: float = 1.0,
 ) -> Tuple:
     """Train *net* on the most recent games from *db*.
 
     Returns (net, metrics_dict).
+
+    *policy_temp* sharpens soft policy targets when < 1.0:
+    ``target = counts ** (1/temp) / sum``.  Default 1.0 = no change.
     """
     import torch
     import torch.nn.functional as F
@@ -524,7 +528,13 @@ def train_on_recent_games(
             for brd, move, blob in zip(boards_in_game, moves, blobs):
                 states_l.append(encode_state(brd))
                 if blob is not None:
-                    pols_l.append(deserialize_policy(blob))
+                    pol = deserialize_policy(blob)
+                    if policy_temp < 1.0:
+                        pol = pol ** (1.0 / policy_temp)
+                        pol_sum = pol.sum()
+                        if pol_sum > 0:
+                            pol /= pol_sum
+                    pols_l.append(pol)
                 else:
                     _, _, _, _, _, _, flipped = canonical_view(brd)
                     act = move_to_action(move, flipped)
@@ -1112,6 +1122,7 @@ def run_pipeline(args) -> None:
                 weight_decay=args.weight_decay,
                 draw_penalty=args.draw_penalty,
                 max_moves=args.max_moves,
+                policy_temp=args.policy_temp,
             )
 
             # --- 3. Evaluation ---
@@ -1263,6 +1274,10 @@ def main() -> None:
     g.add_argument("--draw-penalty", type=float, default=0.3,
                    help="Base value penalty for draws (default 0.3). "
                         "Higher values push the net to play for wins.")
+    g.add_argument("--policy-temp", type=float, default=0.7,
+                   help="Temperature for sharpening MCTS policy targets "
+                        "during training (default 0.7). <1 = sharper targets, "
+                        "1.0 = no sharpening.")
 
     # --- evaluation ---
     g = p.add_argument_group("evaluation")
