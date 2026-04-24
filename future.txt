@@ -1,0 +1,61 @@
+# Quoridor AI training session — handoff
+
+## Context
+- Repo: /Users/aleon1/Desktop/quoridor-AI
+- Net: 10 blocks × 128 filters ResNet (distilled from 6x64 teacher iter_0074)
+- Main DB: data/quoridor_v3.db
+- Platform: M2 Mac, 12 cores, MPS available
+
+## Critical finding (tournament calibration)
+A 6-player tournament with Bradley-Terry MLE revealed:
+- v36_run2peak (checkpoints/iter_0036.pt) is the GLOBAL STRONGEST at Elo 1084
+- Current best.pt (v52) regressed to Elo 825 — weaker than the pre-selfplay warmstart
+- Gating is a LOCAL signal — chains of "beat-your-predecessor" promotions can drift downward
+- An expanded 10-model tournament is running now (logs/tournament.log), should finish ~15 min from 270-game schedule. Result file: checkpoints/elo_tournament.json
+
+## Changes made this session
+1. quoridor/encoding.py — added COL_FLIP_PERM, col_flip_state, col_flip_policy (column-flip symmetry augmentation)
+2. selfplay.py — training data augmentation (column flip doubles samples), LR warmup+cosine via LambdaLR
+3. selfplay.py — eval now adjudicates stalemates by path-length gap (fixes ~70% draw rate in gating)
+4. tournament.py (NEW) — round-robin + Bradley-Terry MLE Elo. `--save-to-db` writes champion games (with MCTS policies) into DB as training data. `--save-champion-only` restricts to Elo winner's wins.
+5. selfplay.py — integrated calibration tournament:
+   - Rolling buffer of recently promoted nets (promoted_history)
+   - Every --tournament-every N iterations, play round-robin, compute Elos, REVERT best_net to champion if not already best
+   - Champion games saved to DB → become training data next iteration
+   - New CLI: --tournament-every, --tournament-games, --tournament-sims, --tournament-pool-size, --tournament-anchors
+
+## Training run history this session
+Run 1 (killed): epochs=6, lr=1e-3, wd=1.5e-4 — overfit; gate 51.7% rejected
+Run 2 (killed): epochs=3, lr=8e-4, wd=3e-4 — 6 promos / 7 rejects; **iter 10 (global 36) was tournament-calibrated best**; 3 rejections in a row then killed
+Run 3 (killed): epochs=3, lr=5e-4, sims=400, wd=3e-4 — 5 promos / 9 rejects, draw-rate blew up, chain drifted down below v36
+Run 4 (killed to run tournament): lr=5e-4, sims=300, adjudicate_gap=1 in eval, only got through 1 iter before tournament was started
+
+## Next steps
+1. When expanded tournament finishes, check logs/tournament.log tail and checkpoints/elo_tournament.json for top-10 calibrated Elo
+2. **Roll back best.pt to iter_0036.pt** (the actual strongest) before resuming training:
+   `cp checkpoints/iter_0036.pt checkpoints/best.pt`
+3. Resume training with tournament integration ON:
+```
+nohup python3 -u selfplay.py \
+  --iterations 40 --games-per-iter 100 --simulations 300 --eval-games 30 \
+  --epochs 3 --window 3000 --workers 8 --lr 5e-4 --weight-decay 3e-4 \
+  --max-moves 100 --opening-random 8 --temp-threshold 15 --policy-temp 0.7 \
+  --value-weight 1.0 --draw-penalty 0.5 --gate-threshold 0.52 \
+  --eval-temp 0.5 --eval-temp-moves 10 --adjudicate-gap 1 \
+  --tournament-every 4 --tournament-games 4 --tournament-sims 200 \
+  --tournament-pool-size 5 \
+  --tournament-anchors checkpoints/iter_0036.pt \
+  --tournament-anchors checkpoints/warmstart_10x128.pt \
+  --db data/quoridor_v3.db --checkpoint-dir checkpoints \
+  --resume checkpoints/best.pt > logs/train.log 2>&1 &
+```
+4. Monitor with: `awk '/Iteration|net score|Promoted|Keeping|REVERTING|Calibrated Elo/' logs/train.log`
+5. If plateau persists: reduce LR further (3e-4), or increase eval_games to 60 for tighter gating CI
+
+## Kill command
+kill $(pgrep -f "selfplay.py\|tournament.py")
+
+## Debugging notes
+- Use awk, not grep, on logs/train.log (grep was returning empty for some reason)
+- Use `python3 -u` for any long-running process writing to a file — otherwise stdout buffers and progress appears frozen
+- After kill, workers leak semaphores (harmless) and BrokenPipeErrors cascade (harmless)

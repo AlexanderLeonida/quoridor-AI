@@ -170,3 +170,52 @@ def deserialize_policy(blob: bytes) -> np.ndarray:
     import io
 
     return np.load(io.BytesIO(blob))
+
+
+# -------------------------------------------------------------------
+# Column-flip symmetry (data augmentation)
+# -------------------------------------------------------------------
+#
+# Quoridor is symmetric under reflection about the central column:
+# a position and its column-mirror are game-theoretically equivalent,
+# with each action's column index c mapped to (N-1-c). The value is
+# unchanged; the policy permutes.
+
+def _flip_cell_c(c: int) -> int:
+    return BOARD_SIZE - 1 - c
+
+
+def _flip_wall_c(c: int) -> int:
+    return WALL_GRID - 1 - c
+
+
+def _build_col_flip_action_perm() -> np.ndarray:
+    perm = np.empty(ACTION_SPACE, dtype=np.int64)
+    for idx in range(ACTION_PAWN_BASE, ACTION_H_BASE):
+        r, c = divmod(idx - ACTION_PAWN_BASE, BOARD_SIZE)
+        perm[idx] = ACTION_PAWN_BASE + r * BOARD_SIZE + _flip_cell_c(c)
+    for idx in range(ACTION_H_BASE, ACTION_V_BASE):
+        r, c = divmod(idx - ACTION_H_BASE, WALL_GRID)
+        perm[idx] = ACTION_H_BASE + r * WALL_GRID + _flip_wall_c(c)
+    for idx in range(ACTION_V_BASE, ACTION_SPACE):
+        r, c = divmod(idx - ACTION_V_BASE, WALL_GRID)
+        perm[idx] = ACTION_V_BASE + r * WALL_GRID + _flip_wall_c(c)
+    return perm
+
+
+COL_FLIP_PERM: np.ndarray = _build_col_flip_action_perm()
+
+
+def col_flip_state(state: np.ndarray) -> np.ndarray:
+    """Column-flip a (NUM_PLANES, 9, 9) canonical state tensor.
+
+    Scalar broadcast planes (walls-left, bias) are unchanged under the
+    flip but ``np.flip`` handles them correctly since every column
+    holds the same value.
+    """
+    return np.ascontiguousarray(state[:, :, ::-1])
+
+
+def col_flip_policy(policy: np.ndarray) -> np.ndarray:
+    """Column-flip an action-probability vector of length ACTION_SPACE."""
+    return policy[COL_FLIP_PERM]

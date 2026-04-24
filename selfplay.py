@@ -52,13 +52,20 @@ import numpy as np
 from quoridor import Board, GameDB
 from quoridor.encoding import (
     ACTION_SPACE,
+    COL_FLIP_PERM,
     action_to_move,
     canonical_view,
+    col_flip_policy,
+    col_flip_state,
     deserialize_policy,
     encode_state,
     move_to_action,
     serialize_policy,
 )
+
+# numpy alias used under augmentation — indexing a numpy array with
+# another numpy array avoids the torch.tensor overhead we'd otherwise pay.
+COL_FLIP_PERM_NP = COL_FLIP_PERM
 from quoridor.mcts import (
     EvalCache,
     MCTSConfig,
@@ -97,8 +104,31 @@ def _randomise_opening(board: Board, num_random: int) -> Tuple[Board, List]:
 
 
 # ======================================================================
-# Draw value computation
+# Draw value computation and adjudication
 # ======================================================================
+
+def adjudicate_winner(final_board: Board, min_gap: int = 2) -> Optional[int]:
+    """Resolve a max-moves timeout to a decisive winner by path length.
+
+    Returns the winner (0 or 1) if the path-length gap is >= ``min_gap``,
+    else None (unambiguous draw).  This converts the bulk of 'stall
+    draws' into decisive training signal, which is what the value head
+    needs to learn meaningful positional evaluation.
+    """
+    d0 = final_board.shortest_path_length(0)
+    d1 = final_board.shortest_path_length(1)
+    if d0 is None and d1 is None:
+        return None
+    if d0 is None:
+        return 1
+    if d1 is None:
+        return 0
+    if d0 + min_gap <= d1:
+        return 0
+    if d1 + min_gap <= d0:
+        return 1
+    return None
+
 
 def _draw_z(
     final_board: Board,
@@ -108,7 +138,7 @@ def _draw_z(
     game_length: Optional[int] = None,
     max_moves: Optional[int] = None,
     stall_weight: float = 0.4,
-    progress_weight: float = 0.3,
+    progress_weight: float = 0.5,
 ) -> float:
     """Compute the value target for a drawn game from *side*'s POV.
 
@@ -132,7 +162,7 @@ def _draw_z(
     d0 = final_board.shortest_path_length(0)
     d1 = final_board.shortest_path_length(1)
     # Positive when P0 is closer to winning.
-    raw_progress = (d1 - d0) / 10.0
+    raw_progress = (d1 - d0) / 6.0
     progress = math.tanh(raw_progress)  # squash to (-1, 1)
     # From P0's POV the bonus is +progress; from P1's POV it's -progress.
     bonus = progress if side == 0 else -progress
@@ -152,12 +182,17 @@ def play_game(
     max_moves: int = 120,
     opening_random: int = 0,
     use_cache: bool = True,
+    adjudicate_gap: int = 2,
 ) -> Tuple[List[Board], List[np.ndarray], List[int], Optional[int], Board]:
     """Play one self-play game using MCTS.
 
     Returns (boards, policies, actions, winner, final_board).
     ``boards`` / ``policies`` / ``actions`` start after the random opening.
     ``final_board`` is needed for progress-aware draw values.
+
+    If the game reaches ``max_moves`` without a winner, the outcome is
+    adjudicated by shortest-path gap: the side with the shorter path
+    wins iff the gap is >= ``adjudicate_gap``.  Set to 0 to disable.
     """
     board = Board.initial()
 
@@ -208,7 +243,11 @@ def play_game(
         board = board.apply(move)
         move_num += 1
 
-    return boards, policies, actions, board.winner(), board
+    winner = board.winner()
+    if winner is None and adjudicate_gap > 0:
+        winner = adjudicate_winner(board, min_gap=adjudicate_gap)
+
+    return boards, policies, actions, winner, board
 
 
 def save_game_to_db(
@@ -250,6 +289,7 @@ def generate_games(
     temp_threshold: int = 15,
     max_moves: int = 120,
     opening_random: int = 4,
+    adjudicate_gap: int = 2,
 ) -> Dict[str, int]:
     """Generate *num_games* self-play games and save them to *db*."""
     stats: Dict[str, int] = {
@@ -265,6 +305,7 @@ def generate_games(
             temp_threshold=temp_threshold,
             max_moves=max_moves,
             opening_random=opening_random,
+            adjudicate_gap=adjudicate_gap,
         )
         gid = save_game_to_db(db, boards, policies, actions, winner, model_version)
         dt = time.perf_counter() - t0
@@ -384,6 +425,7 @@ def generate_games_parallel(
     max_moves: int,
     opening_random: int,
     num_workers: int,
+    adjudicate_gap: int = 2,
 ) -> Dict[str, int]:
     """Parallel self-play across *num_workers* CPU processes."""
     import multiprocessing as mp
@@ -398,6 +440,7 @@ def generate_games_parallel(
         "temp_threshold": temp_threshold,
         "max_moves": max_moves,
         "opening_random": opening_random,
+        "adjudicate_gap": adjudicate_gap,
     }
     seed_base = random.randint(0, 2**30)
     initargs = (snap_path, asdict(config), play_kwargs, seed_base)
@@ -465,6 +508,9 @@ def train_on_recent_games(
     draw_penalty: float = 0.1,
     max_moves: int = 90,
     policy_temp: float = 1.0,
+    value_weight: float = 1.0,
+    augment: bool = True,
+    warmup_frac: float = 0.05,
 ) -> Tuple:
     """Train *net* on the most recent games from *db*.
 
@@ -519,11 +565,12 @@ def train_on_recent_games(
             final_board = board
             # Per-position weight: inversely proportional to game length
             # so that shorter decisive games aren't drowned by long draws.
-            # Additionally upweight decisive games 2× so that the training
-            # signal isn't dominated by draw positions (draws tend to be
-            # long, and their value targets are uncertain by construction).
+            # Upweight decisive games 4× so the signal isn't dominated by
+            # draw positions (draws tend to be long, and their value
+            # targets are uncertain by construction — even after
+            # path-length adjudication some remain).
             game_len = max(len(moves), 1)
-            decisive_mult = 2.0 if winner is not None else 1.0
+            decisive_mult = 4.0 if winner is not None else 1.0
             w = decisive_mult / game_len
             for brd, move, blob in zip(boards_in_game, moves, blobs):
                 states_l.append(encode_state(brd))
@@ -568,10 +615,28 @@ def train_on_recent_games(
         f"from {len(all_games)} game(s) ({n_decisive} decisive, {n_draws} draws)"
     )
 
-    states = torch.from_numpy(np.stack(tr_s))
-    pols = torch.from_numpy(np.stack(tr_p))
-    vals = torch.from_numpy(np.array(tr_v, dtype=np.float32))
-    sample_weights = torch.from_numpy(np.array(tr_w, dtype=np.float32))
+    tr_s_np = np.stack(tr_s)
+    tr_p_np = np.stack(tr_p)
+    tr_v_np = np.array(tr_v, dtype=np.float32)
+    tr_w_np = np.array(tr_w, dtype=np.float32)
+
+    # Column-flip augmentation: Quoridor is symmetric about the central
+    # column, so (state, policy) can be mirrored and value is unchanged.
+    # Doubling the effective dataset is essentially free and typically
+    # halves the overfitting gap on small windows.
+    if augment:
+        flipped_s = np.ascontiguousarray(tr_s_np[:, :, :, ::-1])
+        flipped_p = tr_p_np[:, COL_FLIP_PERM_NP]
+        tr_s_np = np.concatenate([tr_s_np, flipped_s], axis=0)
+        tr_p_np = np.concatenate([tr_p_np, flipped_p], axis=0)
+        tr_v_np = np.concatenate([tr_v_np, tr_v_np], axis=0)
+        tr_w_np = np.concatenate([tr_w_np, tr_w_np], axis=0)
+        n = tr_s_np.shape[0]
+
+    states = torch.from_numpy(tr_s_np)
+    pols = torch.from_numpy(tr_p_np)
+    vals = torch.from_numpy(tr_v_np)
+    sample_weights = torch.from_numpy(tr_w_np)
     # Normalise weights so they average to 1.
     sample_weights = sample_weights / sample_weights.mean()
 
@@ -592,9 +657,17 @@ def train_on_recent_games(
     # --- optimiser ---
     net.to(device)
     opt = torch.optim.Adam(net.parameters(), lr=lr, weight_decay=weight_decay)
-    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
-        opt, T_max=epochs * len(train_loader),
-    )
+
+    total_steps = epochs * len(train_loader)
+    warmup_steps = max(1, int(total_steps * warmup_frac))
+
+    def _lr_lambda(step: int) -> float:
+        if step < warmup_steps:
+            return (step + 1) / warmup_steps
+        progress = (step - warmup_steps) / max(1, total_steps - warmup_steps)
+        return 0.5 * (1.0 + math.cos(math.pi * min(progress, 1.0)))
+
+    scheduler = torch.optim.lr_scheduler.LambdaLR(opt, lr_lambda=_lr_lambda)
 
     # --- training loop ---
     # Track best-val weights so the candidate we ship is the best snapshot
@@ -619,7 +692,7 @@ def train_on_recent_games(
             loss_v_per = (v_pred - vb) ** 2
             loss_p = (loss_p_per * wb).mean()
             loss_v = (loss_v_per * wb).mean()
-            loss = loss_p + loss_v
+            loss = loss_p + value_weight * loss_v
             opt.zero_grad(set_to_none=True)
             loss.backward()
             torch.nn.utils.clip_grad_norm_(net.parameters(), max_norm=1.0)
@@ -688,14 +761,19 @@ def evaluate_nets(
     simulations: int = 200,
     opening_random: int = 4,
     max_moves: int = 120,
+    eval_temp: float = 0.0,
+    eval_temp_moves: int = 0,
+    adjudicate_gap: int = 1,
 ) -> float:
     """Play *num_games* between two networks, return *net_new*'s score.
 
     Score: win = 1, draw = 0.5, loss = 0 (normalised to [0, 1]).
     Colors alternate each game.  Evaluation uses **no root noise** and
-    **greedy** (temperature = 0) play so that the result reflects true
-    model strength, not MCTS randomness.  Randomised openings still
-    break symmetry.
+    **greedy** (temperature = 0) play after ``eval_temp_moves`` so that
+    the result reflects true model strength, not MCTS randomness. For the
+    first ``eval_temp_moves`` plies, a small ``eval_temp`` samples the
+    visit counts — this breaks deterministic mirror lines between two
+    near-identical nets so decisive games emerge.
     """
     eval_cfg = MCTSConfig(
         num_simulations=simulations,
@@ -727,13 +805,16 @@ def evaluate_nets(
                 board, cur_net, eval_cfg, device,
                 add_noise=False, cache=caches[board.turn],
             )
-            action = select_action(root, temperature=0.0)  # greedy
+            temp = eval_temp if move_count < eval_temp_moves else 0.0
+            action = select_action(root, temperature=temp)
             _, _, _, _, _, _, flipped = canonical_view(board)
             move = action_to_move(action, flipped)
             board = board.apply(move)
             move_count += 1
 
         winner = board.winner()
+        if winner is None and adjudicate_gap > 0:
+            winner = adjudicate_winner(board, min_gap=adjudicate_gap)
         if winner is not None and winner == new_side:
             score += 1.0
             tag = "W"
@@ -831,6 +912,9 @@ def _eval_worker_play_one(g: int) -> Tuple[int, float, str, int, int]:
 
     opening_random = _EVAL_KWARGS["opening_random"]
     max_moves = _EVAL_KWARGS["max_moves"]
+    eval_temp = _EVAL_KWARGS.get("eval_temp", 0.0)
+    eval_temp_moves = _EVAL_KWARGS.get("eval_temp_moves", 0)
+    adjudicate_gap = _EVAL_KWARGS.get("adjudicate_gap", 1)
 
     board = Board.initial()
     if opening_random > 0:
@@ -846,13 +930,16 @@ def _eval_worker_play_one(g: int) -> Tuple[int, float, str, int, int]:
             board, cur_net, _EVAL_CFG, _EVAL_DEVICE,
             add_noise=False, cache=caches[board.turn],
         )
-        action = select_action(root, temperature=0.0)
+        temp = eval_temp if move_count < eval_temp_moves else 0.0
+        action = select_action(root, temperature=temp)
         _, _, _, _, _, _, flipped = canonical_view(board)
         move = action_to_move(action, flipped)
         board = board.apply(move)
         move_count += 1
 
     winner = board.winner()
+    if winner is None and adjudicate_gap > 0:
+        winner = adjudicate_winner(board, min_gap=adjudicate_gap)
     if winner is not None and winner == new_side:
         return g, 1.0, "W", move_count, new_side
     if winner is not None and winner != new_side:
@@ -870,6 +957,9 @@ def evaluate_nets_parallel(
     opening_random: int,
     max_moves: int,
     num_workers: int,
+    eval_temp: float = 0.0,
+    eval_temp_moves: int = 0,
+    adjudicate_gap: int = 1,
 ) -> float:
     """Parallel net-vs-net evaluation.  Returns *net_new*'s score in [0, 1]."""
     import multiprocessing as mp
@@ -888,6 +978,9 @@ def evaluate_nets_parallel(
     eval_kwargs = {
         "opening_random": opening_random,
         "max_moves": max_moves,
+        "eval_temp": eval_temp,
+        "eval_temp_moves": eval_temp_moves,
+        "adjudicate_gap": adjudicate_gap,
     }
     seed_base = random.randint(0, 2**30)
     initargs = (
@@ -1009,6 +1102,59 @@ class EloTracker:
 
 
 # ======================================================================
+# Periodic calibration tournament
+# ======================================================================
+#
+# The per-iteration gating match updates Elo from one head-to-head only,
+# so a chain of "just-barely-better" promotions can drift the best net
+# downward over many iterations without any single gate match catching
+# it.  The fix: every N iterations, play a round-robin among the last K
+# promoted nets + a few historical anchors, compute globally-consistent
+# Elos (Bradley–Terry MLE), and revert ``best_net`` to the actual
+# champion.  Winning games are folded into the training DB so the next
+# training pass distils from the champion.
+
+def _run_calibration_tournament(
+    args,
+    pool: List[Tuple[str, str]],
+    anchor_label: str,
+):
+    """Invoke tournament.py in a subprocess.  Returns (ratings, champion_label).
+
+    ``pool`` is a list of (label, ckpt_path).  We shell out rather than
+    call in-process so the pool's multiprocessing doesn't nest badly
+    inside the self-play pool.
+    """
+    import subprocess
+
+    out_path = os.path.join(args.checkpoint_dir, "_tournament_current.json")
+    cmd = [
+        "python3", "-u", "tournament.py",
+        "--games", str(args.tournament_games),
+        "--sims", str(args.tournament_sims),
+        "--workers", str(max(1, args.workers // 2)),  # share CPU politely
+        "--opening-random", str(args.opening_random),
+        "--max-moves", str(args.max_moves),
+        "--adjudicate-gap", str(max(1, args.adjudicate_gap)),
+        "--anchor", anchor_label,
+        "--out", out_path,
+        "--save-to-db", args.db or "data/quoridor.db",
+        "--save-champion-only",
+    ]
+    for label, path in pool:
+        cmd += ["--ckpt", f"{path}:{label}"]
+    print(f"  (tournament: {len(pool)} players, "
+          f"{args.tournament_games} games/pair, sims={args.tournament_sims})")
+    subprocess.run(cmd, check=True)
+    import json as _json
+    with open(out_path) as f:
+        data = _json.load(f)
+    ratings = data["ratings"]
+    champion = max(ratings, key=ratings.get)
+    return ratings, champion
+
+
+# ======================================================================
 # Pipeline orchestration
 # ======================================================================
 
@@ -1072,6 +1218,18 @@ def run_pipeline(args) -> None:
     elo = EloTracker(os.path.join(args.checkpoint_dir, "elo.json"))
     best_version = f"selfplay-v{best_iteration}" if best_iteration > 0 else "init"
 
+    # Rolling history of recently promoted checkpoint paths (for the
+    # calibration tournament).  We accumulate newest-first and truncate
+    # to args.tournament_pool_size.
+    promoted_history: List[Tuple[str, str]] = []
+    # Seed it with the currently-best checkpoint so the tournament has a
+    # meaningful opponent set even on iteration 0.
+    current_best_path = os.path.join(
+        args.checkpoint_dir, f"iter_{best_iteration:04d}.pt",
+    )
+    if os.path.exists(current_best_path):
+        promoted_history.append((best_version, current_best_path))
+
     try:
         for it in range(1, args.iterations + 1):
             global_it = start_iter + it
@@ -1092,6 +1250,7 @@ def run_pipeline(args) -> None:
                     max_moves=args.max_moves,
                     opening_random=args.opening_random,
                     num_workers=args.workers,
+                    adjudicate_gap=args.adjudicate_gap,
                 )
             else:
                 stats = generate_games(
@@ -1101,6 +1260,7 @@ def run_pipeline(args) -> None:
                     temp_threshold=args.temp_threshold,
                     max_moves=args.max_moves,
                     opening_random=args.opening_random,
+                    adjudicate_gap=args.adjudicate_gap,
                 )
             total = db.count_games()
             total_pos = db.count_positions(finished_only=False)
@@ -1123,6 +1283,7 @@ def run_pipeline(args) -> None:
                 draw_penalty=args.draw_penalty,
                 max_moves=args.max_moves,
                 policy_temp=args.policy_temp,
+                value_weight=args.value_weight,
             )
 
             # --- 3. Evaluation ---
@@ -1138,6 +1299,9 @@ def run_pipeline(args) -> None:
                         opening_random=args.opening_random,
                         max_moves=args.max_moves,
                         num_workers=args.workers,
+                        eval_temp=args.eval_temp,
+                        eval_temp_moves=args.eval_temp_moves,
+                        adjudicate_gap=args.adjudicate_gap,
                     )
                 else:
                     eval_result = evaluate_nets(
@@ -1146,6 +1310,9 @@ def run_pipeline(args) -> None:
                         simulations=eval_sims,
                         opening_random=args.opening_random,
                         max_moves=args.max_moves,
+                        eval_temp=args.eval_temp,
+                        eval_temp_moves=args.eval_temp_moves,
+                        adjudicate_gap=args.adjudicate_gap,
                     )
                 score = eval_result["score"]
                 e_w = eval_result["wins"]
@@ -1173,6 +1340,14 @@ def run_pipeline(args) -> None:
                     best_net = candidate
                     best_version = version
                     best_iteration = global_it
+                    # Record promoted net for the calibration tournament.
+                    promoted_history.insert(
+                        0,
+                        (version, os.path.join(
+                            args.checkpoint_dir, f"iter_{global_it:04d}.pt",
+                        )),
+                    )
+                    promoted_history[:] = promoted_history[:args.tournament_pool_size]
                 else:
                     print("  --- Keeping previous network.")
             else:
@@ -1201,6 +1376,71 @@ def run_pipeline(args) -> None:
 
             # Print Elo leaderboard.
             print(f"\n  Elo ratings (top 10):\n{elo.summary(10)}")
+
+            # --- 4. Periodic calibration tournament (revert-to-champion) ---
+            if (
+                args.tournament_every > 0
+                and it % args.tournament_every == 0
+                and len(promoted_history) >= 2
+            ):
+                print(f"\n[4/4] Calibration tournament (every "
+                      f"{args.tournament_every} iterations)")
+                # Build pool: promoted history (deduped) + user anchors.
+                seen = set()
+                pool: List[Tuple[str, str]] = []
+                for label, path in promoted_history:
+                    if label not in seen and os.path.exists(path):
+                        pool.append((label, path))
+                        seen.add(label)
+                for anchor_path in (args.tournament_anchors or []):
+                    lbl = os.path.splitext(os.path.basename(anchor_path))[0]
+                    if lbl in seen or not os.path.exists(anchor_path):
+                        continue
+                    pool.append((lbl, anchor_path))
+                    seen.add(lbl)
+                if len(pool) < 2:
+                    print("  (not enough players, skipping)")
+                else:
+                    anchor_lbl = pool[-1][0]  # anchor last = oldest / baseline
+                    try:
+                        ratings, champion = _run_calibration_tournament(
+                            args, pool, anchor_lbl,
+                        )
+                    except Exception as e:
+                        print(f"  tournament failed: {e}")
+                        ratings, champion = {}, None
+
+                    if ratings:
+                        ranked = sorted(ratings.items(), key=lambda kv: -kv[1])
+                        print("  Calibrated Elo (tournament):")
+                        for i, (label, r) in enumerate(ranked, 1):
+                            marker = " ←" if label == best_version else ""
+                            print(f"    {i:>2}. {label:<25s} {r:7.1f}{marker}")
+
+                        if champion and champion != best_version:
+                            # Find champion checkpoint and reload weights.
+                            champ_path = dict(pool).get(champion)
+                            if champ_path and os.path.exists(champ_path):
+                                print(f"  >>> REVERTING best_net: "
+                                      f"{best_version} -> {champion}")
+                                champ_net, _ = load_checkpoint(
+                                    champ_path, map_location=str(device),
+                                )
+                                champ_net.to(device)
+                                champ_net.eval()
+                                best_net = champ_net
+                                best_version = champion
+                                # Re-save best.pt as the champion.
+                                save_checkpoint(
+                                    best_net,
+                                    os.path.join(args.checkpoint_dir, "best.pt"),
+                                    iteration=global_it,
+                                    best_iteration=best_iteration,
+                                    reverted_to=champion,
+                                )
+                        else:
+                            print("  Current best is the tournament champion. "
+                                  "No revert.")
 
     finally:
         db.close()
@@ -1238,9 +1478,12 @@ def main() -> None:
     g.add_argument("--simulations", type=int, default=200,
                    help="MCTS simulations per move (default 200). "
                         "Lower early on for more exploration diversity.")
-    g.add_argument("--max-moves", type=int, default=90,
-                   help="Max plies per game before draw (default 90). "
+    g.add_argument("--max-moves", type=int, default=80,
+                   help="Max plies per game before draw (default 80). "
                         "Shorter forces decisive play.")
+    g.add_argument("--adjudicate-gap", type=int, default=2,
+                   help="At max-moves, declare winner by shortest-path gap "
+                        "if >= this value (default 2). 0 disables.")
     g.add_argument("--temp-threshold", type=int, default=20,
                    help="Use proportional sampling for first N full moves, "
                         "then greedy (default 20).")
@@ -1271,13 +1514,18 @@ def main() -> None:
                    help="Train on the N most recent games (default 5000). "
                         "Larger windows = more position diversity = less "
                         "overfitting, at the cost of slightly slower epochs.")
-    g.add_argument("--draw-penalty", type=float, default=0.3,
-                   help="Base value penalty for draws (default 0.3). "
+    g.add_argument("--draw-penalty", type=float, default=0.5,
+                   help="Base value penalty for draws (default 0.5). "
                         "Higher values push the net to play for wins.")
     g.add_argument("--policy-temp", type=float, default=0.7,
                    help="Temperature for sharpening MCTS policy targets "
                         "during training (default 0.7). <1 = sharper targets, "
                         "1.0 = no sharpening.")
+    g.add_argument("--value-weight", type=float, default=1.0,
+                   help="Multiplier on value-head loss during training "
+                        "(default 1.0). Lower values (0.1–0.3) protect a "
+                        "well-calibrated value head — e.g. after distillation "
+                        "— from being smashed by blunt outcome targets.")
 
     # --- evaluation ---
     g = p.add_argument_group("evaluation")
@@ -1285,9 +1533,39 @@ def main() -> None:
                    help="Games for net-vs-net evaluation (0 to disable "
                         "gating; default 200). At N=200 the standard error "
                         "is ~3.5%%, giving reliable gating signal.")
-    g.add_argument("--gate-threshold", type=float, default=0.55,
-                   help="Min score to promote the new net (default 0.55). "
+    g.add_argument("--gate-threshold", type=float, default=0.52,
+                   help="Min score to promote the new net (default 0.52). "
                         "Score: win=1, draw=0.5, loss=0.")
+    g.add_argument("--eval-temp", type=float, default=0.5,
+                   help="Temperature for sampling eval moves before "
+                        "--eval-temp-moves (default 0.5). Breaks deterministic "
+                        "mirror lines between near-identical nets so games "
+                        "become decisive; 0.0 restores pure greedy eval.")
+    g.add_argument("--eval-temp-moves", type=int, default=10,
+                   help="First N plies of eval sampled at --eval-temp; "
+                        "greedy afterwards (default 10). Larger values add "
+                        "more diversity at the cost of signal fidelity.")
+
+    # --- calibration tournament ---
+    g = p.add_argument_group("calibration tournament")
+    g.add_argument("--tournament-every", type=int, default=0,
+                   help="Every N iterations, run a round-robin among recent "
+                        "promoted nets + anchors; revert best_net to the Elo "
+                        "champion. Saves champion games to the DB as extra "
+                        "training data. 0 disables (default).")
+    g.add_argument("--tournament-games", type=int, default=4,
+                   help="Games per pair in each calibration tournament "
+                        "(default 4). Kept modest since tournament cost scales "
+                        "as O(pool^2 * games).")
+    g.add_argument("--tournament-sims", type=int, default=200,
+                   help="MCTS simulations per move in tournament games.")
+    g.add_argument("--tournament-pool-size", type=int, default=4,
+                   help="Max recent promoted nets to carry into the next "
+                        "tournament (default 4).")
+    g.add_argument("--tournament-anchors", action="append", default=None,
+                   help="Path to a checkpoint that should appear in every "
+                        "tournament (repeat). Typical use: an old historical "
+                        "champion like iter_0036.pt to detect drift.")
 
     args = p.parse_args()
     run_pipeline(args)
