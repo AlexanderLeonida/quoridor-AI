@@ -1378,10 +1378,16 @@ def run_pipeline(args) -> None:
             print(f"\n  Elo ratings (top 10):\n{elo.summary(10)}")
 
             # --- 4. Periodic calibration tournament (revert-to-champion) ---
+            # Fire when the pool (promoted history + anchors) will have
+            # at least two distinct checkpoints — we only need 2+ players
+            # to compute any meaningful pairwise Elo.
+            _anchor_count = sum(
+                1 for p in (args.tournament_anchors or []) if os.path.exists(p)
+            )
             if (
                 args.tournament_every > 0
                 and it % args.tournament_every == 0
-                and len(promoted_history) >= 2
+                and (len(promoted_history) + _anchor_count) >= 2
             ):
                 print(f"\n[4/4] Calibration tournament (every "
                       f"{args.tournament_every} iterations)")
