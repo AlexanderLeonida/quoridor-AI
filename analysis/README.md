@@ -20,6 +20,8 @@ Seven analyses that visualise different facets of the project's training journey
 | `04_training_progress.py` | Loss curves, eval scores, draw rates, promotions/reverts | `logs/train.log`, `logs/archive/*.log` |
 | `05_architecture_comparison.py` | 6×64 vs 10×128 parameter count and iterations covered | `checkpoints/iter_*.pt` |
 | `06_activity_timeline.py` | Self-play games per day stacked by DB | `data/quoridor*.db` |
+| `07_intervention_metrics.py` | Per-iteration: MCTS sims, ab-mix games, aux-value-weight, loss curves, gating outcomes — color-coded by promote/reject/revert | `logs/metrics.csv` |
+| `08_nn_vs_ab.py` | Heatmap + curves: how each NN checkpoint scores against alpha-beta at various depths/times | `analysis/bench_matrix.json` (produced by top-level `bench_matrix.py`) |
 
 ## Run
 

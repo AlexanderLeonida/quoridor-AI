@@ -19,6 +19,8 @@ SCRIPTS = [
     "analysis/04_training_progress.py",
     "analysis/05_architecture_comparison.py",
     "analysis/06_activity_timeline.py",
+    "analysis/07_intervention_metrics.py",
+    "analysis/08_nn_vs_ab.py",
 ]
 
 

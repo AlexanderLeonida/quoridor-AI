@@ -1,6 +1,6 @@
 # Quoridor AI — Analysis Report
 
-Generated: 2026-04-24T21:45:29
+Generated: 2026-04-25T07:49:31
 
 ---
 
@@ -8,17 +8,19 @@ Generated: 2026-04-24T21:45:29
 ## 00_summary
 
 ```
-5 iterations parsed
-Promoted: 0    Rejected: 4    Reverts: 0
-Self-play: 400 games, 8 drawn (2%)
-Eval: 120 games, 3 drawn (2%)
+7 iterations parsed
+Promoted: 0    Rejected: 6    Reverts: 0
+Self-play: 600 games, 11 drawn (2%)
+Eval: 180 games, 5 drawn (3%)
 
 iter  global  sp(W1/W2/D)     epoch1 train  epoch1 val   eval  CI                     WLD  result
    1      40  54/44/2                1.844       1.770    20%  [10%,37%]           6/24/0  kept
    2      41  49/50/1                1.855       1.805     7%  [2%,21%]            2/28/0  kept
    3      42  42/56/2                1.860       1.847    17%  [7%,34%]            4/24/2  kept
    4      43  55/42/3                1.854       1.991    28%  [15%,46%]           8/21/1  kept
-   5      44  0/0/0                      -           -      -  -                        -
+   5      44  57/42/1                1.854       1.943    25%  [13%,43%]           7/22/1  kept
+   6      45  50/48/2                1.857       1.764    25%  [13%,43%]           7/22/1  kept
+   7      46  0/0/0                      -           -      -  -                        -
 ```
 
 ## 01_elo_history
@@ -64,7 +66,7 @@ v1: 133 games, 50% draws, avg 111.9 plies, versions v1-v2
 
 v2: 13995 games, 38% draws, avg 56.3 plies, versions v1-v83
 
-v3: 4386 games, 12% draws, avg 54.0 plies, versions v1-v55
+v3: 4518 games, 12% draws, avg 53.7 plies, versions v1-v55
 ```
 
 ![03_database_stats](analysis/plots/03_database_stats.png)
@@ -75,7 +77,7 @@ v3: 4386 games, 12% draws, avg 54.0 plies, versions v1-v55
 ```
 Saved analysis/plots/04_training_progress.png
 
-5 iterations parsed, 0 promoted, 0 reverts
+7 iterations parsed, 0 promoted, 0 reverts
 ```
 
 ![04_training_progress](analysis/plots/04_training_progress.png)
@@ -102,8 +104,15 @@ Saved analysis/plots/06_activity_timeline.png
 Games per DB:
   v1: 133
   v2: 13,995
-  v3: 4,386
+  v3: 4,520
   Active span: 2026-04-18 → 2026-04-25
 ```
 
 ![06_activity_timeline](analysis/plots/06_activity_timeline.png)
+
+
+## 07_intervention_metrics
+
+```
+No metrics.csv yet. Run selfplay.py at least once to populate it.
+```

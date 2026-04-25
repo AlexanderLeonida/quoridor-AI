@@ -1,0 +1,3 @@
+timestamp,global_iter,version,sp_p1_wins,sp_p2_wins,sp_draws,sp_avg_plies,ab_games,sims_used,train_loss,policy_loss,value_loss,best_val_loss,aux_value_weight,lr_used,epochs_used,eval_score,eval_w,eval_l,eval_d,promoted,reverted_to
+2026-04-25T09:09:11,1,selfplay-v1,60,39,1,33.14,20,600,1.4814,1.3532,0.1282,1.5223,0.4,0.0003,2,0.3000,9,21,0,0,
+2026-04-25T09:29:34,2,selfplay-v2,56,44,0,31.94,20,600,1.5060,1.3770,0.1291,1.6462,0.4,0.0003,2,0.4000,12,18,0,0,

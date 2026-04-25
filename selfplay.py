@@ -173,6 +173,75 @@ def _draw_z(
 # Self-play game generation
 # ======================================================================
 
+def play_game_vs_alphabeta(
+    net,
+    config: MCTSConfig,
+    device,
+    *,
+    ab_depth: int = 4,
+    ab_time: float = 1.5,
+    nn_side: int = 0,
+    temp_threshold: int = 15,
+    max_moves: int = 120,
+    opening_random: int = 0,
+    adjudicate_gap: int = 1,
+):
+    """Play one game NN-vs-alphabeta, returning training data only for
+    NN moves (we want to learn from MCTS visits, not alphabeta moves).
+
+    The NN's perspective drives the policy/value targets.  Alphabeta
+    plays moves at its turn but those positions are *also* recorded —
+    with the NN's MCTS policy at that position, so the net learns to
+    answer alphabeta-style threats correctly.
+
+    Same return shape as ``play_game`` so the rest of the pipeline
+    (DB writes, training) stays identical.
+    """
+    from quoridor.ai import find_best_move  # local import; ai.py is heavy
+
+    board = Board.initial()
+    if opening_random > 0:
+        board, _opening = _randomise_opening(board, opening_random)
+
+    boards: List[Board] = []
+    policies: List[np.ndarray] = []
+    actions: List[int] = []
+    move_num = 0
+    cache = EvalCache()
+
+    while board.winner() is None and move_num < max_moves:
+        if board.turn == nn_side:
+            # NN move — full MCTS, record everything.
+            root = search(board, net, config, device, add_noise=True, cache=cache)
+            temp = 1.0 if move_num < temp_threshold else 0.0
+            policy = get_policy(root, temp)
+            action = select_action(root, temp)
+            boards.append(board)
+            policies.append(policy)
+            actions.append(action)
+            _, _, _, _, _, _, flipped = canonical_view(board)
+            board = board.apply(action_to_move(action, flipped))
+        else:
+            # Alphabeta move.  Run a one-shot MCTS too to record the
+            # net's policy at this position — gives the net training
+            # signal about how to *respond* to alphabeta-style play.
+            root = search(board, net, config, device, add_noise=False, cache=cache)
+            policy = get_policy(root, temperature=1.0)
+            mv = find_best_move(board, max_depth=ab_depth, time_limit=ab_time)
+            _, _, _, _, _, _, flipped = canonical_view(board)
+            ab_action = move_to_action(mv, flipped)
+            boards.append(board)
+            policies.append(policy)
+            actions.append(ab_action)
+            board = board.apply(mv)
+        move_num += 1
+
+    winner = board.winner()
+    if winner is None and adjudicate_gap > 0:
+        winner = adjudicate_winner(board, min_gap=adjudicate_gap)
+    return boards, policies, actions, winner, board
+
+
 def play_game(
     net,
     config: MCTSConfig,
@@ -387,8 +456,14 @@ def _worker_init(
     _WORKER_DEVICE = torch.device("cpu")
 
 
-def _worker_play_one(_idx: int):
-    """Play one self-play game and return a picklable result tuple."""
+def _worker_play_one(idx: int):
+    """Play one self-play or NN-vs-alphabeta game.
+
+    The fraction of games that are NN-vs-AB is set by
+    ``ab_mix_frac`` in ``_WORKER_PLAY_KWARGS``; the index ``idx`` is
+    used as a deterministic selector so workers don't all pick the
+    same kind of game.
+    """
     import torch  # noqa: WPS433
 
     assert _WORKER_NET is not None
@@ -396,21 +471,45 @@ def _worker_play_one(_idx: int):
     assert _WORKER_PLAY_KWARGS is not None
 
     t0 = time.perf_counter()
-    boards, policies, actions, winner, _final = play_game(
-        _WORKER_NET,
-        _WORKER_CONFIG,
-        _WORKER_DEVICE,
-        **_WORKER_PLAY_KWARGS,
+    play_kwargs = dict(_WORKER_PLAY_KWARGS)
+    ab_mix_frac = play_kwargs.pop("ab_mix_frac", 0.0)
+    ab_depth = play_kwargs.pop("ab_depth", 4)
+    ab_time = play_kwargs.pop("ab_time", 1.5)
+
+    is_ab_game = ab_mix_frac > 0.0 and (
+        # Hash the index so 0.2 frac → roughly every 5th game is ab.
+        ((idx * 2654435761) % 1000) / 1000.0 < ab_mix_frac
     )
-    # Convert to (moves, blobs) since the Move objects and bytes are
-    # cheap to pickle; raw Boards/tensors are not.
+
+    if is_ab_game:
+        # Alternate which side the NN plays so the net learns both
+        # offence and defence vs alphabeta.
+        nn_side = idx % 2
+        boards, policies, actions, winner, _final = play_game_vs_alphabeta(
+            _WORKER_NET, _WORKER_CONFIG, _WORKER_DEVICE,
+            ab_depth=ab_depth, ab_time=ab_time, nn_side=nn_side,
+            temp_threshold=play_kwargs.get("temp_threshold", 15),
+            max_moves=play_kwargs.get("max_moves", 120),
+            opening_random=play_kwargs.get("opening_random", 0),
+            adjudicate_gap=play_kwargs.get("adjudicate_gap", 1),
+        )
+        kind = "ab"
+    else:
+        boards, policies, actions, winner, _final = play_game(
+            _WORKER_NET,
+            _WORKER_CONFIG,
+            _WORKER_DEVICE,
+            **play_kwargs,
+        )
+        kind = "selfplay"
+
     moves = []
     blobs = []
     for board, policy, action in zip(boards, policies, actions):
         _, _, _, _, _, _, flipped = canonical_view(board)
         moves.append(action_to_move(action, flipped))
         blobs.append(serialize_policy(policy))
-    return moves, blobs, winner, len(actions), time.perf_counter() - t0
+    return moves, blobs, winner, len(actions), time.perf_counter() - t0, kind
 
 
 def generate_games_parallel(
@@ -426,8 +525,17 @@ def generate_games_parallel(
     opening_random: int,
     num_workers: int,
     adjudicate_gap: int = 2,
+    ab_mix_frac: float = 0.0,
+    ab_depth: int = 4,
+    ab_time: float = 1.5,
 ) -> Dict[str, int]:
-    """Parallel self-play across *num_workers* CPU processes."""
+    """Parallel self-play across *num_workers* CPU processes.
+
+    A fraction ``ab_mix_frac`` of games are NN-vs-alphabeta (depth
+    ``ab_depth``, ``ab_time`` seconds budget) — this introduces a
+    fundamentally different opponent than the net itself, breaking
+    the self-imitation loop that drives drift.
+    """
     import multiprocessing as mp
     from dataclasses import asdict
 
@@ -441,6 +549,9 @@ def generate_games_parallel(
         "max_moves": max_moves,
         "opening_random": opening_random,
         "adjudicate_gap": adjudicate_gap,
+        "ab_mix_frac": ab_mix_frac,
+        "ab_depth": ab_depth,
+        "ab_time": ab_time,
     }
     seed_base = random.randint(0, 2**30)
     initargs = (snap_path, asdict(config), play_kwargs, seed_base)
@@ -448,7 +559,7 @@ def generate_games_parallel(
     ctx = mp.get_context("spawn")
     stats: Dict[str, int] = {
         "games": 0, "p1_wins": 0, "p2_wins": 0,
-        "draws": 0, "total_moves": 0,
+        "draws": 0, "total_moves": 0, "ab_games": 0,
     }
 
     print(f"  (parallel self-play on {num_workers} CPU workers)")
@@ -457,20 +568,25 @@ def generate_games_parallel(
         initializer=_worker_init,
         initargs=initargs,
     ) as pool:
-        for moves, blobs, winner, n_plies, elapsed in pool.imap_unordered(
+        for moves, blobs, winner, n_plies, elapsed, kind in pool.imap_unordered(
             _worker_play_one, range(num_games)
         ):
+            # Keep both sources as 'selfplay_nn' so the training
+            # loader picks the games up; distinguish via ``notes``.
+            note = "nn_vs_alphabeta" if kind == "ab" else "mcts_selfplay"
             gid = db.save_game(
                 moves,
                 winner=winner,
                 p1_source="selfplay_nn",
                 p2_source="selfplay_nn",
                 model_version=model_version,
-                notes="mcts_selfplay",
+                notes=note,
                 policies=blobs,
             )
             stats["games"] += 1
             stats["total_moves"] += n_plies
+            if kind == "ab":
+                stats["ab_games"] = stats.get("ab_games", 0) + 1
             if winner == 0:
                 stats["p1_wins"] += 1
             elif winner == 1:
@@ -479,10 +595,11 @@ def generate_games_parallel(
                 stats["draws"] += 1
             outcome = "P1" if winner == 0 else ("P2" if winner == 1 else "draw")
             avg = stats["total_moves"] / stats["games"]
+            tag = " [AB]" if kind == "ab" else ""
             print(
                 f"  game {stats['games']:>3}/{num_games}  id={gid:<5}  "
                 f"plies={n_plies:<4}  winner={outcome:<5}  "
-                f"{elapsed:.1f}s  avg_len={avg:.0f}"
+                f"{elapsed:.1f}s  avg_len={avg:.0f}{tag}"
             )
 
     # Snapshot is regenerated every iteration; leave it in place so the
@@ -513,6 +630,7 @@ def train_on_recent_games(
     warmup_frac: float = 0.05,
     min_version_iter: Optional[int] = None,
     extra_examples: Optional[List[Tuple[np.ndarray, np.ndarray]]] = None,
+    aux_value_weight: float = 0.0,
 ) -> Tuple:
     """Train *net* on the most recent games from *db*.
 
@@ -554,7 +672,7 @@ def train_on_recent_games(
     all_games = [
         row for row in db.iter_games(finished_only=False)
         if row[5] == "selfplay_nn" and row[6] == "selfplay_nn"
-        and _accept_version(row[9])
+        and _accept_version(row[7])
     ]
     all_games = all_games[-max_games:]
     if not all_games:
@@ -577,7 +695,9 @@ def train_on_recent_games(
         for row in game_rows:
             game_id = row[0]
             winner = row[3]
-            mv_str = row[9] if len(row) > 9 else None
+            # iter_games returns: (id, created_at, finished_at, winner,
+            # num_plies, p1_source, p2_source, model_version) — 8 cols.
+            mv_str = row[7] if len(row) > 7 else None
             moves = db.load_moves(game_id)
             blobs = db.load_policy_blobs(game_id)
             # Replay to find final board.
@@ -626,6 +746,20 @@ def train_on_recent_games(
                         final_board, brd.turn, draw_penalty,
                         game_length=len(moves), max_moves=max_moves,
                     )
+                # Auxiliary value: blend in tanh-normalised shortest-
+                # path differential from side-to-move's POV.  Provides
+                # dense supervision for the value head independent of
+                # the (often noisy) game outcome — especially useful
+                # mid-game when the outcome is many plies away.
+                if aux_value_weight > 0.0:
+                    me = brd.turn
+                    opp = 1 - me
+                    d_me = brd.shortest_path_length(me)
+                    d_opp = brd.shortest_path_length(opp)
+                    if d_me is not None and d_opp is not None:
+                        path_signal = math.tanh((d_opp - d_me) / 6.0)
+                        z = (1.0 - aux_value_weight) * z + aux_value_weight * path_signal
+                        z = float(np.clip(z, -1.0, 1.0))
                 vals_l.append(z)
                 weights_l.append(w)
         return states_l, pols_l, vals_l, weights_l
@@ -1320,7 +1454,9 @@ def run_pipeline(args) -> None:
     csv_columns = [
         "timestamp", "global_iter", "version",
         "sp_p1_wins", "sp_p2_wins", "sp_draws", "sp_avg_plies",
+        "ab_games", "sims_used",
         "train_loss", "policy_loss", "value_loss", "best_val_loss",
+        "aux_value_weight", "lr_used", "epochs_used",
         "eval_score", "eval_w", "eval_l", "eval_d",
         "promoted", "reverted_to",
     ]
@@ -1424,6 +1560,9 @@ def run_pipeline(args) -> None:
                     opening_random=args.opening_random,
                     num_workers=args.workers,
                     adjudicate_gap=args.adjudicate_gap,
+                    ab_mix_frac=args.ab_mix_frac,
+                    ab_depth=args.ab_depth,
+                    ab_time=args.ab_time,
                 )
             else:
                 stats = generate_games(
@@ -1445,28 +1584,59 @@ def run_pipeline(args) -> None:
 
             # --- 2. Training ---
             print("\n[2/3] Training")
-            candidate = copy.deepcopy(best_net)
-            # Filter out games generated by self-play versions older
-            # than the current best — they're noisier and may encode a
-            # worse policy than what we're trying to refine.  Training
-            # exclusively on best-or-newer data (+ tourney-champion
-            # games, which _accept_version always keeps) keeps the
-            # gradient aligned with the current strength tier.
             min_ver = best_iteration if args.train_from_best_version else None
-            candidate, metrics = train_on_recent_games(
-                candidate, db, device,
-                max_games=args.window,
-                epochs=args.epochs,
-                batch_size=args.batch_size,
-                lr=args.lr,
-                weight_decay=args.weight_decay,
-                draw_penalty=args.draw_penalty,
-                max_moves=args.max_moves,
-                policy_temp=args.policy_temp,
-                value_weight=args.value_weight,
-                min_version_iter=min_ver,
-                extra_examples=pending_hard_examples or None,
-            )
+
+            def _train_candidate(lr_use, wd_use):
+                cand = copy.deepcopy(best_net)
+                cand, m = train_on_recent_games(
+                    cand, db, device,
+                    max_games=args.window,
+                    epochs=args.epochs,
+                    batch_size=args.batch_size,
+                    lr=lr_use,
+                    weight_decay=wd_use,
+                    draw_penalty=args.draw_penalty,
+                    max_moves=args.max_moves,
+                    policy_temp=args.policy_temp,
+                    value_weight=args.value_weight,
+                    min_version_iter=min_ver,
+                    extra_examples=pending_hard_examples or None,
+                    aux_value_weight=args.aux_value_weight,
+                )
+                return cand, m
+
+            candidate, metrics = _train_candidate(args.lr, args.weight_decay)
+
+            # Lightweight PBT: every N iterations, also train a second
+            # candidate with mutated hparams.  Compare by val loss,
+            # keep the better one as *the* candidate.  This explores
+            # local hparam neighborhoods without a full PBT pool.
+            if (
+                args.pbt_mutate_every > 0
+                and it % args.pbt_mutate_every == 0
+            ):
+                # Mutation: ±50% lr, ±2× weight_decay (geometrically).
+                mutate_lr = args.lr * (random.choice([0.5, 1.5, 2.0]))
+                mutate_wd = args.weight_decay * (random.choice([0.5, 2.0]))
+                print(f"\n[PBT] Spawning sibling candidate "
+                      f"(lr={mutate_lr:.2g}, wd={mutate_wd:.2g})")
+                sibling, sib_metrics = _train_candidate(mutate_lr, mutate_wd)
+                cand_v = metrics.get("best_val_loss",
+                                     metrics.get("train_loss", 1e9))
+                sib_v = sib_metrics.get("best_val_loss",
+                                        sib_metrics.get("train_loss", 1e9))
+                if sib_v < cand_v:
+                    print(f"[PBT] Sibling wins on val loss ({sib_v:.4f} "
+                          f"< {cand_v:.4f}); using its weights.")
+                    candidate = sibling
+                    metrics = sib_metrics
+                    metrics["pbt_mutated"] = 1
+                    metrics["pbt_lr"] = mutate_lr
+                    metrics["pbt_wd"] = mutate_wd
+                else:
+                    print(f"[PBT] Original wins ({cand_v:.4f} <= "
+                          f"{sib_v:.4f}); keeping standard candidate.")
+
             # Hard examples are consumed once — the next training pass
             # uses fresh champion-quality self-play data instead.
             pending_hard_examples = []
@@ -1583,6 +1753,8 @@ def run_pipeline(args) -> None:
                 "sp_p2_wins": stats["p2_wins"],
                 "sp_draws": stats["draws"],
                 "sp_avg_plies": f"{avg_plies:.2f}",
+                "ab_games": stats.get("ab_games", 0),
+                "sims_used": args.simulations,
                 "train_loss": f"{metrics.get('train_loss', 0):.4f}",
                 "policy_loss": f"{metrics.get('policy_loss', 0):.4f}",
                 "value_loss": f"{metrics.get('value_loss', 0):.4f}",
@@ -1590,6 +1762,9 @@ def run_pipeline(args) -> None:
                     f"{metrics['best_val_loss']:.4f}"
                     if "best_val_loss" in metrics else ""
                 ),
+                "aux_value_weight": args.aux_value_weight,
+                "lr_used": args.lr,
+                "epochs_used": args.epochs,
                 "eval_score": (
                     f"{eval_result['score']:.4f}"
                     if args.eval_games > 0 else ""
@@ -1772,6 +1947,17 @@ def main() -> None:
                    help="Dirichlet noise alpha (default 0.3).")
     g.add_argument("--c-init", type=float, default=1.25,
                    help="PUCT c_init (default 1.25).")
+    g.add_argument("--ab-mix-frac", type=float, default=0.0,
+                   help="Fraction of self-play games played NN-vs-alphabeta "
+                        "instead of self-play. Breaks the self-imitation "
+                        "loop (where the net only learns from itself) by "
+                        "exposing it to a fundamentally different opponent. "
+                        "0.0 disables (default); 0.2-0.3 recommended.")
+    g.add_argument("--ab-depth", type=int, default=4,
+                   help="Alpha-beta search depth for ab-mix games (default 4).")
+    g.add_argument("--ab-time", type=float, default=1.5,
+                   help="Per-move time budget (s) for the alpha-beta opponent "
+                        "(default 1.5).")
 
     # --- training ---
     g = p.add_argument_group("training")
@@ -1804,6 +1990,18 @@ def main() -> None:
                         "candidate self-play from pulling the net back toward "
                         "a weaker distribution. Highly recommended once a "
                         "strong best_iteration is established.")
+    g.add_argument("--aux-value-weight", type=float, default=0.0,
+                   help="Blend tanh(path_diff/6) into the value target with "
+                        "this weight (0=outcome only, 1=path-diff only, "
+                        "0.3-0.5 recommended). Provides dense supervision "
+                        "for the value head independent of game outcome — "
+                        "addresses the 'value head can't learn from sparse "
+                        "outcome labels' problem.")
+    g.add_argument("--pbt-mutate-every", type=int, default=0,
+                   help="Every N iterations, train a sibling candidate with "
+                        "mutated lr/weight_decay and keep whichever has the "
+                        "lower val loss. Lightweight population-based "
+                        "training. 0 disables (default).")
 
     # --- evaluation ---
     g = p.add_argument_group("evaluation")

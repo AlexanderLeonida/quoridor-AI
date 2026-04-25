@@ -266,9 +266,94 @@ This changes the selection regime from **gating only** to a **hybrid**:
 
 ---
 
+## 22. Tournament hardening
+
+After running tournaments to calibrate Elos, several refinements:
+
+- **Weight-fingerprint dedup**: rolled-back `best.pt` and overwritten `iter_NNNN.pt` files often have identical weights. Hashing the stem conv layer at tournament setup time deduplicates them — playing duplicates wastes games and pollutes the Elo with a 50%-by-construction match.
+- **Bootstrap confidence intervals on Elos**: `bootstrap_elos` resamples each pair's outcomes from a multinomial of the observed proportions, refits Elo, and reports 95% CIs on the rating estimates. Tight CI = clear ranking; wide CI = noisy. With 6 games per pair the typical CI is ±50-150 Elo, which honestly reflects how imprecise small-N tournaments are.
+- **Champion games saved to DB** (`tournament.py --save-to-db --save-champion-only`): the Elo champion's winning games (with MCTS visit policies) are persisted into the self-play DB tagged `tourney-{champion}`. Future training passes pick them up automatically, distilling the champion's style into subsequent candidates.
+
+## 23. Training-data filter: `--train-from-best-version`
+
+Once we have a strong `best_iteration` we don't want training pulled toward weaker self-play. The loader now optionally filters DB rows: keep only `selfplay-vN` games where `N >= best_iteration`, plus all `tourney-*` games. Stops chains of rejected candidates' self-play from polluting the gradient distribution.
+
+## 24. Persistent promoted checkpoints
+
+Every iteration was saving `best_net` to `iter_{global_it:04d}.pt`. When two runs hit the same global iteration number (because we resume), the second clobbers the first — historical promoted weights got destroyed. Caught the hard way: `iter_0036.pt` (the original v36 peak) was overwritten with v34 weights mid-session.
+
+Fix: every promotion *also* saves to `checkpoints/promoted_{version}.pt`. That filename is keyed on the model version label (e.g., `promoted_selfplay-v36.pt`), never collides across runs, and is what the auto-tournament pool uses as anchors.
+
+## 25. Hard-example mining (in-memory)
+
+When the auto-tournament reverts to a champion, the rejected candidates' recent self-play games hold positions where the champion would have played differently — those are "lessons learned." `_mine_hard_examples` runs the champion's MCTS on each scanned position, compares its top move to what was actually played, and on disagreement stores `(state, MCTS_policy)` pairs.
+
+These are **passed in-memory** to the next training pass via a new `extra_examples` kwarg on `train_on_recent_games` — *not* written to the DB. (An earlier draft tried persisting them as a synthetic game, but the loader replays moves from `Board.initial()` so disparate mid-game positions come out as garbage when reloaded.) Examples get value target 0 (we know the policy, not the position's true value) and weight 1.0 absolute (~8× the typical normalised self-play position weight).
+
+Enabled by `--hard-example-mining`.
+
+## 26. Alpha-beta mix in self-play
+
+`--ab-mix-frac 0.2` makes 20% of self-play games NN-vs-alpha-beta instead of NN-vs-NN. The alpha-beta engine is a *fundamentally different* player — different evaluation function, different tactical blind spots — so its games introduce supervision the net can't generate by playing itself.
+
+`play_game_vs_alphabeta` records MCTS visit policies even on alphabeta's turns, giving the net training signal about how to *respond* to alphabeta-style threats.
+
+Saved to DB with `notes='nn_vs_alphabeta'` (sources stay `selfplay_nn` so the existing training loader picks them up; the notes field is purely for analysis filtering).
+
+## 27. Auxiliary value supervision from shortest-path differential
+
+The value head's only signal was outcome ∈ {-1, 0, +1} from far in the future, often noisy due to draws and adjudication. Added `--aux-value-weight α`: blend the outcome z with `tanh((opp_path - my_path)/6)` to give the value head dense per-position supervision based on board geometry.
+
+```
+z_blended = (1-α) · z_outcome + α · tanh(path_diff/6)
+```
+
+α=0 keeps old behaviour, α=0.3-0.5 recommended. Path-diff is computed at every position in `train_on_recent_games`, so this works on existing DB data without needing fresh self-play.
+
+## 28. Lightweight population-based training
+
+`--pbt-mutate-every N`: every N iterations, train a *sibling candidate* in addition to the standard one, with mutated learning rate (×0.5, ×1.5, or ×2.0) and weight decay (×0.5 or ×2.0). Compare by validation loss; keep whichever is lower. Doubles training time on PBT iterations but explores hparam neighborhoods without the complexity of a full PBT pool.
+
+Tracked in metrics: `pbt_mutated`, `pbt_lr`, `pbt_wd`.
+
+## 29. Deep distillation: `distill_deep.py`
+
+Distillation but with a search-deep teacher instead of a different net:
+
+- **`--teacher mcts --teacher-sims 4000`**: run high-sim MCTS (the *current net* but searching much deeper than self-play does) on sampled positions, use those visit-count distributions as policy targets. Produces a teacher signal stronger than what 200-300 sim self-play can generate.
+- **`--teacher ab --ab-depth 8 --ab-time 5`**: run alpha-beta search at depth 8 on each position, one-hot encode its move as the policy target. Brings in supervision from a fundamentally different evaluator.
+
+Used as a periodic refresh — when self-play drift sets in, run a deep distillation pass to inject a fresh, stronger teacher signal.
+
+## 30. Persistent metrics + analysis suite
+
+Two pieces of data infrastructure added so we can build comparative views over time:
+
+- **`logs/metrics.csv`** — every iteration appends one row: timestamp, global_iter, version, self-play W/L/D + avg plies, ab_games, sims_used, train/policy/value/best_val losses, aux_value_weight, lr_used, epochs_used, eval score + W/L/D, promoted flag, reverted_to. Never overwritten, so historical metrics survive log rotation.
+
+- **`analysis/`** directory — eight scripts each producing a focused PNG plus a stdout summary; `make_report.py` runs them all and bundles into `analysis/REPORT.md`:
+  1. `00_summary.py` — text table of every iteration
+  2. `01_elo_history.py` — gating-Elo bar chart with notable peaks
+  3. `02_calibrated_elo.py` — tournament-calibrated Elos with bootstrap CIs
+  4. `03_database_stats.py` — outcome distribution + game-length per version, across all DBs
+  5. `04_training_progress.py` — 4-panel: loss curves, eval scores w/ CI, draw rates, cumulative promotions/reverts
+  6. `05_architecture_comparison.py` — 6×64 vs 10×128 parameters and iteration coverage
+  7. `06_activity_timeline.py` — self-play games per day stacked by DB
+  8. `07_intervention_metrics.py` — per-iteration: MCTS sims, ab-mix games, aux_value_weight, gating outcomes color-coded
+  9. `08_nn_vs_ab.py` — heatmap + curves of NN scores vs alpha-beta at various depths
+
+Shared `analysis/parser.py` holds the log-parsing dataclass + functions, keeping all analyses pulling from one source of truth.
+
+## 31. NN-vs-alpha-beta benchmark matrix: `bench_matrix.py`
+
+Top-level batch tool: takes a list of checkpoints + a list of AB settings (`--ab "d4,t2.0"`), plays N games per (ckpt × setting) combo with alternating colours, saves to `analysis/bench_matrix.json`. Plot script `08_nn_vs_ab.py` renders a green-red heatmap (rows: checkpoints, columns: AB depth/time) plus per-checkpoint score-vs-depth curves.
+
+This is the practical "is the model actually getting stronger" question that gating Elos and tournament Elos can't answer on their own — alpha-beta is a stable external reference whose strength depends only on its search depth.
+
 ## Current state
 
 - Net: 10 blocks × 128 filters, distilled from v74 (6×64 peak).
 - `best.pt` currently set to `iter_0034.pt` weights (the tournament-calibrated strongest in the first round-robin).
 - A second round-robin suggests `warmstart_10x128.pt` (pre-self-play distillation) is among the strongest — **every self-play-trained net is at-or-below warmstart** in the latest data, meaning self-play has been net-negative since distillation.
-- Next step under consideration: restart from warmstart with much gentler optimiser settings (`lr 1e-4`, `epochs 1`, stronger L2) so self-play refines rather than erodes the distilled knowledge.
+- All five anti-drift interventions implemented (§§25-29) and instrumented in `metrics.csv`.
+- Recommended next experiment: restart with `--ab-mix-frac 0.2 --aux-value-weight 0.4 --simulations 800`. Higher sims gives the net a teacher genuinely stronger than itself; ab-mix breaks the self-imitation loop; aux-value densifies the value-head signal.
