@@ -1,20 +1,14 @@
-"""Parse logs/train.log and report training-progress metrics.
+"""Parse training logs into structured records.
 
-Outputs a text summary plus an optional matplotlib plot of:
-    - per-iteration eval score (with 0.52 promote threshold and 0.50)
-    - train/val loss per epoch
-    - draw rate in self-play and in eval
-    - cumulative promotions
+Library-only — no CLI. Used by every plot script under ``analysis/`` so
+log-parsing logic lives in exactly one place.
 
-No external dependencies beyond stdlib + matplotlib (only if --plot).
-
-Usage:
-    python3 analyze.py                # summary to stdout
-    python3 analyze.py --plot out.png # also save a plot
+The parser is forgiving: it skips unparseable lines and missing fields,
+so partial / in-progress logs still yield as much structured data as is
+present.
 """
 from __future__ import annotations
 
-import argparse
 import re
 from dataclasses import dataclass, field
 from typing import List, Optional
@@ -27,7 +21,7 @@ class IterRecord:
     sp_p1_wins: int = 0
     sp_p2_wins: int = 0
     sp_draws: int = 0
-    epochs: List[dict] = field(default_factory=list)  # {train, val, p, v}
+    epochs: List[dict] = field(default_factory=list)  # {epoch, train, p, v, val?, val_p?, val_v?}
     eval_score: Optional[float] = None
     eval_w: int = 0
     eval_l: int = 0
@@ -53,6 +47,7 @@ _REVERT_RE = re.compile(r">>> REVERTING best_net: (\S+) -> (\S+)")
 
 
 def parse_log(path: str) -> List[IterRecord]:
+    """Parse one training log file into a list of IterRecord."""
     records: List[IterRecord] = []
     cur: Optional[IterRecord] = None
     with open(path) as f:
@@ -106,7 +101,8 @@ def parse_log(path: str) -> List[IterRecord]:
     return records
 
 
-def summary(recs: List[IterRecord]) -> str:
+def summary_text(recs: List[IterRecord]) -> str:
+    """Return a tabular text summary of parsed records."""
     lines: List[str] = []
     lines.append(f"{len(recs)} iterations parsed")
     if not recs:
@@ -161,96 +157,3 @@ def summary(recs: List[IterRecord]) -> str:
             f"{wld:>10}  {result}"
         )
     return "\n".join(lines)
-
-
-def plot(recs: List[IterRecord], out_path: str) -> None:
-    import matplotlib.pyplot as plt
-
-    fig, axes = plt.subplots(2, 2, figsize=(14, 9))
-    its = [r.global_iter for r in recs]
-
-    # Eval scores with CI
-    ax = axes[0][0]
-    es = [r.eval_score for r in recs]
-    cilo = [r.eval_ci_lo for r in recs]
-    cihi = [r.eval_ci_hi for r in recs]
-    valid = [(g, s, lo, hi) for g, s, lo, hi in zip(its, es, cilo, cihi) if s is not None]
-    if valid:
-        gx = [v[0] for v in valid]
-        ax.plot(gx, [v[1] for v in valid], "-o", label="eval score")
-        ax.fill_between(gx, [v[2] for v in valid], [v[3] for v in valid],
-                        alpha=0.2, label="95% CI")
-    ax.axhline(0.52, ls="--", c="g", label="promote threshold")
-    ax.axhline(0.50, ls=":", c="grey", label="50%")
-    ax.set_ylim(0, 1)
-    ax.set_title("Eval score per iteration")
-    ax.set_xlabel("global iteration")
-    ax.legend()
-
-    # Train/val loss (epoch 1)
-    ax = axes[0][1]
-    e1_train = [r.epochs[0]["train"] if r.epochs else None for r in recs]
-    e1_val = [r.epochs[0].get("val") if r.epochs else None for r in recs]
-    valid_t = [(g, t) for g, t in zip(its, e1_train) if t is not None]
-    valid_v = [(g, v) for g, v in zip(its, e1_val) if v is not None]
-    if valid_t:
-        ax.plot([v[0] for v in valid_t], [v[1] for v in valid_t], "-o", label="train (e1)")
-    if valid_v:
-        ax.plot([v[0] for v in valid_v], [v[1] for v in valid_v], "-x", label="val (e1)")
-    ax.set_title("Epoch-1 loss per iteration")
-    ax.set_xlabel("global iteration")
-    ax.legend()
-
-    # Draw rates
-    ax = axes[1][0]
-    sp_dr = [(r.sp_draws / max(1, r.sp_p1_wins + r.sp_p2_wins + r.sp_draws))
-             for r in recs]
-    ev_dr = [(r.eval_d / max(1, r.eval_w + r.eval_l + r.eval_d))
-             if r.eval_score is not None else None for r in recs]
-    ax.plot(its, sp_dr, "-o", label="self-play draw %")
-    valid_e = [(g, d) for g, d in zip(its, ev_dr) if d is not None]
-    if valid_e:
-        ax.plot([v[0] for v in valid_e], [v[1] for v in valid_e], "-x", label="eval draw %")
-    ax.set_title("Draw rate per iteration")
-    ax.set_xlabel("global iteration")
-    ax.set_ylim(0, 1)
-    ax.legend()
-
-    # Cumulative promotions / reverts
-    ax = axes[1][1]
-    cum_promoted = []
-    cum_rev = []
-    p = r_ = 0
-    for rec in recs:
-        if rec.promoted:
-            p += 1
-        if rec.reverted_to:
-            r_ += 1
-        cum_promoted.append(p)
-        cum_rev.append(r_)
-    ax.plot(its, cum_promoted, "-o", label="cumulative promotions")
-    ax.plot(its, cum_rev, "-x", label="cumulative reverts")
-    ax.set_title("Promotions and reverts")
-    ax.set_xlabel("global iteration")
-    ax.legend()
-
-    fig.tight_layout()
-    fig.savefig(out_path, dpi=120)
-    print(f"Saved plot: {out_path}")
-
-
-def main() -> None:
-    p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument("--log", default="logs/train.log")
-    p.add_argument("--plot", default=None,
-                   help="If set, save a 4-panel matplotlib plot to this path.")
-    args = p.parse_args()
-
-    recs = parse_log(args.log)
-    print(summary(recs))
-    if args.plot:
-        plot(recs, args.plot)
-
-
-if __name__ == "__main__":
-    main()

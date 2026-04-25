@@ -1288,6 +1288,7 @@ def _mine_hard_examples(
 
 def run_pipeline(args) -> None:
     import torch
+    from datetime import datetime as _dt
 
     device = (
         torch.device(args.device) if args.device else best_available_device()
@@ -1307,6 +1308,36 @@ def run_pipeline(args) -> None:
     torch.manual_seed(args.seed)
     np.random.seed(args.seed)
     random.seed(args.seed)
+
+    # ------------------------------------------------------------------
+    # Persistent metrics CSV — one row per iteration, never overwritten.
+    # Lets analysis scripts reconstruct training history even if
+    # logs/train.log is rotated.  Schema is column-stable; new columns
+    # are appended at the end.
+    # ------------------------------------------------------------------
+    metrics_csv = os.path.join("logs", "metrics.csv")
+    os.makedirs("logs", exist_ok=True)
+    csv_columns = [
+        "timestamp", "global_iter", "version",
+        "sp_p1_wins", "sp_p2_wins", "sp_draws", "sp_avg_plies",
+        "train_loss", "policy_loss", "value_loss", "best_val_loss",
+        "eval_score", "eval_w", "eval_l", "eval_d",
+        "promoted", "reverted_to",
+    ]
+    if not os.path.exists(metrics_csv):
+        with open(metrics_csv, "w") as f:
+            f.write(",".join(csv_columns) + "\n")
+
+    def _append_metrics_row(row: Dict) -> None:
+        with open(metrics_csv, "a") as f:
+            vals = [str(row.get(c, "")) for c in csv_columns]
+            # Quote any value containing a comma or quote.
+            cleaned = [
+                f'"{v.replace(chr(34), chr(34)*2)}"'
+                if ("," in v or '"' in v or "\n" in v) else v
+                for v in vals
+            ]
+            f.write(",".join(cleaned) + "\n")
 
     # --- network (auto-resume from best.pt if no explicit --resume) ---
     resume_path = args.resume
@@ -1539,6 +1570,40 @@ def run_pipeline(args) -> None:
             # Print Elo leaderboard.
             print(f"\n  Elo ratings (top 10):\n{elo.summary(10)}")
 
+            # Persist a row to logs/metrics.csv so the analysis suite
+            # has stable history independent of train.log rotation.
+            avg_plies = (
+                stats["total_moves"] / stats["games"] if stats["games"] else 0
+            )
+            csv_row = {
+                "timestamp": _dt.now().isoformat(timespec="seconds"),
+                "global_iter": global_it,
+                "version": version,
+                "sp_p1_wins": stats["p1_wins"],
+                "sp_p2_wins": stats["p2_wins"],
+                "sp_draws": stats["draws"],
+                "sp_avg_plies": f"{avg_plies:.2f}",
+                "train_loss": f"{metrics.get('train_loss', 0):.4f}",
+                "policy_loss": f"{metrics.get('policy_loss', 0):.4f}",
+                "value_loss": f"{metrics.get('value_loss', 0):.4f}",
+                "best_val_loss": (
+                    f"{metrics['best_val_loss']:.4f}"
+                    if "best_val_loss" in metrics else ""
+                ),
+                "eval_score": (
+                    f"{eval_result['score']:.4f}"
+                    if args.eval_games > 0 else ""
+                ),
+                "eval_w": eval_result["wins"] if args.eval_games > 0 else "",
+                "eval_l": eval_result["losses"] if args.eval_games > 0 else "",
+                "eval_d": eval_result["draws"] if args.eval_games > 0 else "",
+                "promoted": "1" if (
+                    args.eval_games > 0 and score > args.gate_threshold
+                ) else ("1" if args.eval_games == 0 else "0"),
+                "reverted_to": "",
+            }
+            _append_metrics_row(csv_row)
+
             # --- 4. Periodic calibration tournament (revert-to-champion) ---
             # Fire when the pool (promoted history + anchors) will have
             # at least two distinct checkpoints — we only need 2+ players
@@ -1633,6 +1698,17 @@ def run_pipeline(args) -> None:
                                     best_iteration=best_iteration,
                                     reverted_to=champion,
                                 )
+                                # Append a metrics row marking the
+                                # revert event so analysis can show it.
+                                _append_metrics_row({
+                                    "timestamp": _dt.now().isoformat(
+                                        timespec="seconds"
+                                    ),
+                                    "global_iter": global_it,
+                                    "version": champion,
+                                    "promoted": "0",
+                                    "reverted_to": champion,
+                                })
                         else:
                             print("  Current best is the tournament champion. "
                                   "No revert.")
