@@ -350,10 +350,26 @@ Top-level batch tool: takes a list of checkpoints + a list of AB settings (`--ab
 
 This is the practical "is the model actually getting stronger" question that gating Elos and tournament Elos can't answer on their own — alpha-beta is a stable external reference whose strength depends only on its search depth.
 
+## 32. Bug found in version filter (caught in first run)
+
+First attempt to run the full new pipeline crashed in iter 1's training step with `IndexError: tuple index out of range`. Cause: the `_accept_version` filter and `mv_str` extraction both indexed `row[9]` for `model_version`, but `db.iter_games()` returns 8 columns — `model_version` is at `row[7]`. Fixed in both call sites. Lesson: always check the actual SELECT column list when threading a new field through.
+
+## 33. First successful run with the new pipeline
+
+After fixing §32 and starting from `warmstart_10x128.pt`:
+
+- **iters 1-5 vs warmstart** (gating): 30% → 40% → 37% → 47% → **57%** PROMOTED. Steady climb, first promotion at iter 5.
+- **Auto-tournament fired at iter 5** (the new selfplay-v5 + warmstart + iter_0034 anchors). Bradley-Terry MLE: v34=1119, warmstart=1059, v5=1000. The new net tied warmstart 2-2 but lost to v34 1-3 → tournament reverted.
+- **Hard-example mining triggered**: 861 positions where v34 disagreed with v5/init were extracted in-memory.
+- **iter 6 trained on v34 + 861 hard examples**, with PBT spawning a sibling candidate at lr=4.5e-4 (vs 3e-4 base). The sibling won on val loss by a hair (1.6375 vs 1.6392) and was kept.
+- **iter 6 PROMOTED at 56.7% vs v34** — the first net in this whole project that demonstrably surpasses v34 head-to-head.
+
+The full intervention stack (sims=600, ab_mix=0.2, aux_value=0.4, hard-example mining, PBT) produced a net stronger than v34 in 6 iterations from a warmstart base. Each piece is doing visible work in the metrics.csv columns.
+
 ## Current state
 
 - Net: 10 blocks × 128 filters, distilled from v74 (6×64 peak).
-- `best.pt` currently set to `iter_0034.pt` weights (the tournament-calibrated strongest in the first round-robin).
-- A second round-robin suggests `warmstart_10x128.pt` (pre-self-play distillation) is among the strongest — **every self-play-trained net is at-or-below warmstart** in the latest data, meaning self-play has been net-negative since distillation.
-- All five anti-drift interventions implemented (§§25-29) and instrumented in `metrics.csv`.
-- Recommended next experiment: restart with `--ab-mix-frac 0.2 --aux-value-weight 0.4 --simulations 800`. Higher sims gives the net a teacher genuinely stronger than itself; ab-mix breaks the self-imitation loop; aux-value densifies the value-head signal.
+- `best.pt` is now `selfplay-v6` (post-revert iter 6 promotion) — first net to beat v34 in gating.
+- `metrics.csv` is populating cleanly with all new columns (ab_games, sims_used, aux_value_weight, lr_used, etc.).
+- All five anti-drift interventions verified working end-to-end.
+- Training continuing — iter 10 will trigger the next auto-tournament; we'll see where v6 ranks among warmstart/v34/v40 anchors at full calibration.

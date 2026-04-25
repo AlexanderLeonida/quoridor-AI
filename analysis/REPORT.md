@@ -1,6 +1,6 @@
 # Quoridor AI — Analysis Report
 
-Generated: 2026-04-25T07:49:31
+Generated: 2026-04-25T12:56:46
 
 ---
 
@@ -8,35 +8,32 @@ Generated: 2026-04-25T07:49:31
 ## 00_summary
 
 ```
-7 iterations parsed
-Promoted: 0    Rejected: 6    Reverts: 0
-Self-play: 600 games, 11 drawn (2%)
-Eval: 180 games, 5 drawn (3%)
+8 iterations parsed
+Promoted: 2    Rejected: 5    Reverts: 1
+Self-play: 700 games, 8 drawn (1%)
+Eval: 210 games, 3 drawn (1%)
 
 iter  global  sp(W1/W2/D)     epoch1 train  epoch1 val   eval  CI                     WLD  result
-   1      40  54/44/2                1.844       1.770    20%  [10%,37%]           6/24/0  kept
-   2      41  49/50/1                1.855       1.805     7%  [2%,21%]            2/28/0  kept
-   3      42  42/56/2                1.860       1.847    17%  [7%,34%]            4/24/2  kept
-   4      43  55/42/3                1.854       1.991    28%  [15%,46%]           8/21/1  kept
-   5      44  57/42/1                1.854       1.943    25%  [13%,43%]           7/22/1  kept
-   6      45  50/48/2                1.857       1.764    25%  [13%,43%]           7/22/1  kept
-   7      46  0/0/0                      -           -      -  -                        -
+   1       1  60/39/1                1.658       1.522    30%  [17%,48%]           9/21/0  kept
+   2       2  56/44/0                1.686       1.646    40%  [25%,58%]          12/18/0  kept
+   3       3  50/50/0                1.713       1.670    37%  [22%,55%]          11/19/0  kept
+   4       4  58/42/0                1.740       1.635    47%  [30%,64%]          14/16/0  kept
+   5       5  54/46/0                1.767       1.625    57%  [39%,73%]          17/13/0  REVERTED→iter_0034
+   6       6  52/43/5                1.715       1.639    57%  [39%,73%]          17/13/0  PROMOTED
+   7       7  44/54/2                1.586       1.441    32%  [18%,50%]           8/19/3  kept
+   8       8  0/0/0                      -           -      -  -                        -
 ```
 
 ## 01_elo_history
 
 ```
-FAILED: Command '['/opt/homebrew/opt/python@3.14/bin/python3.14', 'analysis/01_elo_history.py']' returned non-zero exit status 1.
-Traceback (most recent call last):
-  File "/Users/aleon1/Desktop/quoridor-AI/analysis/01_elo_history.py", line 81, in <module>
-    main()
-    ~~~~^^
-  File "/Users/aleon1/Desktop/quoridor-AI/analysis/01_elo_history.py", line 76, in main
-    arch = "6×64" if n <= arch_split else "10×128"
-                          ^^^^^^^^^^
-NameError: name 'arch_split' is not defined
+Saved analysis/plots/01_elo_history.png
 
+78 versions plotted (9 calibrated, 69 gating-only)
 ```
+
+![01_elo_history](analysis/plots/01_elo_history.png)
+
 
 ## 02_calibrated_elo
 
@@ -66,7 +63,7 @@ v1: 133 games, 50% draws, avg 111.9 plies, versions v1-v2
 
 v2: 13995 games, 38% draws, avg 56.3 plies, versions v1-v83
 
-v3: 4518 games, 12% draws, avg 53.7 plies, versions v1-v55
+v3: 5350 games, 10% draws, avg 50.9 plies, versions v1-v55
 ```
 
 ![03_database_stats](analysis/plots/03_database_stats.png)
@@ -77,7 +74,7 @@ v3: 4518 games, 12% draws, avg 53.7 plies, versions v1-v55
 ```
 Saved analysis/plots/04_training_progress.png
 
-7 iterations parsed, 0 promoted, 0 reverts
+8 iterations parsed, 2 promoted, 1 reverts
 ```
 
 ![04_training_progress](analysis/plots/04_training_progress.png)
@@ -104,7 +101,7 @@ Saved analysis/plots/06_activity_timeline.png
 Games per DB:
   v1: 133
   v2: 13,995
-  v3: 4,520
+  v3: 5,357
   Active span: 2026-04-18 → 2026-04-25
 ```
 
@@ -114,5 +111,16 @@ Games per DB:
 ## 07_intervention_metrics
 
 ```
-No metrics.csv yet. Run selfplay.py at least once to populate it.
+Saved analysis/plots/07_intervention_metrics.png
+
+8 metrics rows across iterations 1–7
+```
+
+![07_intervention_metrics](analysis/plots/07_intervention_metrics.png)
+
+
+## 08_nn_vs_ab
+
+```
+No analysis/bench_matrix.json; run bench_matrix.py first.
 ```
