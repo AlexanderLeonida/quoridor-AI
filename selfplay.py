@@ -511,6 +511,8 @@ def train_on_recent_games(
     value_weight: float = 1.0,
     augment: bool = True,
     warmup_frac: float = 0.05,
+    min_version_iter: Optional[int] = None,
+    extra_examples: Optional[List[Tuple[np.ndarray, np.ndarray]]] = None,
 ) -> Tuple:
     """Train *net* on the most recent games from *db*.
 
@@ -529,9 +531,30 @@ def train_on_recent_games(
     # max-moves cutoffs are legitimate training data with progress-aware
     # value targets.  The source filter already excludes aborted human
     # games whose winner=None would inject noisy labels.
+    def _accept_version(mv) -> bool:
+        # model_version is a string column (row[9]).  Tournament-
+        # champion games (prefix "tourney-") are always kept since
+        # those are deliberately high-quality supervision.  For self-
+        # play versions tagged "selfplay-vNN", optionally filter to
+        # games from the current-best iteration or newer so a chain of
+        # rejected candidates' self-play data doesn't pull the net
+        # back toward their (by-definition-weaker) distribution.
+        if not isinstance(mv, str):
+            return True
+        if mv.startswith("tourney-"):
+            return True
+        if min_version_iter is None or not mv.startswith("selfplay-v"):
+            return True
+        try:
+            n = int(mv[len("selfplay-v"):])
+        except ValueError:
+            return True
+        return n >= min_version_iter
+
     all_games = [
         row for row in db.iter_games(finished_only=False)
         if row[5] == "selfplay_nn" and row[6] == "selfplay_nn"
+        and _accept_version(row[9])
     ]
     all_games = all_games[-max_games:]
     if not all_games:
@@ -554,6 +577,7 @@ def train_on_recent_games(
         for row in game_rows:
             game_id = row[0]
             winner = row[3]
+            mv_str = row[9] if len(row) > 9 else None
             moves = db.load_moves(game_id)
             blobs = db.load_policy_blobs(game_id)
             # Replay to find final board.
@@ -566,12 +590,19 @@ def train_on_recent_games(
             # Per-position weight: inversely proportional to game length
             # so that shorter decisive games aren't drowned by long draws.
             # Upweight decisive games 4× so the signal isn't dominated by
-            # draw positions (draws tend to be long, and their value
-            # targets are uncertain by construction — even after
-            # path-length adjudication some remain).
+            # draw positions.  Tournament-champion games (model_version
+            # prefix "tourney-") get an additional 2× boost — these are
+            # the highest-quality supervision we have, since by
+            # construction the player who generated them outranked the
+            # rest of the pool by Elo.  This is a soft form of
+            # hard-example mining: positions where a known-strong net
+            # made a winning choice are over-represented in the gradient.
             game_len = max(len(moves), 1)
             decisive_mult = 4.0 if winner is not None else 1.0
-            w = decisive_mult / game_len
+            tourney_mult = 2.0 if (
+                isinstance(mv_str, str) and mv_str.startswith("tourney-")
+            ) else 1.0
+            w = decisive_mult * tourney_mult / game_len
             for brd, move, blob in zip(boards_in_game, moves, blobs):
                 states_l.append(encode_state(brd))
                 if blob is not None:
@@ -619,6 +650,26 @@ def train_on_recent_games(
     tr_p_np = np.stack(tr_p)
     tr_v_np = np.array(tr_v, dtype=np.float32)
     tr_w_np = np.array(tr_w, dtype=np.float32)
+
+    # Append in-memory hard examples (mined from the rejected
+    # candidates' games at the last tournament revert).  These are
+    # (state, policy) pairs from the champion's MCTS at positions
+    # where the candidate diverged.  Value targets are 0 (we know the
+    # policy but not the position's true value).  Weight is 1.0
+    # absolute — roughly ~8× the typical normalised self-play weight,
+    # enough for the gradient to notice without drowning everything
+    # else.
+    if extra_examples:
+        ex_s = np.stack([s for s, _ in extra_examples])
+        ex_p = np.stack([p for _, p in extra_examples])
+        ex_v = np.zeros(len(extra_examples), dtype=np.float32)
+        ex_w = np.full(len(extra_examples), 1.0, dtype=np.float32)
+        tr_s_np = np.concatenate([tr_s_np, ex_s], axis=0)
+        tr_p_np = np.concatenate([tr_p_np, ex_p], axis=0)
+        tr_v_np = np.concatenate([tr_v_np, ex_v], axis=0)
+        tr_w_np = np.concatenate([tr_w_np, ex_w], axis=0)
+        n = tr_s_np.shape[0]
+        print(f"  +{len(extra_examples)} hard-example positions appended")
 
     # Column-flip augmentation: Quoridor is symmetric about the central
     # column, so (state, policy) can be mirrored and value is unchanged.
@@ -1154,6 +1205,83 @@ def _run_calibration_tournament(
     return ratings, champion
 
 
+# ----------------------------------------------------------------------
+# Hard-example mining on revert
+# ----------------------------------------------------------------------
+
+def _mine_hard_examples(
+    champion_net,
+    db: GameDB,
+    device,
+    *,
+    rejected_versions: List[str],
+    sims: int,
+    max_positions: int = 1500,
+) -> List[Tuple[np.ndarray, np.ndarray]]:
+    """After a tournament revert, find positions where the rejected
+    candidates' self-play moves diverged from what the champion would
+    have played.  Returns a list of ``(state_tensor, policy_tensor)``
+    pairs — concentrated lessons on "what you should have done
+    instead."
+
+    The returned examples are passed directly to the next training
+    pass as ``extra_examples`` (in-memory) — we deliberately do *not*
+    persist them to the games DB because the DB schema replays moves
+    from the initial board, and our examples come from arbitrary mid-
+    game positions across different games that can't be reconstructed
+    from a flat move list.
+    """
+    if not rejected_versions:
+        return []
+
+    cfg = MCTSConfig(num_simulations=sims, dirichlet_epsilon=0.0)
+    cache = EvalCache()
+    scanned = 0
+
+    placeholders = ",".join("?" for _ in rejected_versions)
+    cur = db._conn.execute(
+        f"SELECT id FROM games "
+        f"WHERE p1_source='selfplay_nn' AND p2_source='selfplay_nn' "
+        f"AND model_version IN ({placeholders}) "
+        f"ORDER BY id DESC LIMIT 200",
+        rejected_versions,
+    )
+    game_ids = [row[0] for row in cur.fetchall()]
+
+    examples: List[Tuple[np.ndarray, np.ndarray]] = []
+    for game_id in game_ids:
+        moves = db.load_moves(game_id)
+        if not moves:
+            continue
+        board = Board.initial()
+        for played_move in moves:
+            if scanned >= max_positions:
+                break
+            scanned += 1
+            root = search(
+                board, champion_net, cfg, device,
+                add_noise=False, cache=cache,
+            )
+            # Soft policy: visit-count distribution, useful as
+            # supervision even where the loser happened to agree on
+            # the top move (the priors elsewhere still differ).
+            soft_policy = get_policy(root, temperature=1.0)
+            top_action = int(np.argmax(soft_policy))
+
+            _, _, _, _, _, _, flipped = canonical_view(board)
+            played_action = move_to_action(played_move, flipped)
+            if top_action != played_action:
+                examples.append((
+                    encode_state(board),
+                    soft_policy.astype(np.float32),
+                ))
+
+            board = board.apply(played_move)
+        if scanned >= max_positions:
+            break
+    return examples
+
+
 # ======================================================================
 # Pipeline orchestration
 # ======================================================================
@@ -1220,15 +1348,29 @@ def run_pipeline(args) -> None:
 
     # Rolling history of recently promoted checkpoint paths (for the
     # calibration tournament).  We accumulate newest-first and truncate
-    # to args.tournament_pool_size.
+    # to args.tournament_pool_size.  Paths point at
+    # ``promoted_{version}.pt`` (stable, never-overwritten) rather than
+    # ``iter_{NNNN}.pt`` (can be clobbered when a later run reuses the
+    # same global iteration number).
     promoted_history: List[Tuple[str, str]] = []
-    # Seed it with the currently-best checkpoint so the tournament has a
-    # meaningful opponent set even on iteration 0.
-    current_best_path = os.path.join(
-        args.checkpoint_dir, f"iter_{best_iteration:04d}.pt",
-    )
-    if os.path.exists(current_best_path):
-        promoted_history.append((best_version, current_best_path))
+    # Seed with the currently-best checkpoint.  Prefer the stable
+    # promoted file if it exists; fall back to best.pt (which is a copy
+    # of the promoted weights anyway).
+    stable_candidates = [
+        os.path.join(args.checkpoint_dir, f"promoted_{best_version}.pt"),
+        os.path.join(args.checkpoint_dir, "best.pt"),
+    ]
+    for cand in stable_candidates:
+        if os.path.exists(cand):
+            promoted_history.append((best_version, cand))
+            break
+
+    # Hard examples mined at the last revert.  Consumed by the next
+    # training pass and cleared.  We deliberately don't persist these
+    # across training calls (the lesson is most relevant immediately
+    # after a revert; later iterations use champion-quality self-play
+    # data instead).
+    pending_hard_examples: List[Tuple[np.ndarray, np.ndarray]] = []
 
     try:
         for it in range(1, args.iterations + 1):
@@ -1273,6 +1415,13 @@ def run_pipeline(args) -> None:
             # --- 2. Training ---
             print("\n[2/3] Training")
             candidate = copy.deepcopy(best_net)
+            # Filter out games generated by self-play versions older
+            # than the current best — they're noisier and may encode a
+            # worse policy than what we're trying to refine.  Training
+            # exclusively on best-or-newer data (+ tourney-champion
+            # games, which _accept_version always keeps) keeps the
+            # gradient aligned with the current strength tier.
+            min_ver = best_iteration if args.train_from_best_version else None
             candidate, metrics = train_on_recent_games(
                 candidate, db, device,
                 max_games=args.window,
@@ -1284,7 +1433,12 @@ def run_pipeline(args) -> None:
                 max_moves=args.max_moves,
                 policy_temp=args.policy_temp,
                 value_weight=args.value_weight,
+                min_version_iter=min_ver,
+                extra_examples=pending_hard_examples or None,
             )
+            # Hard examples are consumed once — the next training pass
+            # uses fresh champion-quality self-play data instead.
+            pending_hard_examples = []
 
             # --- 3. Evaluation ---
             if args.eval_games > 0:
@@ -1340,13 +1494,21 @@ def run_pipeline(args) -> None:
                     best_net = candidate
                     best_version = version
                     best_iteration = global_it
-                    # Record promoted net for the calibration tournament.
-                    promoted_history.insert(
-                        0,
-                        (version, os.path.join(
-                            args.checkpoint_dir, f"iter_{global_it:04d}.pt",
-                        )),
+                    # Persistent promoted checkpoint: never overwritten by
+                    # later iterations (iter_{NNNN}.pt uses global_it which
+                    # can collide across runs). This is the source of truth
+                    # for rollbacks and tournament anchors.
+                    promoted_path = os.path.join(
+                        args.checkpoint_dir, f"promoted_{version}.pt",
                     )
+                    save_checkpoint(
+                        best_net, promoted_path,
+                        iteration=global_it,
+                        best_iteration=best_iteration,
+                        **metrics,
+                    )
+                    print(f"  Saved stable promoted snapshot: {promoted_path}")
+                    promoted_history.insert(0, (version, promoted_path))
                     promoted_history[:] = promoted_history[:args.tournament_pool_size]
                 else:
                     print("  --- Keeping previous network.")
@@ -1429,11 +1591,38 @@ def run_pipeline(args) -> None:
                             if champ_path and os.path.exists(champ_path):
                                 print(f"  >>> REVERTING best_net: "
                                       f"{best_version} -> {champion}")
+                                # Identify rejected candidates: every
+                                # promoted version since the champion
+                                # turned out to be a wrong turn.  Their
+                                # self-play games are scanned for hard
+                                # examples vs the champion.
+                                rejected = [
+                                    label for label, _ in promoted_history
+                                    if label != champion
+                                ]
                                 champ_net, _ = load_checkpoint(
                                     champ_path, map_location=str(device),
                                 )
                                 champ_net.to(device)
                                 champ_net.eval()
+                                # Hard-example mining BEFORE swapping
+                                # best_net so the champion is what we
+                                # use to score positions.  Mined
+                                # examples are kept in-memory and
+                                # passed to the next training pass.
+                                if args.hard_example_mining and rejected:
+                                    print("  Mining hard examples from "
+                                          f"{rejected[:3]}...")
+                                    new_examples = _mine_hard_examples(
+                                        champ_net, db, device,
+                                        rejected_versions=rejected,
+                                        sims=args.tournament_sims,
+                                        max_positions=args.hard_example_positions,
+                                    )
+                                    pending_hard_examples.extend(new_examples)
+                                    print(f"  Mined {len(new_examples)} "
+                                          f"hard examples; will be folded "
+                                          f"into next training pass.")
                                 best_net = champ_net
                                 best_version = champion
                                 # Re-save best.pt as the champion.
@@ -1532,6 +1721,13 @@ def main() -> None:
                         "(default 1.0). Lower values (0.1–0.3) protect a "
                         "well-calibrated value head — e.g. after distillation "
                         "— from being smashed by blunt outcome targets.")
+    g.add_argument("--train-from-best-version", action="store_true",
+                   help="Filter training data to only include games from "
+                        "self-play version >= current best_iteration, plus "
+                        "tournament-champion games. Stops chains of rejected-"
+                        "candidate self-play from pulling the net back toward "
+                        "a weaker distribution. Highly recommended once a "
+                        "strong best_iteration is established.")
 
     # --- evaluation ---
     g = p.add_argument_group("evaluation")
@@ -1572,6 +1768,15 @@ def main() -> None:
                    help="Path to a checkpoint that should appear in every "
                         "tournament (repeat). Typical use: an old historical "
                         "champion like iter_0036.pt to detect drift.")
+    g.add_argument("--hard-example-mining", action="store_true",
+                   help="On revert, scan rejected candidates' self-play "
+                        "games and save positions where the champion's MCTS "
+                        "top move differs from the played move. These get "
+                        "high weight in the next training pass, directly "
+                        "addressing 'why did we lose to the champion'.")
+    g.add_argument("--hard-example-positions", type=int, default=1500,
+                   help="Max positions scanned for hard-example mining "
+                        "(default 1500). Higher = more signal, more compute.")
 
     args = p.parse_args()
     run_pipeline(args)

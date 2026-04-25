@@ -183,6 +183,44 @@ def compute_elos(
     return R
 
 
+def bootstrap_elos(
+    matches: List[Tuple[str, str, int, int, int]],
+    anchor_label: str = None,
+    anchor_rating: float = 1000.0,
+    n_resamples: int = 200,
+    seed: int = 0,
+) -> Dict[str, Tuple[float, float, float]]:
+    """Bootstrap-resample game outcomes, recompute Elos each time.
+
+    Returns ``{label: (point_estimate, lo_95, hi_95)}``.  For each pair
+    (a, b) with total games T, resample T outcomes from a multinomial
+    of the observed (W_a, W_b, D) proportions, refit Elo, repeat.
+    Captures the sampling uncertainty inherent in low-game-per-pair
+    tournaments — a 5-1 record is one decisive game from 4-2.
+    """
+    rng = np.random.default_rng(seed)
+    point = compute_elos(matches, anchor_label, anchor_rating)
+    samples: Dict[str, List[float]] = {label: [] for label in point}
+    for _ in range(n_resamples):
+        resampled: List[Tuple[str, str, int, int, int]] = []
+        for (a, b, wa, wb, d) in matches:
+            total = wa + wb + d
+            if total == 0:
+                continue
+            probs = np.array([wa, wb, d], dtype=float) / total
+            counts = rng.multinomial(total, probs)
+            resampled.append((a, b, int(counts[0]), int(counts[1]), int(counts[2])))
+        boot = compute_elos(resampled, anchor_label, anchor_rating)
+        for label, r in boot.items():
+            samples[label].append(r)
+    out: Dict[str, Tuple[float, float, float]] = {}
+    for label, vals in samples.items():
+        arr = np.array(vals)
+        out[label] = (point[label], float(np.percentile(arr, 2.5)),
+                      float(np.percentile(arr, 97.5)))
+    return out
+
+
 # ---------------------------------------------------------------------
 # CLI
 # ---------------------------------------------------------------------
@@ -222,9 +260,42 @@ def main() -> None:
         ckpts.append((label, path))
     if len({l for l, _ in ckpts}) != len(ckpts):
         raise SystemExit("Duplicate labels in --ckpt list.")
+
+    # Deduplicate by weight fingerprint.  Two paths can hold the same
+    # weights — e.g. a rolled-back best.pt that copied iter_0034.pt, or
+    # iter_{NNNN}.pt files that were re-saved during a no-promotion
+    # iteration.  Playing duplicates against each other is pure waste
+    # and pollutes the Elo with a 50%-by-construction match.
+    def _weight_fingerprint(path: str) -> str:
+        import hashlib
+        ck = torch.load(path, map_location="cpu", weights_only=False)
+        sd = ck["state_dict"]
+        # Hash the stem conv (small, content-addressing).
+        w = sd["stem.0.weight"].flatten().contiguous().numpy().tobytes()
+        return hashlib.md5(w).hexdigest()
+    seen_fps: Dict[str, str] = {}
+    deduped: List[Tuple[str, str]] = []
+    for label, path in ckpts:
+        try:
+            fp = _weight_fingerprint(path)
+        except Exception:
+            deduped.append((label, path))
+            continue
+        if fp in seen_fps:
+            print(f"  (skipping {label!r} — same weights as {seen_fps[fp]!r})")
+            continue
+        seen_fps[fp] = label
+        deduped.append((label, path))
+    ckpts = deduped
+    if len(ckpts) < 2:
+        raise SystemExit("Need at least 2 distinct-weight checkpoints.")
     labels = [l for l, _ in ckpts]
-    print(f"Players ({len(labels)}): {labels}")
+    print(f"Players ({len(labels)} after dedup): {labels}")
     anchor = args.anchor or labels[0]
+    if anchor not in labels:
+        # Anchor was deduplicated away — pick the first remaining.
+        print(f"  (anchor {anchor!r} was a duplicate; using {labels[0]!r})")
+        anchor = labels[0]
 
     # Build pair schedule with alternating colors
     jobs: List[Tuple[str, str, int]] = []
@@ -322,15 +393,20 @@ def main() -> None:
                     row.append(f"{'n/a':>14}")
         print(" ".join(row))
 
-    # Compute Elos
+    # Compute Elos (point estimate + bootstrap 95% CI)
     match_rows = [(a, b, w[0], w[1], w[2]) for (a, b), w in wld.items() if sum(w) > 0]
     elos = compute_elos(match_rows, anchor_label=anchor, anchor_rating=1000.0)
+    elos_ci = bootstrap_elos(
+        match_rows, anchor_label=anchor, anchor_rating=1000.0,
+        n_resamples=200, seed=args.seed,
+    )
 
     print("\nElo ratings (anchored at 1000 for "
-          f"{anchor!r}):")
+          f"{anchor!r}, 95% CI from 200 bootstrap resamples):")
     ranked = sorted(elos.items(), key=lambda kv: -kv[1])
     for i, (label, r) in enumerate(ranked, 1):
-        print(f"  {i:>2}. {label:<25s} {r:7.1f}")
+        _, lo, hi = elos_ci[label]
+        print(f"  {i:>2}. {label:<25s} {r:7.1f}   [{lo:7.1f}, {hi:7.1f}]")
 
     # Save results
     out = {
@@ -342,6 +418,10 @@ def main() -> None:
             for (a, b), w in wld.items()
         ],
         "ratings": elos,
+        "ratings_ci": {
+            label: {"point": pt, "lo_95": lo, "hi_95": hi}
+            for label, (pt, lo, hi) in elos_ci.items()
+        },
     }
     os.makedirs(os.path.dirname(args.out) or ".", exist_ok=True)
     with open(args.out, "w") as f:
