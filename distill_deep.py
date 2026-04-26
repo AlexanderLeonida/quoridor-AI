@@ -127,7 +127,19 @@ def _mcts_init(ckpt_path: str):
 # Student training
 # ---------------------------------------------------------------------
 def distill_student(student, examples, device, *, epochs, batch_size, lr,
-                    weight_decay, val_frac=0.05):
+                    weight_decay, val_frac=0.05,
+                    reference=None, reg_lambda=0.0):
+    """Distill ``examples`` into ``student``.
+
+    If ``reference`` is provided, add a KL-divergence term
+    ``reg_lambda · KL(reference || student)`` to the loss.  This pulls
+    the student toward its pre-distillation behaviour wherever the
+    teacher signal is silent — the standard mitigation for catastrophic
+    forgetting (PROCESS.md §35, mitigation 1).
+
+    The ``examples`` list is expected to mix teacher targets and
+    rehearsal samples already (mitigation 2).
+    """
     states = torch.from_numpy(np.stack([e[0] for e in examples]))
     pols = torch.from_numpy(np.stack([e[1] for e in examples]))
     vals = torch.from_numpy(np.array([e[2] for e in examples], dtype=np.float32))
@@ -149,11 +161,17 @@ def distill_student(student, examples, device, *, epochs, batch_size, lr,
     opt = torch.optim.Adam(student.parameters(), lr=lr, weight_decay=weight_decay)
     sched = torch.optim.lr_scheduler.CosineAnnealingLR(opt, T_max=epochs * len(tr_loader))
 
+    if reference is not None:
+        reference.to(device)
+        reference.eval()
+        for p in reference.parameters():
+            p.requires_grad = False
+
     best_val = None
     best_state = None
     for epoch in range(1, epochs + 1):
         student.train()
-        tl = tp = tv = 0.0
+        tl = tp = tv = tk = 0.0
         tn = 0
         for xb, pb, vb in tr_loader:
             xb, pb, vb = xb.to(device), pb.to(device), vb.to(device)
@@ -162,15 +180,27 @@ def distill_student(student, examples, device, *, epochs, batch_size, lr,
             loss_p = -(pb * log_p).sum(dim=1).mean()
             loss_v = F.mse_loss(v_pred, vb)
             loss = loss_p + loss_v
+            kl_val = 0.0
+            if reference is not None and reg_lambda > 0.0:
+                with torch.no_grad():
+                    ref_logits, _ = reference(xb)
+                    ref_log_p = F.log_softmax(ref_logits, dim=1)
+                    ref_p = ref_log_p.exp()
+                # KL(reference || student): penalises student moving
+                # high-prob actions away from where the reference put them.
+                kl = (ref_p * (ref_log_p - log_p)).sum(dim=1).mean()
+                loss = loss + reg_lambda * kl
+                kl_val = float(kl.item())
             opt.zero_grad(set_to_none=True)
             loss.backward()
             torch.nn.utils.clip_grad_norm_(student.parameters(), 1.0)
             opt.step(); sched.step()
             bs = xb.size(0)
             tl += loss.item() * bs; tp += loss_p.item() * bs
-            tv += loss_v.item() * bs; tn += bs
+            tv += loss_v.item() * bs; tk += kl_val * bs; tn += bs
         line = (f"  epoch {epoch}/{epochs}  "
-                f"loss={tl/tn:.4f} (p={tp/tn:.4f} v={tv/tn:.4f})")
+                f"loss={tl/tn:.4f} (p={tp/tn:.4f} v={tv/tn:.4f}"
+                f"{f' kl={tk/tn:.4f}' if reference is not None else ''})")
         if val_loader:
             student.eval()
             vl = 0.0; vn = 0
@@ -197,6 +227,44 @@ def distill_student(student, examples, device, *, epochs, batch_size, lr,
 
 
 # ---------------------------------------------------------------------
+# Rehearsal sampler
+# ---------------------------------------------------------------------
+def sample_rehearsal(db: GameDB, n_target: int, seed: int = 0):
+    """Materialise (state, policy, value) triples from existing self-
+    play games — used to mix into the distillation training set so the
+    student keeps seeing its own prior task while learning the new one.
+    """
+    from quoridor.encoding import deserialize_policy
+    rng = random.Random(seed + 7919)  # different seed than position sampler
+    games = [row for row in db.iter_games(finished_only=False)
+             if row[5] == "selfplay_nn" and row[6] == "selfplay_nn"]
+    rng.shuffle(games)
+
+    out = []
+    for row in games:
+        gid = row[0]
+        winner = row[3]
+        moves = db.load_moves(gid)
+        blobs = db.load_policy_blobs(gid)
+        board = Board.initial()
+        for move, blob in zip(moves, blobs):
+            if blob is None:
+                board = board.apply(move)
+                continue
+            state = encode_state(board)
+            pol = deserialize_policy(blob).astype(np.float32)
+            if winner is None:
+                z = 0.0
+            else:
+                z = 1.0 if winner == board.turn else -1.0
+            out.append((state, pol, float(z)))
+            board = board.apply(move)
+            if len(out) >= n_target:
+                return out
+    return out
+
+
+# ---------------------------------------------------------------------
 # CLI
 # ---------------------------------------------------------------------
 def main() -> None:
@@ -220,6 +288,18 @@ def main() -> None:
     p.add_argument("--batch-size", type=int, default=256)
     p.add_argument("--lr", type=float, default=1e-3)
     p.add_argument("--weight-decay", type=float, default=1e-4)
+    # Catastrophic-forgetting mitigation
+    p.add_argument("--rehearsal-frac", type=float, default=0.3,
+                   help="Fraction of training data sampled from existing "
+                        "self-play games (kept as 'rehearsal' to prevent "
+                        "the student from forgetting its prior task). "
+                        "0.0 disables; 0.3 typical (PROCESS.md §35).")
+    p.add_argument("--reg-lambda", type=float, default=0.5,
+                   help="Weight on KL(reference || student) regularisation, "
+                        "where the reference is a frozen copy of the pre-"
+                        "distillation student. Pulls the student toward "
+                        "its prior behaviour wherever the teacher is "
+                        "silent. 0.0 disables; 0.5 typical.")
     args = p.parse_args()
 
     random.seed(args.seed); np.random.seed(args.seed); torch.manual_seed(args.seed)
@@ -252,13 +332,33 @@ def main() -> None:
     print(f"  {len(examples)} teacher targets in {elapsed:.0f}s "
           f"({elapsed/len(examples):.2f}s/pos)")
 
+    # Mix in rehearsal data — samples from existing self-play games
+    # so the student keeps its prior task visible during distillation.
+    if args.rehearsal_frac > 0.0:
+        n_teacher = len(examples)
+        n_rehearsal = int(n_teacher * args.rehearsal_frac /
+                          max(1e-6, 1.0 - args.rehearsal_frac))
+        print(f"Sampling {n_rehearsal} rehearsal triples "
+              f"({args.rehearsal_frac:.0%} of final mix) from {args.db}...")
+        rehearsal = sample_rehearsal(db, n_rehearsal, seed=args.seed)
+        print(f"  got {len(rehearsal)} rehearsal triples")
+        examples = examples + rehearsal
+
     device = best_available_device()
     print(f"Distilling into student on {device}...")
     student, student_meta = load_checkpoint(args.student, map_location=str(device))
+
+    # Frozen reference for KL regularisation.
+    reference = None
+    if args.reg_lambda > 0.0:
+        import copy as _copy
+        reference = _copy.deepcopy(student)
+        print(f"  KL regularisation enabled, reg_lambda={args.reg_lambda}")
     student, best_val = distill_student(
         student, examples, device,
         epochs=args.epochs, batch_size=args.batch_size,
         lr=args.lr, weight_decay=args.weight_decay,
+        reference=reference, reg_lambda=args.reg_lambda,
     )
 
     save_iter = student_meta.get("iteration", 0)
@@ -270,6 +370,8 @@ def main() -> None:
         deep_distilled_from=args.teacher,
         deep_distill_positions=len(examples),
         deep_distill_val_loss=float(best_val) if best_val is not None else 0.0,
+        rehearsal_frac=args.rehearsal_frac,
+        reg_lambda=args.reg_lambda,
     )
     print(f"Saved {args.out}")
 

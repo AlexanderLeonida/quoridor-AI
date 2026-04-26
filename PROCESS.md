@@ -419,6 +419,48 @@ With auxiliary value supervision the gradient is much richer per epoch, so 2 epo
 
 **Composite effect:** 6 promotions in 16 iters from the same warmstart that previous runs degraded. Each intervention addresses a distinct failure mode, and the metrics.csv columns let us verify each is actually doing work. The system is no longer drifting — it is making real progress for the first time in this project.
 
+## 35. Deep distillation: when and how, plus catastrophic forgetting
+
+After 16 iterations the net trained well by val-loss metrics but was still being beaten badly by a human player. This raised a real question: do we keep iterating slowly, or take a bigger lever and *distill from a depth-8 alphabeta teacher* (`distill_deep.py --teacher ab --ab-depth 8 --ab-time 5`)?  The decision was non-obvious and got debated several times during this session — recording the analysis so the same loop doesn't repeat.
+
+**Pros of running deep AB distillation now:**
+
+- Depth-8 alphabeta is a genuinely stronger player than the depth-4 AB the net sees in self-play.  Distillation transfers tactical knowledge the net has no other path to acquire at our current scale.
+- Bounded downside: the calibration tournament + revert mechanism (§§20-21, §24) automatically rolls back to `selfplay-v11` if the distilled net is weaker.  Cost is ~1-2 hours of compute, nothing structural.
+- We've done this before successfully: §15 (the original v74 → 10×128 distillation) gave us the warmstart that everything since has built on.  Distillation is a known-good intervention in this project.
+- Iterative training continues working *from* the distilled checkpoint with no protocol change — we don't lose any infrastructure.
+
+**Cons / risks:**
+
+- **Catastrophic forgetting** (the core risk — see below).  Distillation pushes weights toward the teacher's distribution; if the rate is wrong, knowledge encoded by the iterative training (the "chain" warmstart → v6 → v11) gets overwritten rather than refined.
+- Magnitude of improvement is uncertain — could be +200 Elo, could be flat, could be slightly negative if depth-4 self-play already saturated this network's capacity.
+- 3000 positions is a guess; the right number depends on the net's plasticity.  Too few and the teacher signal is weak; too many and we overfit to a static teacher distribution.
+
+**What catastrophic forgetting looks like in our setup:**
+
+Catastrophic forgetting is the standard continual-learning failure mode: when training on task B (here: matching depth-8 AB's policy), neural networks tend to overwrite features that were specialised for task A (here: the policy patterns the iterative training learned over 16 iterations).  Concretely, after a too-aggressive distillation pass we'd see val loss drop on the new teacher targets while the net suddenly plays *worse* against `selfplay-v11` in calibrated tournament — because the weights have moved into a region that fits the static teacher but not the gradients accumulated during self-play.
+
+The tournament + revert is a *post-hoc* safety net: it catches forgetting only after the fact and discards the entire distillation effort.  Better to mitigate forgetting up front so we capture both the teacher's knowledge and the iterative gains.
+
+**Three mitigation strategies (none are mutually exclusive):**
+
+1. **Regularisation toward the previous net.**  During distillation the loss becomes
+   `L = CE(student, teacher) + MSE(value, v_teacher) + λ · KL(student || pre_distill_student)`.
+   The KL term pulls the student toward its pre-distillation distribution wherever the teacher signal is silent, preserving the iterative-training knowledge.  λ is a single hyperparameter; literature uses 0.1-1.0 in similar settings.  Cheapest to implement (a few lines in `distill_deep.py`).  Sometimes called *knowledge distillation with self-regularisation*; closely related to **EWC** (elastic weight consolidation) which uses Fisher information instead of KL — same goal, more compute.
+
+2. **Rehearsal.**  During distillation mix in self-play games from the iterative training as additional training data: ~70% teacher targets + ~30% rehearsal targets.  The net sees both the new teacher's distribution and a sample of "what it already knew" each batch, so gradients can't pull it cleanly off the old manifold.  This is the standard continual-learning fix — easy to implement here because the v3 DB already holds the rehearsal data.  Slightly slower training (more samples per epoch) but no math complexity.
+
+3. **Architectural expansion.**  Freeze the trained 10×128 trunk; add a new small set of trainable parameters (an adapter block, a wider head, or a few extra residual blocks) and train *only those* on the teacher.  Because the original parameters cannot move, original behaviour is preserved exactly.  The cost is the model gets bigger.  More invasive — changes the checkpoint format and requires loader updates — so this is the heaviest hammer.  The right move only if (1) and (2) don't get us there.
+
+**The pragmatic plan:**
+
+- **First attempt:** run `distill_deep.py` with rehearsal (mitigation 2) and a small regularisation term (mitigation 1) — both are inexpensive code changes inside `distill_deep.py`.  That's the right starting point given we have no signal yet on whether the simpler version works.
+- **If iter-2 catalogue still shows forgetting** (calibrated tournament puts the distilled net below v11): try a stronger λ on regularisation, or shift the rehearsal mix toward 50/50.
+- **If both fail** and we still want the deep-AB knowledge: architectural expansion — add 2-4 new residual blocks frozen at init, train them on the AB teacher, leave the original trunk untouched.  Heavyweight but a guarantee against forgetting.
+- **The tournament safety net stays on throughout** as the unconditional rollback guard.
+
+This converts "distill and pray" into a controlled experiment with a recoverable failure mode.
+
 ## Current state
 
 - Net: 10 blocks × 128 filters, distilled from v74 (6×64 peak).
@@ -426,3 +468,4 @@ With auxiliary value supervision the gradient is much richer per epoch, so 2 epo
 - Tournament-calibrated Elos: warmstart=1059, iter_0034=1119, selfplay-v11=1060+ (latest, post-promotion). For the first time the trained net is competitive with v34 in calibrated round-robin.
 - All five anti-drift interventions verified working end-to-end with metrics-CSV instrumentation.
 - val loss progression this session: 1.52 → 1.36, value loss 0.5 → 0.11. Both unprecedented.
+- Net is still beatable by a human; deep AB distillation is the candidate next intervention but should be run with rehearsal + regularisation (§35) rather than naive distillation.
