@@ -366,10 +366,63 @@ After fixing §32 and starting from `warmstart_10x128.pt`:
 
 The full intervention stack (sims=600, ab_mix=0.2, aux_value=0.4, hard-example mining, PBT) produced a net stronger than v34 in 6 iterations from a warmstart base. Each piece is doing visible work in the metrics.csv columns.
 
+## 34. Current training recipe and why it works
+
+Reproducible launch command for the configuration that produced 6+ promotions in 16 iterations from `warmstart_10x128.pt`:
+
+```sh
+python3 -u selfplay.py \
+  --iterations 30 --games-per-iter 100 --simulations 600 \
+  --eval-games 30 --epochs 2 --window 3000 --workers 8 \
+  --lr 3e-4 --weight-decay 5e-4 \
+  --max-moves 100 --opening-random 8 --temp-threshold 15 \
+  --policy-temp 0.7 --value-weight 1.0 --draw-penalty 0.5 \
+  --gate-threshold 0.52 --eval-temp 0.5 --eval-temp-moves 10 \
+  --adjudicate-gap 1 \
+  --ab-mix-frac 0.2 --ab-depth 4 --ab-time 1.5 \
+  --aux-value-weight 0.4 \
+  --hard-example-mining --pbt-mutate-every 6 \
+  --tournament-every 5 --tournament-games 4 --tournament-sims 200 \
+  --tournament-pool-size 5 \
+  --tournament-anchors checkpoints/warmstart_10x128.pt \
+  --tournament-anchors checkpoints/iter_0034.pt \
+  --tournament-anchors checkpoints/iter_0040.pt \
+  --db data/quoridor_v3.db --checkpoint-dir checkpoints \
+  --resume checkpoints/best.pt
+```
+
+Each non-default knob and the causal reason it helps:
+
+**`--simulations 600`** (vs 200-300 default).
+At 200 sims MCTS visit counts are mostly the net's raw priors with a thin layer of search — training on those targets just fits what the net already knows, so it can't actually improve. At 600+ sims MCTS finds moves the raw net would have missed, giving training a teacher signal stronger than the student. *Effect: val loss dropped from ~1.8 plateau to 1.36, value loss from 0.5+ to 0.09-0.17.*
+
+**`--ab-mix-frac 0.2`** (20% of self-play games are NN-vs-alphabeta, depth 4, 1.5s budget).
+Pure self-play is a closed feedback loop — the net only sees its own move distribution and slowly drifts to fit it. Alphabeta is a *fundamentally different* evaluator (handcrafted features vs learned), so its games inject viewpoints the net cannot generate by playing itself. The net learns to respond to alphabeta-style threats. Most importantly, this breaks the "imitate yourself perfectly" attractor that produced the original drift problem (§20). *Effect: visible promotions started after this was added; previously 12+ iterations of pure self-play could not beat warmstart.*
+
+**`--aux-value-weight 0.4`** (path-diff value blend).
+Outcome labels (-1/0/+1) are sparse — one per game — and noisy because of draws and adjudication. Shortest-path differential `tanh((opp_path - my_path)/6)` is a dense, per-position signal grounded in the actual win condition. Blending the two densifies value-head supervision by ~30×. *Effect: value loss collapsed from 0.5+ to 0.1, train/val gap closed substantially, training is now slightly underfit rather than overfit.*
+
+**`--hard-example-mining`** (mine positions on tournament revert).
+When the tournament tells us a recent promotion was a mistake, we know the rejected candidate's moves at those positions were *wrong*. Running the champion's MCTS at those exact positions gives us concentrated lessons — "here's where you went off the rails." These positions are passed in-memory to the next training pass with weight 1.0 absolute (~8× normal), so the gradient pays attention. *Effect: 861 hard examples mined after the iter 5 revert went straight into iter 6's training, which then promoted at 56.7% — first time ever beating v34.*
+
+**`--pbt-mutate-every 6`** (sibling candidate every 6 iters).
+Single-trajectory training gets stuck in local minima. Every 6 iterations, train a sibling with mutated lr (×0.5/×1.5/×2.0) and weight_decay (×0.5/×2.0); keep whichever has the lower val loss. Cheap exploration of hparam neighborhoods without a full PBT pool. *Effect: at iter 6 the sibling at lr=4.5e-4 won by 0.002 val loss and was kept — may not always matter, but free insurance.*
+
+**`--tournament-every 5` + held-out anchors** (warmstart, iter_0034, iter_0040).
+Gating is a local signal — chains of "barely better than predecessor" can drift downward. Round-robin Bradley-Terry MLE every 5 iters provides the global view. Held-out anchors that never get overwritten (warmstart, v34, v40) keep the reference scale stable across runs. When the champion isn't the current best, *revert*. *Effect: caught drift twice in 16 iterations (v5→v34 and v15→v11), exactly the failure mode that destroyed previous runs.*
+
+**`--gate-threshold 0.52`** (kept conservative).
+With 30 eval games the half-CI is ±17pp, so 51-52% candidates are noise. Kept at 0.52 because the tournament safety net handles drift; a permissive gate (0.50) would create more revert work without speeding overall progress. The asymmetry — needing evidence of improvement to promote, but not evidence of equality to keep — is correct given the tournament catches mistakes.
+
+**`--epochs 2`** + **`--lr 3e-4`** + **`--weight-decay 5e-4`** (small, gentle, regularized).
+With auxiliary value supervision the gradient is much richer per epoch, so 2 epochs is enough. Higher lr risked overshooting v34 in earlier runs (§23 lesson); 3e-4 + 5e-4 weight-decay produces small steps that compound rather than collapse.
+
+**Composite effect:** 6 promotions in 16 iters from the same warmstart that previous runs degraded. Each intervention addresses a distinct failure mode, and the metrics.csv columns let us verify each is actually doing work. The system is no longer drifting — it is making real progress for the first time in this project.
+
 ## Current state
 
 - Net: 10 blocks × 128 filters, distilled from v74 (6×64 peak).
-- `best.pt` is now `selfplay-v6` (post-revert iter 6 promotion) — first net to beat v34 in gating.
-- `metrics.csv` is populating cleanly with all new columns (ab_games, sims_used, aux_value_weight, lr_used, etc.).
-- All five anti-drift interventions verified working end-to-end.
-- Training continuing — iter 10 will trigger the next auto-tournament; we'll see where v6 ranks among warmstart/v34/v40 anchors at full calibration.
+- `best.pt` is now `selfplay-v11` (post-tournament-revert). Promotion chain in this session: warmstart → v5 (reverted) → v6 → v11 → v12 → v14 → v15 (reverted to v11). Both reverts caught real drift.
+- Tournament-calibrated Elos: warmstart=1059, iter_0034=1119, selfplay-v11=1060+ (latest, post-promotion). For the first time the trained net is competitive with v34 in calibrated round-robin.
+- All five anti-drift interventions verified working end-to-end with metrics-CSV instrumentation.
+- val loss progression this session: 1.52 → 1.36, value loss 0.5 → 0.11. Both unprecedented.

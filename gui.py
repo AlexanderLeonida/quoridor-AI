@@ -29,6 +29,8 @@ from quoridor import (
     WALL_V,
     find_best_move,
 )
+from quoridor.encoding import action_to_move, canonical_view
+from quoridor.mcts import EvalCache, MCTSConfig, search, select_action
 
 # --- Layout constants ---------------------------------------------------
 CELL = 58
@@ -68,6 +70,12 @@ class QuoridorGUI:
         self.preview: Optional[Tuple[str, Move, bool]] = None  # (kind, move, legal?)
         self.ai_depth: int = 20
         self.ai_time: float = 30.0
+        self.ai_engine: str = "neural"  # "alphabeta" or "neural"
+        self.nn_simulations: int = 800
+        self.nn_ckpt_path: str = "checkpoints/best.pt"
+        self._nn = None  # lazy-loaded
+        self._nn_device = None
+        self._nn_cache: Optional[EvalCache] = None
         self.recorder: Optional[GameRecorder] = None
 
         self._build_ui()
@@ -109,9 +117,9 @@ class QuoridorGUI:
         tk.Label(bot, text="Difficulty:", bg=COLOR_BG, fg=COLOR_TEXT).pack(
             side=tk.LEFT, padx=(14, 4)
         )
-        self.difficulty_var = tk.StringVar(value="Hard")
+        self.difficulty_var = tk.StringVar(value="Neural Net")
         tk.OptionMenu(
-            bot, self.difficulty_var, "Easy", "Medium", "Hard",
+            bot, self.difficulty_var, "Easy", "Medium", "Hard", "Neural Net",
             command=self._on_difficulty_change,
         ).pack(side=tk.LEFT)
 
@@ -125,12 +133,16 @@ class QuoridorGUI:
         # `ai_depth` is a ceiling for iterative deepening; the real governor
         # is `ai_time` -- the search stops at whatever depth it reaches before
         # the time budget expires.
-        if val == "Easy":
-            self.ai_depth, self.ai_time = 3, 2.0
-        elif val == "Medium":
-            self.ai_depth, self.ai_time = 20, 8.0
-        else:  # Hard
-            self.ai_depth, self.ai_time = 20, 30.0
+        if val == "Neural Net":
+            self.ai_engine = "neural"
+        else:
+            self.ai_engine = "alphabeta"
+            if val == "Easy":
+                self.ai_depth, self.ai_time = 3, 2.0
+            elif val == "Medium":
+                self.ai_depth, self.ai_time = 20, 8.0
+            else:  # Hard
+                self.ai_depth, self.ai_time = 20, 30.0
 
     # -------------------------------------------------------------------
     # Start menu / game lifecycle
@@ -484,23 +496,55 @@ class QuoridorGUI:
 
     def _ai_move(self) -> None:
         self.ai_busy = True
-        self.msg_var.set("")
+        self.msg_var.set(
+            "Neural net thinking..." if self.ai_engine == "neural"
+            else ""
+        )
         self._update_status()
         self.root.update_idletasks()
 
         board_copy = self.board.clone()
         depth = self.ai_depth
         time_limit = self.ai_time
+        engine = self.ai_engine
+        sims = self.nn_simulations
 
         def worker() -> None:
             try:
-                mv = find_best_move(board_copy, max_depth=depth, time_limit=time_limit)
+                if engine == "neural":
+                    mv = self._nn_pick_move(board_copy, sims)
+                else:
+                    mv = find_best_move(board_copy, max_depth=depth,
+                                        time_limit=time_limit)
                 self.root.after(0, lambda: self._ai_done(mv))
             except Exception as exc:  # noqa: BLE001
                 err = str(exc)
                 self.root.after(0, lambda: self._ai_error(err))
 
         threading.Thread(target=worker, daemon=True).start()
+
+    def _ensure_nn_loaded(self) -> None:
+        if self._nn is not None:
+            return
+        import torch  # local — keeps GUI startup torch-free
+        from quoridor.net import load_checkpoint
+        self._nn_device = torch.device("cpu")  # CPU is plenty for one-move searches
+        net, meta = load_checkpoint(self.nn_ckpt_path,
+                                    map_location=str(self._nn_device))
+        net.to(self._nn_device)
+        net.eval()
+        self._nn = net
+        self._nn_cache = EvalCache()
+        print(f"[GUI] loaded {self.nn_ckpt_path} meta={meta}")
+
+    def _nn_pick_move(self, board: Board, sims: int) -> Move:
+        self._ensure_nn_loaded()
+        cfg = MCTSConfig(num_simulations=sims, dirichlet_epsilon=0.0)
+        root = search(board, self._nn, cfg, self._nn_device,
+                      add_noise=False, cache=self._nn_cache)
+        action = select_action(root, temperature=0.0)
+        _, _, _, _, _, _, flipped = canonical_view(board)
+        return action_to_move(action, flipped)
 
     def _ai_done(self, move: Optional[Move]) -> None:
         self.ai_busy = False

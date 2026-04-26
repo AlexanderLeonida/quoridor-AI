@@ -70,3 +70,858 @@ Resuming from checkpoints/best.pt
   game  50/100  id=5846   plies=22    winner=P2     19.7s  avg_len=30
   game  51/100  id=5847   plies=100   winner=draw   46.8s  avg_len=31
   game  52/100  id=5848   plies=22    winner=P2     32.4s  avg_len=31
+  game  53/100  id=5849   plies=22    winner=P2     30.1s  avg_len=31
+  game  54/100  id=5850   plies=29    winner=P1     35.5s  avg_len=31
+  game  55/100  id=5851   plies=38    winner=P2     85.0s  avg_len=31 [AB]
+  game  56/100  id=5852   plies=26    winner=P2     39.0s  avg_len=31
+  game  57/100  id=5853   plies=20    winner=P2     26.0s  avg_len=31
+  game  58/100  id=5854   plies=30    winner=P2     73.3s  avg_len=31 [AB]
+  game  59/100  id=5855   plies=18    winner=P2     14.1s  avg_len=30
+  game  60/100  id=5856   plies=17    winner=P1     16.3s  avg_len=30
+  game  61/100  id=5857   plies=18    winner=P2     17.3s  avg_len=30
+  game  62/100  id=5858   plies=44    winner=P2     75.2s  avg_len=30 [AB]
+  game  63/100  id=5859   plies=34    winner=P2     48.7s  avg_len=30
+  game  64/100  id=5860   plies=28    winner=P2     84.4s  avg_len=30 [AB]
+  game  65/100  id=5861   plies=38    winner=P2     46.1s  avg_len=30
+  game  66/100  id=5862   plies=47    winner=P1     62.7s  avg_len=31
+  game  67/100  id=5863   plies=26    winner=P2     40.1s  avg_len=30
+  game  68/100  id=5864   plies=37    winner=P1     58.8s  avg_len=31
+  game  69/100  id=5865   plies=40    winner=P2     80.1s  avg_len=31 [AB]
+  game  70/100  id=5866   plies=21    winner=P1     31.7s  avg_len=31
+  game  71/100  id=5867   plies=18    winner=P2     24.7s  avg_len=30
+  game  72/100  id=5868   plies=33    winner=P1     39.6s  avg_len=30
+  game  73/100  id=5869   plies=39    winner=P1     58.5s  avg_len=31
+  game  74/100  id=5870   plies=27    winner=P1     29.9s  avg_len=30
+  game  75/100  id=5871   plies=19    winner=P1     22.7s  avg_len=30
+  game  76/100  id=5872   plies=18    winner=P2     15.9s  avg_len=30
+  game  77/100  id=5873   plies=35    winner=P1     80.0s  avg_len=30 [AB]
+  game  78/100  id=5874   plies=36    winner=P2     44.6s  avg_len=30
+  game  79/100  id=5875   plies=33    winner=P1     61.1s  avg_len=30
+  game  80/100  id=5876   plies=31    winner=P1     44.3s  avg_len=30
+  game  81/100  id=5877   plies=49    winner=P1     55.3s  avg_len=31
+  game  82/100  id=5878   plies=33    winner=P1     83.1s  avg_len=31 [AB]
+  game  83/100  id=5879   plies=26    winner=P2     34.2s  avg_len=31
+  game  84/100  id=5880   plies=35    winner=P1     76.1s  avg_len=31 [AB]
+  game  85/100  id=5881   plies=22    winner=P2     30.8s  avg_len=30
+  game  86/100  id=5882   plies=49    winner=P1     50.7s  avg_len=31
+  game  87/100  id=5883   plies=23    winner=P1     27.2s  avg_len=31
+  game  88/100  id=5884   plies=30    winner=P2     43.2s  avg_len=31
+  game  89/100  id=5885   plies=24    winner=P2     39.1s  avg_len=31
+  game  90/100  id=5886   plies=20    winner=P2     23.8s  avg_len=30
+  game  91/100  id=5887   plies=33    winner=P1     49.4s  avg_len=30
+  game  92/100  id=5888   plies=53    winner=P1     113.9s  avg_len=31 [AB]
+  game  93/100  id=5889   plies=34    winner=P2     47.7s  avg_len=31
+  game  94/100  id=5890   plies=35    winner=P1     47.4s  avg_len=31
+  game  95/100  id=5891   plies=21    winner=P1     22.3s  avg_len=31
+  game  96/100  id=5892   plies=36    winner=P2     70.0s  avg_len=31 [AB]
+  game  97/100  id=5893   plies=18    winner=P2     23.2s  avg_len=31
+  game  98/100  id=5894   plies=43    winner=P1     43.5s  avg_len=31
+  game  99/100  id=5895   plies=100   winner=P1     84.4s  avg_len=31
+  game 100/100  id=5896   plies=44    winner=P2     84.4s  avg_len=32 [AB]
+  P1 wins: 48  P2 wins: 51  draws: 1
+  DB total: 5896 games, 291,266 positions
+
+[2/3] Training
+  131,771 positions from 3000 game(s) (2853 decisive, 147 draws)
+    epoch 1/2  loss=1.6631 (p=1.5425 v=0.1206)  val=1.5451 (p=1.3819 v=0.1632)  [best]
+    epoch 2/2  loss=1.5503 (p=1.4468 v=0.1035)  val=1.5425 (p=1.3866 v=0.1560)  [best]
+
+[3/3] Evaluation
+    (parallel evaluation on 8 CPU workers)
+    eval game 1/30  (idx 4)  new=P1  moves=11  W  (100% W1/L0/D0)
+    eval game 2/30  (idx 1)  new=P2  moves=14  W  (100% W2/L0/D0)
+    eval game 3/30  (idx 0)  new=P1  moves=17  W  (100% W3/L0/D0)
+    eval game 4/30  (idx 6)  new=P1  moves=19  W  (100% W4/L0/D0)
+    eval game 5/30  (idx 5)  new=P2  moves=19  L  (80% W4/L1/D0)
+    eval game 6/30  (idx 7)  new=P2  moves=28  W  (83% W5/L1/D0)
+    eval game 7/30  (idx 2)  new=P1  moves=23  W  (86% W6/L1/D0)
+    eval game 8/30  (idx 11)  new=P2  moves=19  L  (75% W6/L2/D0)
+    eval game 9/30  (idx 3)  new=P2  moves=29  L  (67% W6/L3/D0)
+    eval game 10/30  (idx 10)  new=P1  moves=21  W  (70% W7/L3/D0)
+    eval game 11/30  (idx 8)  new=P1  moves=19  W  (73% W8/L3/D0)
+    eval game 12/30  (idx 12)  new=P1  moves=18  L  (67% W8/L4/D0)
+    eval game 13/30  (idx 13)  new=P2  moves=18  W  (69% W9/L4/D0)
+    eval game 14/30  (idx 15)  new=P2  moves=18  W  (71% W10/L4/D0)
+    eval game 15/30  (idx 19)  new=P2  moves=19  L  (67% W10/L5/D0)
+    eval game 16/30  (idx 14)  new=P1  moves=23  W  (69% W11/L5/D0)
+    eval game 17/30  (idx 17)  new=P2  moves=20  W  (71% W12/L5/D0)
+    eval game 18/30  (idx 16)  new=P1  moves=24  L  (67% W12/L6/D0)
+    eval game 19/30  (idx 20)  new=P1  moves=21  W  (68% W13/L6/D0)
+    eval game 20/30  (idx 18)  new=P1  moves=22  L  (65% W13/L7/D0)
+    eval game 21/30  (idx 9)  new=P2  moves=29  L  (62% W13/L8/D0)
+    eval game 22/30  (idx 21)  new=P2  moves=19  L  (59% W13/L9/D0)
+    eval game 23/30  (idx 22)  new=P1  moves=24  L  (57% W13/L10/D0)
+    eval game 24/30  (idx 26)  new=P1  moves=15  W  (58% W14/L10/D0)
+    eval game 25/30  (idx 23)  new=P2  moves=20  W  (60% W15/L10/D0)
+    eval game 26/30  (idx 28)  new=P1  moves=13  W  (62% W16/L10/D0)
+    eval game 27/30  (idx 25)  new=P2  moves=19  L  (59% W16/L11/D0)
+    eval game 28/30  (idx 27)  new=P2  moves=18  W  (61% W17/L11/D0)
+    eval game 29/30  (idx 24)  new=P1  moves=24  L  (59% W17/L12/D0)
+    eval game 30/30  (idx 29)  new=P2  moves=19  L  (57% W17/L13/D0)
+  New net score: 56.7%  (W17/L13/D0)  95% CI: [39.2%, 72.6%]
+  Elo: selfplay-v12=1002  selfplay-v11=1001
+  >>> Promoted new network!
+  Saved stable promoted snapshot: checkpoints/promoted_selfplay-v12.pt
+  Saved checkpoints/iter_0012.pt
+
+  Elo ratings (top 10):
+   1. selfplay-v34               1094.1
+   2. init                       1046.7
+   3. selfplay-v74               1032.7
+   4. selfplay-v19               1025.8
+   5. selfplay-v48               1014.7
+   6. selfplay-v71               1011.3
+   7. selfplay-v57               1009.5
+   8. selfplay-v28               1009.3
+   9. selfplay-v65               1007.4
+  10. selfplay-v52               1006.4
+
+============================================================
+  Iteration 2/30  (global 13)
+============================================================
+
+[1/3] Self-play
+  (parallel self-play on 8 CPU workers)
+  game   1/100  id=5897   plies=20    winner=P2     18.0s  avg_len=20
+  game   2/100  id=5898   plies=21    winner=P1     21.0s  avg_len=20
+  game   3/100  id=5899   plies=24    winner=P2     30.5s  avg_len=22
+  game   4/100  id=5900   plies=25    winner=P1     31.7s  avg_len=22
+  game   5/100  id=5901   plies=24    winner=P2     34.1s  avg_len=23
+  game   6/100  id=5902   plies=37    winner=P1     44.6s  avg_len=25
+  game   7/100  id=5903   plies=31    winner=P1     32.2s  avg_len=26
+  game   8/100  id=5904   plies=28    winner=P2     28.1s  avg_len=26
+  game   9/100  id=5905   plies=36    winner=P2     69.0s  avg_len=27 [AB]
+  game  10/100  id=5906   plies=42    winner=P2     72.2s  avg_len=29 [AB]
+  game  11/100  id=5907   plies=20    winner=P2     16.2s  avg_len=28
+  game  12/100  id=5908   plies=100   winner=P2     48.8s  avg_len=34
+  game  13/100  id=5909   plies=30    winner=P2     51.7s  avg_len=34 [AB]
+  game  14/100  id=5910   plies=21    winner=P1     12.6s  avg_len=33
+  game  15/100  id=5911   plies=41    winner=P1     47.7s  avg_len=33
+  game  16/100  id=5912   plies=34    winner=P2     74.8s  avg_len=33 [AB]
+  game  17/100  id=5913   plies=27    winner=P1     32.4s  avg_len=33
+  game  18/100  id=5914   plies=100   winner=P2     51.6s  avg_len=37
+  game  19/100  id=5915   plies=28    winner=P2     31.5s  avg_len=36
+  game  20/100  id=5916   plies=24    winner=P2     29.3s  avg_len=36
+  game  21/100  id=5917   plies=21    winner=P1     25.9s  avg_len=35
+  game  22/100  id=5918   plies=23    winner=P1     26.7s  avg_len=34
+  game  23/100  id=5919   plies=30    winner=P2     34.2s  avg_len=34
+  game  24/100  id=5920   plies=18    winner=P2     24.6s  avg_len=34
+  game  25/100  id=5921   plies=27    winner=P1     33.8s  avg_len=33
+  game  26/100  id=5922   plies=27    winner=P1     29.6s  avg_len=33
+  game  27/100  id=5923   plies=100   winner=P1     54.7s  avg_len=36
+  game  28/100  id=5924   plies=16    winner=P2     23.6s  avg_len=35
+  game  29/100  id=5925   plies=100   winner=draw   61.4s  avg_len=37
+  game  30/100  id=5926   plies=17    winner=P1     20.0s  avg_len=36
+  game  31/100  id=5927   plies=100   winner=P2     43.9s  avg_len=38
+  game  32/100  id=5928   plies=31    winner=P1     82.2s  avg_len=38 [AB]
+  game  33/100  id=5929   plies=48    winner=P2     123.5s  avg_len=39 [AB]
+  game  34/100  id=5930   plies=19    winner=P1     26.2s  avg_len=38
+  game  35/100  id=5931   plies=35    winner=P1     77.0s  avg_len=38 [AB]
+  game  36/100  id=5932   plies=20    winner=P2     27.4s  avg_len=37
+  game  37/100  id=5933   plies=19    winner=P1     28.7s  avg_len=37
+  game  38/100  id=5934   plies=21    winner=P1     43.1s  avg_len=36
+  game  39/100  id=5935   plies=35    winner=P1     102.7s  avg_len=36 [AB]
+  game  40/100  id=5936   plies=23    winner=P1     40.9s  avg_len=36
+  game  41/100  id=5937   plies=43    winner=P1     66.4s  avg_len=36
+  game  42/100  id=5938   plies=35    winner=P1     72.4s  avg_len=36
+  game  43/100  id=5939   plies=100   winner=draw   97.4s  avg_len=38
+  game  44/100  id=5940   plies=31    winner=P1     102.3s  avg_len=38 [AB]
+  game  45/100  id=5941   plies=22    winner=P2     33.1s  avg_len=37
+  game  46/100  id=5942   plies=41    winner=P1     68.0s  avg_len=37
+  game  47/100  id=5943   plies=34    winner=P2     54.5s  avg_len=37
+  game  48/100  id=5944   plies=100   winner=P2     97.5s  avg_len=39
+  game  49/100  id=5945   plies=27    winner=P1     46.5s  avg_len=38
+  game  50/100  id=5946   plies=20    winner=P2     36.3s  avg_len=38
+  game  51/100  id=5947   plies=19    winner=P1     24.8s  avg_len=38
+  game  52/100  id=5948   plies=20    winner=P2     37.1s  avg_len=37
+  game  53/100  id=5949   plies=19    winner=P1     33.2s  avg_len=37
+  game  54/100  id=5950   plies=24    winner=P2     35.4s  avg_len=37
+  game  55/100  id=5951   plies=25    winner=P1     61.8s  avg_len=36
+  game  56/100  id=5952   plies=19    winner=P1     36.1s  avg_len=36
+  game  57/100  id=5953   plies=22    winner=P2     52.4s  avg_len=36
+  game  58/100  id=5954   plies=34    winner=P2     134.6s  avg_len=36 [AB]
+  game  59/100  id=5955   plies=21    winner=P1     37.4s  avg_len=36
+  game  60/100  id=5956   plies=62    winner=P2     167.3s  avg_len=36 [AB]
+  game  61/100  id=5957   plies=31    winner=P1     73.1s  avg_len=36
+  game  62/100  id=5958   plies=36    winner=P2     91.4s  avg_len=36 [AB]
+  game  63/100  id=5959   plies=25    winner=P1     47.0s  avg_len=36
+  game  64/100  id=5960   plies=43    winner=P1     60.1s  avg_len=36
+  game  65/100  id=5961   plies=30    winner=P2     106.0s  avg_len=36 [AB]
+  game  66/100  id=5962   plies=60    winner=P2     151.2s  avg_len=36 [AB]
+  game  67/100  id=5963   plies=19    winner=P1     33.8s  avg_len=36
+  game  68/100  id=5964   plies=31    winner=P1     60.6s  avg_len=36
+  game  69/100  id=5965   plies=27    winner=P1     71.0s  avg_len=36
+  game  70/100  id=5966   plies=32    winner=P2     45.9s  avg_len=36
+  game  71/100  id=5967   plies=18    winner=P2     43.2s  avg_len=35
+  game  72/100  id=5968   plies=42    winner=P2     84.7s  avg_len=35
+  game  73/100  id=5969   plies=40    winner=P2     61.2s  avg_len=36
+  game  74/100  id=5970   plies=21    winner=P1     40.7s  avg_len=35
+  game  75/100  id=5971   plies=43    winner=P1     77.0s  avg_len=35
+  game  76/100  id=5972   plies=33    winner=P1     85.7s  avg_len=35 [AB]
+  game  77/100  id=5973   plies=33    winner=P1     92.1s  avg_len=35 [AB]
+  game  78/100  id=5974   plies=33    winner=P1     68.9s  avg_len=35
+  game  79/100  id=5975   plies=28    winner=P2     68.6s  avg_len=35
+  game  80/100  id=5976   plies=28    winner=P2     60.5s  avg_len=35
+  game  81/100  id=5977   plies=36    winner=P2     61.4s  avg_len=35
+  game  82/100  id=5978   plies=23    winner=P1     30.8s  avg_len=35
+  game  83/100  id=5979   plies=39    winner=P1     97.2s  avg_len=35 [AB]
+  game  84/100  id=5980   plies=30    winner=P2     73.7s  avg_len=35
+  game  85/100  id=5981   plies=19    winner=P1     39.0s  avg_len=35
+  game  86/100  id=5982   plies=17    winner=P1     37.1s  avg_len=35
+  game  87/100  id=5983   plies=25    winner=P1     107.1s  avg_len=35 [AB]
+  game  88/100  id=5984   plies=37    winner=P1     77.1s  avg_len=35
+  game  89/100  id=5985   plies=18    winner=P2     45.9s  avg_len=34
+  game  90/100  id=5986   plies=42    winner=P2     80.6s  avg_len=34
+  game  91/100  id=5987   plies=28    winner=P2     79.7s  avg_len=34
+  game  92/100  id=5988   plies=36    winner=P2     71.4s  avg_len=34
+  game  93/100  id=5989   plies=21    winner=P1     32.6s  avg_len=34
+  game  94/100  id=5990   plies=28    winner=P2     58.4s  avg_len=34
+  game  95/100  id=5991   plies=65    winner=P1     76.7s  avg_len=35
+  game  96/100  id=5992   plies=34    winner=P2     99.3s  avg_len=34 [AB]
+  game  97/100  id=5993   plies=40    winner=P2     69.1s  avg_len=35
+  game  98/100  id=5994   plies=42    winner=P2     92.2s  avg_len=35
+  game  99/100  id=5995   plies=40    winner=P2     115.2s  avg_len=35 [AB]
+  game 100/100  id=5996   plies=100   winner=P2     120.2s  avg_len=35
+  P1 wins: 49  P2 wins: 49  draws: 2
+  DB total: 5996 games, 294,800 positions
+
+[2/3] Training
+  127,821 positions from 3000 game(s) (2877 decisive, 123 draws)
+    epoch 1/2  loss=1.6092 (p=1.5005 v=0.1087)  val=1.4559 (p=1.3204 v=0.1355)  [best]
+    epoch 2/2  loss=1.4982 (p=1.4030 v=0.0953)  val=1.4549 (p=1.3184 v=0.1365)  [best]
+
+[3/3] Evaluation
+    (parallel evaluation on 8 CPU workers)
+    eval game 1/30  (idx 5)  new=P2  moves=18  W  (100% W1/L0/D0)
+    eval game 2/30  (idx 6)  new=P1  moves=20  L  (50% W1/L1/D0)
+    eval game 3/30  (idx 7)  new=P2  moves=18  W  (67% W2/L1/D0)
+    eval game 4/30  (idx 0)  new=P1  moves=17  W  (75% W3/L1/D0)
+    eval game 5/30  (idx 3)  new=P2  moves=23  L  (60% W3/L2/D0)
+    eval game 6/30  (idx 1)  new=P2  moves=20  W  (67% W4/L2/D0)
+    eval game 7/30  (idx 2)  new=P1  moves=24  L  (57% W4/L3/D0)
+    eval game 8/30  (idx 4)  new=P1  moves=28  L  (50% W4/L4/D0)
+    eval game 9/30  (idx 12)  new=P1  moves=17  W  (56% W5/L4/D0)
+    eval game 10/30  (idx 15)  new=P2  moves=14  W  (60% W6/L4/D0)
+    eval game 11/30  (idx 9)  new=P2  moves=19  L  (55% W6/L5/D0)
+    eval game 12/30  (idx 13)  new=P2  moves=26  W  (58% W7/L5/D0)
+    eval game 13/30  (idx 10)  new=P1  moves=26  L  (54% W7/L6/D0)
+    eval game 14/30  (idx 18)  new=P1  moves=16  L  (50% W7/L7/D0)
+    eval game 15/30  (idx 14)  new=P1  moves=26  L  (47% W7/L8/D0)
+    eval game 16/30  (idx 21)  new=P2  moves=23  L  (44% W7/L9/D0)
+    eval game 17/30  (idx 17)  new=P2  moves=27  L  (41% W7/L10/D0)
+    eval game 18/30  (idx 22)  new=P1  moves=21  W  (44% W8/L10/D0)
+    eval game 19/30  (idx 16)  new=P1  moves=34  L  (42% W8/L11/D0)
+    eval game 20/30  (idx 23)  new=P2  moves=21  L  (40% W8/L12/D0)
+    eval game 21/30  (idx 24)  new=P1  moves=22  L  (38% W8/L13/D0)
+    eval game 22/30  (idx 26)  new=P1  moves=17  W  (41% W9/L13/D0)
+    eval game 23/30  (idx 29)  new=P2  moves=19  L  (39% W9/L14/D0)
+    eval game 24/30  (idx 27)  new=P2  moves=24  W  (42% W10/L14/D0)
+    eval game 25/30  (idx 28)  new=P1  moves=25  W  (44% W11/L14/D0)
+    eval game 26/30  (idx 19)  new=P2  moves=100  W  (46% W12/L14/D0)
+    eval game 27/30  (idx 8)  new=P1  moves=100  D  (46% W12/L14/D1)
+    eval game 28/30  (idx 20)  new=P1  moves=100  W  (48% W13/L14/D1)
+    eval game 29/30  (idx 11)  new=P2  moves=100  W  (50% W14/L14/D1)
+    eval game 30/30  (idx 25)  new=P2  moves=100  W  (52% W15/L14/D1)
+  New net score: 51.7%  (W15/L14/D1)  95% CI: [34.6%, 68.3%]
+  Elo: selfplay-v13=1001  selfplay-v12=1002
+  --- Keeping previous network.
+  Saved checkpoints/iter_0013.pt
+
+  Elo ratings (top 10):
+   1. selfplay-v34               1094.1
+   2. init                       1046.7
+   3. selfplay-v74               1032.7
+   4. selfplay-v19               1025.8
+   5. selfplay-v48               1014.7
+   6. selfplay-v71               1011.3
+   7. selfplay-v57               1009.5
+   8. selfplay-v28               1009.3
+   9. selfplay-v65               1007.4
+  10. selfplay-v52               1006.4
+
+============================================================
+  Iteration 3/30  (global 14)
+============================================================
+
+[1/3] Self-play
+  (parallel self-play on 8 CPU workers)
+  game   1/100  id=5997   plies=17    winner=P1     30.0s  avg_len=17
+  game   2/100  id=5998   plies=17    winner=P1     34.1s  avg_len=17
+  game   3/100  id=5999   plies=37    winner=P1     54.4s  avg_len=24
+  game   4/100  id=6000   plies=35    winner=P1     66.2s  avg_len=26
+  game   5/100  id=6001   plies=20    winner=P2     37.8s  avg_len=25
+  game   6/100  id=6002   plies=39    winner=P1     83.3s  avg_len=28
+  game   7/100  id=6003   plies=60    winner=P2     96.3s  avg_len=32
+  game   8/100  id=6004   plies=23    winner=P1     48.0s  avg_len=31
+  game   9/100  id=6005   plies=32    winner=P2     108.3s  avg_len=31 [AB]
+  game  10/100  id=6006   plies=32    winner=P2     109.5s  avg_len=31 [AB]
+  game  11/100  id=6007   plies=20    winner=P2     29.7s  avg_len=30
+  game  12/100  id=6008   plies=20    winner=P2     34.7s  avg_len=29
+  game  13/100  id=6009   plies=22    winner=P2     40.4s  avg_len=29
+  game  14/100  id=6010   plies=28    winner=P2     122.6s  avg_len=29 [AB]
+  game  15/100  id=6011   plies=22    winner=P2     48.0s  avg_len=28
+  game  16/100  id=6012   plies=31    winner=P1     55.5s  avg_len=28
+  game  17/100  id=6013   plies=47    winner=P1     100.3s  avg_len=30
+  game  18/100  id=6014   plies=20    winner=P2     25.8s  avg_len=29
+  game  19/100  id=6015   plies=36    winner=P2     116.2s  avg_len=29 [AB]
+  game  20/100  id=6016   plies=100   winner=P2     37.5s  avg_len=33
+  game  21/100  id=6017   plies=47    winner=P1     69.8s  avg_len=34
+  game  22/100  id=6018   plies=21    winner=P1     39.1s  avg_len=33
+  game  23/100  id=6019   plies=36    winner=P2     67.1s  avg_len=33
+  game  24/100  id=6020   plies=30    winner=P2     117.2s  avg_len=33 [AB]
+  game  25/100  id=6021   plies=36    winner=P2     62.8s  avg_len=33
+  game  26/100  id=6022   plies=23    winner=P1     33.5s  avg_len=33
+  game  27/100  id=6023   plies=18    winner=P2     37.5s  avg_len=32
+  game  28/100  id=6024   plies=32    winner=P2     35.5s  avg_len=32
+  game  29/100  id=6025   plies=15    winner=P1     20.4s  avg_len=32
+  game  30/100  id=6026   plies=35    winner=P1     71.1s  avg_len=32
+  game  31/100  id=6027   plies=100   winner=P2     52.8s  avg_len=34
+  game  32/100  id=6028   plies=31    winner=P1     100.3s  avg_len=34 [AB]
+  game  33/100  id=6029   plies=22    winner=P2     43.9s  avg_len=33
+  game  34/100  id=6030   plies=19    winner=P1     35.5s  avg_len=33
+  game  35/100  id=6031   plies=33    winner=P1     84.1s  avg_len=33 [AB]
+  game  36/100  id=6032   plies=41    winner=P1     72.6s  avg_len=33 [AB]
+  game  37/100  id=6033   plies=32    winner=P2     67.8s  avg_len=33
+  game  38/100  id=6034   plies=20    winner=P2     26.1s  avg_len=33
+  game  39/100  id=6035   plies=26    winner=P2     38.0s  avg_len=33
+  game  40/100  id=6036   plies=21    winner=P1     33.9s  avg_len=32
+  game  41/100  id=6037   plies=35    winner=P1     45.5s  avg_len=32
+  game  42/100  id=6038   plies=19    winner=P1     17.7s  avg_len=32
+  game  43/100  id=6039   plies=44    winner=P2     53.5s  avg_len=32
+  game  44/100  id=6040   plies=21    winner=P1     21.2s  avg_len=32
+  game  45/100  id=6041   plies=25    winner=P1     21.5s  avg_len=32
+  game  46/100  id=6042   plies=31    winner=P1     50.2s  avg_len=32
+  game  47/100  id=6043   plies=35    winner=P1     34.4s  avg_len=32
+  game  48/100  id=6044   plies=24    winner=P2     46.9s  avg_len=32
+  game  49/100  id=6045   plies=49    winner=P1     110.2s  avg_len=32 [AB]
+  game  50/100  id=6046   plies=36    winner=P2     71.0s  avg_len=32 [AB]
+  game  51/100  id=6047   plies=36    winner=P2     55.8s  avg_len=32 [AB]
+  game  52/100  id=6048   plies=53    winner=P1     62.9s  avg_len=33
+  game  53/100  id=6049   plies=23    winner=P1     43.3s  avg_len=33
+  game  54/100  id=6050   plies=46    winner=P2     48.2s  avg_len=33
+  game  55/100  id=6051   plies=21    winner=P1     31.8s  avg_len=33
+  game  56/100  id=6052   plies=26    winner=P2     37.6s  avg_len=32
+  game  57/100  id=6053   plies=19    winner=P1     18.0s  avg_len=32
+  game  58/100  id=6054   plies=19    winner=P1     28.6s  avg_len=32
+  game  59/100  id=6055   plies=36    winner=P2     67.3s  avg_len=32 [AB]
+  game  60/100  id=6056   plies=100   winner=P2     46.6s  avg_len=33
+  game  61/100  id=6057   plies=33    winner=P1     35.9s  avg_len=33
+  game  62/100  id=6058   plies=36    winner=P2     34.7s  avg_len=33
+  game  63/100  id=6059   plies=16    winner=P2     12.5s  avg_len=33
+  game  64/100  id=6060   plies=28    winner=P2     40.0s  avg_len=33
+  game  65/100  id=6061   plies=23    winner=P1     31.2s  avg_len=33
+  game  66/100  id=6062   plies=16    winner=P2     35.9s  avg_len=33
+  game  67/100  id=6063   plies=100   winner=P1     65.7s  avg_len=34
+  game  68/100  id=6064   plies=29    winner=P1     57.7s  avg_len=33
+  game  69/100  id=6065   plies=36    winner=P2     99.4s  avg_len=33 [AB]
+  game  70/100  id=6066   plies=18    winner=P2     29.2s  avg_len=33
+  game  71/100  id=6067   plies=100   winner=P1     71.9s  avg_len=34
+  game  72/100  id=6068   plies=23    winner=P1     43.0s  avg_len=34
+  game  73/100  id=6069   plies=23    winner=P1     40.3s  avg_len=34
+  game  74/100  id=6070   plies=21    winner=P1     32.1s  avg_len=34
+  game  75/100  id=6071   plies=25    winner=P1     44.0s  avg_len=34
+  game  76/100  id=6072   plies=30    winner=P2     61.0s  avg_len=34
+  game  77/100  id=6073   plies=16    winner=P2     14.5s  avg_len=33
+  game  78/100  id=6074   plies=26    winner=P2     40.1s  avg_len=33
+  game  79/100  id=6075   plies=27    winner=P1     42.9s  avg_len=33
+  game  80/100  id=6076   plies=33    winner=P1     84.1s  avg_len=33 [AB]
+  game  81/100  id=6077   plies=100   winner=P2     196.7s  avg_len=34 [AB]
+  game  82/100  id=6078   plies=16    winner=P2     21.6s  avg_len=34
+  game  83/100  id=6079   plies=51    winner=P1     132.5s  avg_len=34 [AB]
+  game  84/100  id=6080   plies=19    winner=P1     24.0s  avg_len=34
+  game  85/100  id=6081   plies=28    winner=P2     49.4s  avg_len=34
+  game  86/100  id=6082   plies=20    winner=P2     32.1s  avg_len=34
+  game  87/100  id=6083   plies=50    winner=P2     47.8s  avg_len=34
+  game  88/100  id=6084   plies=47    winner=P1     118.5s  avg_len=34 [AB]
+  game  89/100  id=6085   plies=22    winner=P2     40.3s  avg_len=34
+  game  90/100  id=6086   plies=100   winner=P1     59.5s  avg_len=35
+  game  91/100  id=6087   plies=21    winner=P1     33.5s  avg_len=34
+  game  92/100  id=6088   plies=22    winner=P2     32.6s  avg_len=34
+  game  93/100  id=6089   plies=37    winner=P1     95.0s  avg_len=34 [AB]
+  game  94/100  id=6090   plies=33    winner=P1     66.2s  avg_len=34
+  game  95/100  id=6091   plies=21    winner=P1     26.9s  avg_len=34
+  game  96/100  id=6092   plies=31    winner=P1     42.7s  avg_len=34
+  game  97/100  id=6093   plies=31    winner=P1     60.7s  avg_len=34
+  game  98/100  id=6094   plies=33    winner=P1     49.4s  avg_len=34
+  game  99/100  id=6095   plies=40    winner=P2     98.6s  avg_len=34 [AB]
+  game 100/100  id=6096   plies=46    winner=P2     130.0s  avg_len=34 [AB]
+  P1 wins: 52  P2 wins: 48  draws: 0
+  DB total: 6096 games, 298,221 positions
+
+[2/3] Training
+  122,813 positions from 3000 game(s) (2901 decisive, 99 draws)
+    epoch 1/2  loss=1.6402 (p=1.5278 v=0.1125)  val=1.4697 (p=1.3292 v=0.1405)  [best]
+    epoch 2/2  loss=1.5242 (p=1.4270 v=0.0972)  val=1.4663 (p=1.3246 v=0.1417)  [best]
+
+[3/3] Evaluation
+    (parallel evaluation on 8 CPU workers)
+    eval game 1/30  (idx 7)  new=P2  moves=15  L  (0% W0/L1/D0)
+    eval game 2/30  (idx 5)  new=P2  moves=14  W  (50% W1/L1/D0)
+    eval game 3/30  (idx 2)  new=P1  moves=18  L  (33% W1/L2/D0)
+    eval game 4/30  (idx 0)  new=P1  moves=21  W  (50% W2/L2/D0)
+    eval game 5/30  (idx 6)  new=P1  moves=17  W  (60% W3/L2/D0)
+    eval game 6/30  (idx 3)  new=P2  moves=20  W  (67% W4/L2/D0)
+    eval game 7/30  (idx 1)  new=P2  moves=28  W  (71% W5/L2/D0)
+    eval game 8/30  (idx 11)  new=P2  moves=18  W  (75% W6/L2/D0)
+    eval game 9/30  (idx 10)  new=P1  moves=17  W  (78% W7/L2/D0)
+    eval game 10/30  (idx 12)  new=P1  moves=18  L  (70% W7/L3/D0)
+    eval game 11/30  (idx 15)  new=P2  moves=17  L  (64% W7/L4/D0)
+    eval game 12/30  (idx 13)  new=P2  moves=22  W  (67% W8/L4/D0)
+    eval game 13/30  (idx 17)  new=P2  moves=16  W  (69% W9/L4/D0)
+    eval game 14/30  (idx 14)  new=P1  moves=28  L  (64% W9/L5/D0)
+    eval game 15/30  (idx 16)  new=P1  moves=27  W  (67% W10/L5/D0)
+    eval game 16/30  (idx 20)  new=P1  moves=21  W  (69% W11/L5/D0)
+    eval game 17/30  (idx 18)  new=P1  moves=24  L  (65% W11/L6/D0)
+    eval game 18/30  (idx 22)  new=P1  moves=19  W  (67% W12/L6/D0)
+    eval game 19/30  (idx 24)  new=P1  moves=20  L  (63% W12/L7/D0)
+    eval game 20/30  (idx 23)  new=P2  moves=24  W  (65% W13/L7/D0)
+    eval game 21/30  (idx 9)  new=P2  moves=100  W  (67% W14/L7/D0)
+    eval game 22/30  (idx 25)  new=P2  moves=19  L  (64% W14/L8/D0)
+    eval game 23/30  (idx 27)  new=P2  moves=19  L  (61% W14/L9/D0)
+    eval game 24/30  (idx 28)  new=P1  moves=24  L  (58% W14/L10/D0)
+    eval game 25/30  (idx 26)  new=P1  moves=19  W  (60% W15/L10/D0)
+    eval game 26/30  (idx 29)  new=P2  moves=27  L  (58% W15/L11/D0)
+    eval game 27/30  (idx 19)  new=P2  moves=100  L  (56% W15/L12/D0)
+    eval game 28/30  (idx 4)  new=P1  moves=100  D  (55% W15/L12/D1)
+    eval game 29/30  (idx 8)  new=P1  moves=100  D  (55% W15/L12/D2)
+    eval game 30/30  (idx 21)  new=P2  moves=100  W  (57% W16/L12/D2)
+  New net score: 56.7%  (W16/L12/D2)  95% CI: [39.2%, 72.6%]
+  Elo: selfplay-v14=1004  selfplay-v12=999
+  >>> Promoted new network!
+  Saved stable promoted snapshot: checkpoints/promoted_selfplay-v14.pt
+  Saved checkpoints/iter_0014.pt
+
+  Elo ratings (top 10):
+   1. selfplay-v34               1094.1
+   2. init                       1046.7
+   3. selfplay-v74               1032.7
+   4. selfplay-v19               1025.8
+   5. selfplay-v48               1014.7
+   6. selfplay-v71               1011.3
+   7. selfplay-v57               1009.5
+   8. selfplay-v28               1009.3
+   9. selfplay-v65               1007.4
+  10. selfplay-v52               1006.4
+
+============================================================
+  Iteration 4/30  (global 15)
+============================================================
+
+[1/3] Self-play
+  (parallel self-play on 8 CPU workers)
+  game   1/100  id=6097   plies=17    winner=P1     29.0s  avg_len=17
+  game   2/100  id=6098   plies=17    winner=P1     33.9s  avg_len=17
+  game   3/100  id=6099   plies=21    winner=P1     47.9s  avg_len=18
+  game   4/100  id=6100   plies=29    winner=P1     65.0s  avg_len=21
+  game   5/100  id=6101   plies=36    winner=P2     67.1s  avg_len=24
+  game   6/100  id=6102   plies=47    winner=P1     71.3s  avg_len=28
+  game   7/100  id=6103   plies=25    winner=P1     43.1s  avg_len=27
+  game   8/100  id=6104   plies=22    winner=P2     30.6s  avg_len=27
+  game   9/100  id=6105   plies=25    winner=P1     50.4s  avg_len=27
+  game  10/100  id=6106   plies=34    winner=P2     113.3s  avg_len=27 [AB]
+  game  11/100  id=6107   plies=17    winner=P1     19.2s  avg_len=26
+  game  12/100  id=6108   plies=40    winner=P2     63.6s  avg_len=28
+  game  13/100  id=6109   plies=100   winner=P1     62.0s  avg_len=33
+  game  14/100  id=6110   plies=23    winner=P1     30.7s  avg_len=32
+  game  15/100  id=6111   plies=24    winner=P2     31.2s  avg_len=32
+  game  16/100  id=6112   plies=31    winner=P1     60.9s  avg_len=32
+  game  17/100  id=6113   plies=22    winner=P2     38.2s  avg_len=31
+  game  18/100  id=6114   plies=50    winner=P2     150.1s  avg_len=32 [AB]
+  game  19/100  id=6115   plies=26    winner=P2     51.3s  avg_len=32
+  game  20/100  id=6116   plies=16    winner=P2     27.4s  avg_len=31
+  game  21/100  id=6117   plies=29    winner=P1     49.2s  avg_len=31
+  game  22/100  id=6118   plies=56    winner=P2     155.8s  avg_len=32 [AB]
+  game  23/100  id=6119   plies=21    winner=P1     27.4s  avg_len=32
+  game  24/100  id=6120   plies=24    winner=P2     43.5s  avg_len=31
+  game  25/100  id=6121   plies=34    winner=P2     65.6s  avg_len=31
+  game  26/100  id=6122   plies=15    winner=P1     18.5s  avg_len=31
+  game  27/100  id=6123   plies=100   winner=P1     57.0s  avg_len=33
+  game  28/100  id=6124   plies=56    winner=P2     187.7s  avg_len=34 [AB]
+  game  29/100  id=6125   plies=100   winner=P1     288.0s  avg_len=36 [AB]
+  game  30/100  id=6126   plies=33    winner=P1     112.9s  avg_len=36 [AB]
+  game  31/100  id=6127   plies=34    winner=P2     57.0s  avg_len=36
+  game  32/100  id=6128   plies=21    winner=P1     35.5s  avg_len=36
+  game  33/100  id=6129   plies=100   winner=P1     83.9s  avg_len=38
+  game  34/100  id=6130   plies=26    winner=P2     45.2s  avg_len=37
+  game  35/100  id=6131   plies=29    winner=P1     47.5s  avg_len=37
+  game  36/100  id=6132   plies=35    winner=P1     112.8s  avg_len=37 [AB]
+  game  37/100  id=6133   plies=22    winner=P2     24.9s  avg_len=37
+  game  38/100  id=6134   plies=27    winner=P1     100.1s  avg_len=36 [AB]
+  game  39/100  id=6135   plies=33    winner=P1     58.1s  avg_len=36
+  game  40/100  id=6136   plies=19    winner=P1     30.6s  avg_len=36
+  game  41/100  id=6137   plies=29    winner=P1     53.9s  avg_len=36
+  game  42/100  id=6138   plies=100   winner=draw   91.7s  avg_len=37
+  game  43/100  id=6139   plies=31    winner=P1     102.4s  avg_len=37 [AB]
+  game  44/100  id=6140   plies=31    winner=P1     68.4s  avg_len=37
+  game  45/100  id=6141   plies=36    winner=P2     64.2s  avg_len=37
+  game  46/100  id=6142   plies=28    winner=P2     51.8s  avg_len=37
+  game  47/100  id=6143   plies=18    winner=P2     21.9s  avg_len=36
+  game  48/100  id=6144   plies=17    winner=P1     31.5s  avg_len=36
+  game  49/100  id=6145   plies=17    winner=P1     8.5s  avg_len=36
+  game  50/100  id=6146   plies=51    winner=P1     74.3s  avg_len=36
+  game  51/100  id=6147   plies=18    winner=P2     33.0s  avg_len=36
+  game  52/100  id=6148   plies=21    winner=P1     39.2s  avg_len=35
+  game  53/100  id=6149   plies=36    winner=P2     94.1s  avg_len=35 [AB]
+  game  54/100  id=6150   plies=29    winner=P1     64.4s  avg_len=35
+  game  55/100  id=6151   plies=17    winner=P1     21.6s  avg_len=35
+  game  56/100  id=6152   plies=23    winner=P1     38.9s  avg_len=35
+  game  57/100  id=6153   plies=32    winner=P2     83.0s  avg_len=35 [AB]
+  game  58/100  id=6154   plies=24    winner=P2     35.4s  avg_len=34
+  game  59/100  id=6155   plies=30    winner=P2     39.5s  avg_len=34
+  game  60/100  id=6156   plies=32    winner=P2     62.3s  avg_len=34
+  game  61/100  id=6157   plies=27    winner=P1     45.0s  avg_len=34
+  game  62/100  id=6158   plies=42    winner=P2     126.3s  avg_len=34 [AB]
+  game  63/100  id=6159   plies=21    winner=P1     24.6s  avg_len=34
+  game  64/100  id=6160   plies=36    winner=P2     52.4s  avg_len=34
+  game  65/100  id=6161   plies=43    winner=P1     61.4s  avg_len=34
+  game  66/100  id=6162   plies=23    winner=P1     47.2s  avg_len=34
+  game  67/100  id=6163   plies=41    winner=P1     64.4s  avg_len=34
+  game  68/100  id=6164   plies=32    winner=P2     119.6s  avg_len=34 [AB]
+  game  69/100  id=6165   plies=56    winner=P2     149.2s  avg_len=34 [AB]
+  game  70/100  id=6166   plies=51    winner=P1     81.2s  avg_len=35
+  game  71/100  id=6167   plies=55    winner=P1     110.8s  avg_len=35
+  game  72/100  id=6168   plies=28    winner=P2     57.9s  avg_len=35
+  game  73/100  id=6169   plies=32    winner=P2     62.2s  avg_len=35
+  game  74/100  id=6170   plies=29    winner=P1     48.4s  avg_len=35
+  game  75/100  id=6171   plies=25    winner=P1     34.0s  avg_len=35
+  game  76/100  id=6172   plies=21    winner=P1     42.2s  avg_len=34
+  game  77/100  id=6173   plies=33    winner=P1     69.6s  avg_len=34
+  game  78/100  id=6174   plies=28    winner=P2     34.9s  avg_len=34
+  game  79/100  id=6175   plies=24    winner=P2     33.6s  avg_len=34
+  game  80/100  id=6176   plies=20    winner=P2     25.7s  avg_len=34
+  game  81/100  id=6177   plies=29    winner=P1     69.0s  avg_len=34 [AB]
+  game  82/100  id=6178   plies=47    winner=P1     131.0s  avg_len=34 [AB]
+  game  83/100  id=6179   plies=20    winner=P2     40.0s  avg_len=34
+  game  84/100  id=6180   plies=18    winner=P2     14.7s  avg_len=34
+  game  85/100  id=6181   plies=49    winner=P1     128.8s  avg_len=34 [AB]
+  game  86/100  id=6182   plies=25    winner=P1     41.4s  avg_len=34
+  game  87/100  id=6183   plies=60    winner=P2     83.4s  avg_len=34
+  game  88/100  id=6184   plies=35    winner=P1     85.2s  avg_len=34 [AB]
+  game  89/100  id=6185   plies=100   winner=draw   63.1s  avg_len=35
+  game  90/100  id=6186   plies=52    winner=P2     66.1s  avg_len=35
+  game  91/100  id=6187   plies=21    winner=P1     36.2s  avg_len=35
+  game  92/100  id=6188   plies=23    winner=P1     28.7s  avg_len=35
+  game  93/100  id=6189   plies=37    winner=P1     83.2s  avg_len=35
+  game  94/100  id=6190   plies=23    winner=P1     35.0s  avg_len=35
+  game  95/100  id=6191   plies=39    winner=P1     65.0s  avg_len=35
+  game  96/100  id=6192   plies=29    winner=P1     38.0s  avg_len=35
+  game  97/100  id=6193   plies=37    winner=P1     42.3s  avg_len=35
+  game  98/100  id=6194   plies=38    winner=P2     82.6s  avg_len=35 [AB]
+  game  99/100  id=6195   plies=36    winner=P2     56.5s  avg_len=35 [AB]
+  game 100/100  id=6196   plies=100   winner=P2     86.7s  avg_len=35
+  P1 wins: 57  P2 wins: 41  draws: 2
+  DB total: 6196 games, 301,762 positions
+
+[2/3] Training
+  118,457 positions from 3000 game(s) (2927 decisive, 73 draws)
+    epoch 1/2  loss=1.6029 (p=1.4979 v=0.1050)  val=1.4319 (p=1.3201 v=0.1118)  [best]
+    epoch 2/2  loss=1.4854 (p=1.3935 v=0.0919)  val=1.4418 (p=1.3294 v=0.1123)
+
+[3/3] Evaluation
+    (parallel evaluation on 8 CPU workers)
+    eval game 1/30  (idx 7)  new=P2  moves=21  L  (0% W0/L1/D0)
+    eval game 2/30  (idx 6)  new=P1  moves=15  W  (50% W1/L1/D0)
+    eval game 3/30  (idx 1)  new=P2  moves=23  L  (33% W1/L2/D0)
+    eval game 4/30  (idx 5)  new=P2  moves=21  L  (25% W1/L3/D0)
+    eval game 5/30  (idx 3)  new=P2  moves=25  L  (20% W1/L4/D0)
+    eval game 6/30  (idx 4)  new=P1  moves=23  W  (33% W2/L4/D0)
+    eval game 7/30  (idx 9)  new=P2  moves=22  W  (43% W3/L4/D0)
+    eval game 8/30  (idx 8)  new=P1  moves=23  W  (50% W4/L4/D0)
+    eval game 9/30  (idx 10)  new=P1  moves=18  L  (44% W4/L5/D0)
+    eval game 10/30  (idx 11)  new=P2  moves=19  L  (40% W4/L6/D0)
+    eval game 11/30  (idx 2)  new=P1  moves=33  W  (45% W5/L6/D0)
+    eval game 12/30  (idx 13)  new=P2  moves=18  W  (50% W6/L6/D0)
+    eval game 13/30  (idx 18)  new=P1  moves=15  W  (54% W7/L6/D0)
+    eval game 14/30  (idx 15)  new=P2  moves=19  L  (50% W7/L7/D0)
+    eval game 15/30  (idx 16)  new=P1  moves=22  L  (47% W7/L8/D0)
+    eval game 16/30  (idx 12)  new=P1  moves=29  W  (50% W8/L8/D0)
+    eval game 17/30  (idx 17)  new=P2  moves=24  W  (53% W9/L8/D0)
+    eval game 18/30  (idx 19)  new=P2  moves=20  W  (56% W10/L8/D0)
+    eval game 19/30  (idx 23)  new=P2  moves=17  L  (53% W10/L9/D0)
+    eval game 20/30  (idx 21)  new=P2  moves=20  W  (55% W11/L9/D0)
+    eval game 21/30  (idx 22)  new=P1  moves=22  L  (52% W11/L10/D0)
+    eval game 22/30  (idx 26)  new=P1  moves=15  W  (55% W12/L10/D0)
+    eval game 23/30  (idx 24)  new=P1  moves=21  W  (57% W13/L10/D0)
+    eval game 24/30  (idx 28)  new=P1  moves=15  W  (58% W14/L10/D0)
+    eval game 25/30  (idx 27)  new=P2  moves=16  W  (60% W15/L10/D0)
+    eval game 26/30  (idx 25)  new=P2  moves=19  L  (58% W15/L11/D0)
+    eval game 27/30  (idx 0)  new=P1  moves=100  W  (59% W16/L11/D0)
+    eval game 28/30  (idx 29)  new=P2  moves=20  W  (61% W17/L11/D0)
+    eval game 29/30  (idx 20)  new=P1  moves=100  W  (62% W18/L11/D0)
+    eval game 30/30  (idx 14)  new=P1  moves=100  W  (63% W19/L11/D0)
+  New net score: 63.3%  (W19/L11/D0)  95% CI: [45.5%, 78.1%]
+  Elo: selfplay-v15=1004  selfplay-v14=999
+  >>> Promoted new network!
+  Saved stable promoted snapshot: checkpoints/promoted_selfplay-v15.pt
+  Saved checkpoints/iter_0015.pt
+
+  Elo ratings (top 10):
+   1. selfplay-v34               1094.1
+   2. init                       1046.7
+   3. selfplay-v74               1032.7
+   4. selfplay-v19               1025.8
+   5. selfplay-v48               1014.7
+   6. selfplay-v71               1011.3
+   7. selfplay-v57               1009.5
+   8. selfplay-v28               1009.3
+   9. selfplay-v65               1007.4
+  10. selfplay-v52               1006.4
+
+============================================================
+  Iteration 5/30  (global 16)
+============================================================
+
+[1/3] Self-play
+  (parallel self-play on 8 CPU workers)
+  game   1/100  id=6197   plies=17    winner=P1     26.2s  avg_len=17
+  game   2/100  id=6198   plies=19    winner=P1     31.7s  avg_len=18
+  game   3/100  id=6199   plies=16    winner=P2     36.0s  avg_len=17
+  game   4/100  id=6200   plies=27    winner=P1     49.5s  avg_len=20
+  game   5/100  id=6201   plies=54    winner=P2     61.2s  avg_len=27
+  game   6/100  id=6202   plies=29    winner=P1     31.3s  avg_len=27
+  game   7/100  id=6203   plies=31    winner=P1     76.7s  avg_len=28
+  game   8/100  id=6204   plies=23    winner=P1     29.4s  avg_len=27
+  game   9/100  id=6205   plies=13    winner=P1     18.7s  avg_len=25
+  game  10/100  id=6206   plies=23    winner=P1     27.9s  avg_len=25
+  game  11/100  id=6207   plies=44    winner=P2     110.7s  avg_len=27 [AB]
+  game  12/100  id=6208   plies=30    winner=P2     97.7s  avg_len=27 [AB]
+  game  13/100  id=6209   plies=52    winner=P2     124.1s  avg_len=29 [AB]
+  game  14/100  id=6210   plies=100   winner=draw   89.3s  avg_len=34
+  game  15/100  id=6211   plies=47    winner=P1     51.9s  avg_len=35
+  game  16/100  id=6212   plies=24    winner=P2     25.6s  avg_len=34
+  game  17/100  id=6213   plies=19    winner=P1     14.5s  avg_len=33
+  game  18/100  id=6214   plies=23    winner=P1     22.1s  avg_len=33
+  game  19/100  id=6215   plies=36    winner=P2     85.5s  avg_len=33 [AB]
+  game  20/100  id=6216   plies=23    winner=P1     43.3s  avg_len=32
+  game  21/100  id=6217   plies=27    winner=P1     23.7s  avg_len=32
+  game  22/100  id=6218   plies=36    winner=P2     79.0s  avg_len=32 [AB]
+  game  23/100  id=6219   plies=22    winner=P2     25.1s  avg_len=32
+  game  24/100  id=6220   plies=20    winner=P2     21.2s  avg_len=31
+  game  25/100  id=6221   plies=54    winner=P2     46.0s  avg_len=32
+  game  26/100  id=6222   plies=20    winner=P2     30.1s  avg_len=32
+  game  27/100  id=6223   plies=31    winner=P1     49.2s  avg_len=32
+  game  28/100  id=6224   plies=30    winner=P2     51.0s  avg_len=32
+  game  29/100  id=6225   plies=26    winner=P2     45.6s  avg_len=32
+  game  30/100  id=6226   plies=47    winner=P1     61.6s  avg_len=32 [AB]
+  game  31/100  id=6227   plies=32    winner=P2     54.0s  avg_len=32
+  game  32/100  id=6228   plies=22    winner=P2     26.8s  avg_len=32
+  game  33/100  id=6229   plies=29    winner=P1     52.7s  avg_len=32
+  game  34/100  id=6230   plies=22    winner=P2     41.2s  avg_len=31
+  game  35/100  id=6231   plies=36    winner=P2     48.8s  avg_len=32
+  game  36/100  id=6232   plies=21    winner=P1     37.9s  avg_len=31
+  game  37/100  id=6233   plies=26    winner=P2     36.9s  avg_len=31
+  game  38/100  id=6234   plies=18    winner=P2     13.5s  avg_len=31
+  game  39/100  id=6235   plies=100   winner=P2     38.7s  avg_len=33
+  game  40/100  id=6236   plies=39    winner=P1     100.5s  avg_len=33 [AB]
+  game  41/100  id=6237   plies=36    winner=P2     56.8s  avg_len=33
+  game  42/100  id=6238   plies=43    winner=P1     120.4s  avg_len=33 [AB]
+  game  43/100  id=6239   plies=18    winner=P2     21.7s  avg_len=33
+  game  44/100  id=6240   plies=29    winner=P1     42.2s  avg_len=33
+  game  45/100  id=6241   plies=47    winner=P1     98.5s  avg_len=33 [AB]
+  game  46/100  id=6242   plies=20    winner=P2     20.4s  avg_len=33
+  game  47/100  id=6243   plies=27    winner=P1     38.9s  avg_len=33
+  game  48/100  id=6244   plies=28    winner=P2     42.1s  avg_len=32
+  game  49/100  id=6245   plies=48    winner=P2     55.9s  avg_len=33
+  game  50/100  id=6246   plies=100   winner=P1     58.8s  avg_len=34
+  game  51/100  id=6247   plies=16    winner=P2     16.1s  avg_len=34
+  game  52/100  id=6248   plies=29    winner=P1     36.5s  avg_len=34
+  game  53/100  id=6249   plies=21    winner=P1     41.0s  avg_len=33
+  game  54/100  id=6250   plies=23    winner=P1     31.9s  avg_len=33
+  game  55/100  id=6251   plies=21    winner=P1     35.6s  avg_len=33
+  game  56/100  id=6252   plies=43    winner=P1     51.3s  avg_len=33
+  game  57/100  id=6253   plies=38    winner=P2     114.9s  avg_len=33 [AB]
+  game  58/100  id=6254   plies=44    winner=P2     112.5s  avg_len=33 [AB]
+  game  59/100  id=6255   plies=25    winner=P1     46.3s  avg_len=33
+  game  60/100  id=6256   plies=24    winner=P2     27.4s  avg_len=33
+  game  61/100  id=6257   plies=24    winner=P2     75.9s  avg_len=33 [AB]
+  game  62/100  id=6258   plies=29    winner=P1     48.6s  avg_len=33
+  game  63/100  id=6259   plies=40    winner=P2     109.5s  avg_len=33 [AB]
+  game  64/100  id=6260   plies=19    winner=P1     13.3s  avg_len=33
+  game  65/100  id=6261   plies=22    winner=P2     26.7s  avg_len=33
+  game  66/100  id=6262   plies=28    winner=P2     37.1s  avg_len=33
+  game  67/100  id=6263   plies=34    winner=P2     71.7s  avg_len=33 [AB]
+  game  68/100  id=6264   plies=20    winner=P2     42.9s  avg_len=32
+  game  69/100  id=6265   plies=36    winner=P2     66.8s  avg_len=32
+  game  70/100  id=6266   plies=29    winner=P1     45.2s  avg_len=32
+  game  71/100  id=6267   plies=30    winner=P2     54.2s  avg_len=32
+  game  72/100  id=6268   plies=25    winner=P1     36.5s  avg_len=32
+  game  73/100  id=6269   plies=26    winner=P2     55.8s  avg_len=32
+  game  74/100  id=6270   plies=27    winner=P1     31.6s  avg_len=32
+  game  75/100  id=6271   plies=24    winner=P2     37.6s  avg_len=32
+  game  76/100  id=6272   plies=40    winner=P2     77.0s  avg_len=32
+  game  77/100  id=6273   plies=23    winner=P1     88.4s  avg_len=32 [AB]
+  game  78/100  id=6274   plies=22    winner=P2     35.8s  avg_len=32
+  game  79/100  id=6275   plies=23    winner=P1     32.5s  avg_len=32
+  game  80/100  id=6276   plies=22    winner=P2     46.8s  avg_len=32
+  game  81/100  id=6277   plies=27    winner=P1     21.8s  avg_len=32
+  game  82/100  id=6278   plies=24    winner=P2     34.0s  avg_len=31
+  game  83/100  id=6279   plies=100   winner=P1     71.6s  avg_len=32
+  game  84/100  id=6280   plies=26    winner=P2     26.3s  avg_len=32
+  game  85/100  id=6281   plies=27    winner=P1     52.7s  avg_len=32
+  game  86/100  id=6282   plies=15    winner=P1     26.4s  avg_len=32
+  game  87/100  id=6283   plies=49    winner=P1     96.6s  avg_len=32 [AB]
+  game  88/100  id=6284   plies=21    winner=P1     26.2s  avg_len=32
+  game  89/100  id=6285   plies=20    winner=P2     30.6s  avg_len=32
+  game  90/100  id=6286   plies=21    winner=P1     26.7s  avg_len=32
+  game  91/100  id=6287   plies=33    winner=P1     86.4s  avg_len=32 [AB]
+  game  92/100  id=6288   plies=14    winner=P2     12.5s  avg_len=32
+  game  93/100  id=6289   plies=22    winner=P2     33.7s  avg_len=32
+  game  94/100  id=6290   plies=22    winner=P2     40.1s  avg_len=31
+  game  95/100  id=6291   plies=31    winner=P1     47.5s  avg_len=31
+  game  96/100  id=6292   plies=29    winner=P1     43.0s  avg_len=31
+  game  97/100  id=6293   plies=41    winner=P1     73.9s  avg_len=31
+  game  98/100  id=6294   plies=36    winner=P2     95.6s  avg_len=32 [AB]
+  game  99/100  id=6295   plies=100   winner=P1     215.9s  avg_len=32 [AB]
+  game 100/100  id=6296   plies=64    winner=P2     130.9s  avg_len=33 [AB]
+  P1 wins: 48  P2 wins: 51  draws: 1
+  DB total: 6296 games, 305,015 positions
+
+[2/3] Training
+  113,565 positions from 3000 game(s) (2956 decisive, 44 draws)
+    epoch 1/2  loss=1.5919 (p=1.4895 v=0.1024)  val=1.3726 (p=1.2602 v=0.1124)  [best]
+    epoch 2/2  loss=1.4701 (p=1.3801 v=0.0899)  val=1.3621 (p=1.2504 v=0.1117)  [best]
+
+[3/3] Evaluation
+    (parallel evaluation on 8 CPU workers)
+    eval game 1/30  (idx 2)  new=P1  moves=21  W  (100% W1/L0/D0)
+    eval game 2/30  (idx 1)  new=P2  moves=21  L  (50% W1/L1/D0)
+    eval game 3/30  (idx 4)  new=P1  moves=22  L  (33% W1/L2/D0)
+    eval game 4/30  (idx 0)  new=P1  moves=25  W  (50% W2/L2/D0)
+    eval game 5/30  (idx 5)  new=P2  moves=23  L  (40% W2/L3/D0)
+    eval game 6/30  (idx 6)  new=P1  moves=22  L  (33% W2/L4/D0)
+    eval game 7/30  (idx 7)  new=P2  moves=22  W  (43% W3/L4/D0)
+    eval game 8/30  (idx 8)  new=P1  moves=20  L  (38% W3/L5/D0)
+    eval game 9/30  (idx 9)  new=P2  moves=23  L  (33% W3/L6/D0)
+    eval game 10/30  (idx 11)  new=P2  moves=27  L  (30% W3/L7/D0)
+    eval game 11/30  (idx 14)  new=P1  moves=24  L  (27% W3/L8/D0)
+    eval game 12/30  (idx 13)  new=P2  moves=21  L  (25% W3/L9/D0)
+    eval game 13/30  (idx 3)  new=P2  moves=28  W  (31% W4/L9/D0)
+    eval game 14/30  (idx 12)  new=P1  moves=29  W  (36% W5/L9/D0)
+    eval game 15/30  (idx 15)  new=P2  moves=23  L  (33% W5/L10/D0)
+    eval game 16/30  (idx 16)  new=P1  moves=25  W  (38% W6/L10/D0)
+    eval game 17/30  (idx 18)  new=P1  moves=22  L  (35% W6/L11/D0)
+    eval game 18/30  (idx 20)  new=P1  moves=19  W  (39% W7/L11/D0)
+    eval game 19/30  (idx 21)  new=P2  moves=22  W  (42% W8/L11/D0)
+    eval game 20/30  (idx 17)  new=P2  moves=35  L  (40% W8/L12/D0)
+    eval game 21/30  (idx 24)  new=P1  moves=19  W  (43% W9/L12/D0)
+    eval game 22/30  (idx 26)  new=P1  moves=21  W  (45% W10/L12/D0)
+    eval game 23/30  (idx 25)  new=P2  moves=21  L  (43% W10/L13/D0)
+    eval game 24/30  (idx 23)  new=P2  moves=27  L  (42% W10/L14/D0)
+    eval game 25/30  (idx 28)  new=P1  moves=17  W  (44% W11/L14/D0)
+    eval game 26/30  (idx 22)  new=P1  moves=27  W  (46% W12/L14/D0)
+    eval game 27/30  (idx 29)  new=P2  moves=23  L  (44% W12/L15/D0)
+    eval game 28/30  (idx 10)  new=P1  moves=100  W  (46% W13/L15/D0)
+    eval game 29/30  (idx 27)  new=P2  moves=100  L  (45% W13/L16/D0)
+    eval game 30/30  (idx 19)  new=P2  moves=100  D  (45% W13/L16/D1)
+  New net score: 45.0%  (W13/L16/D1)  95% CI: [28.8%, 62.3%]
+  Elo: selfplay-v16=996  selfplay-v15=1005
+  --- Keeping previous network.
+  Saved checkpoints/iter_0016.pt
+
+  Elo ratings (top 10):
+   1. selfplay-v34               1094.1
+   2. init                       1046.7
+   3. selfplay-v74               1032.7
+   4. selfplay-v19               1025.8
+   5. selfplay-v48               1014.7
+   6. selfplay-v71               1011.3
+   7. selfplay-v57               1009.5
+   8. selfplay-v28               1009.3
+   9. selfplay-v65               1007.4
+  10. selfplay-v52               1006.4
+
+[4/4] Calibration tournament (every 5 iterations)
+  (tournament: 7 players, 4 games/pair, sims=200)
+  (skipping 'iter_0040' — same weights as 'iter_0034')
+Players (6 after dedup): ['selfplay-v15', 'selfplay-v14', 'selfplay-v12', 'selfplay-v11', 'warmstart_10x128', 'iter_0034']
+  (anchor 'iter_0040' was a duplicate; using 'selfplay-v15')
+Total games: 60  (4 per pair × 15 pairs)
+  [1/60]  selfplay-v14 vs selfplay-v15 (P1-P2)   14p  selfplay-v15 W  [8s elapsed, eta 472s]
+  [2/60]  selfplay-v14 vs selfplay-v15 (P1-P2)   16p  selfplay-v15 W  [8s elapsed, eta 233s]
+  [3/60]  selfplay-v15 vs selfplay-v14 (P2-P1)   19p  selfplay-v14 W  [12s elapsed, eta 227s]
+  [4/60]  selfplay-v15 vs selfplay-v12 (P2-P1)   20p  selfplay-v15 W  [22s elapsed, eta 314s]
+  [5/60]  selfplay-v15 vs selfplay-v12 (P2-P1)   15p  selfplay-v12 W  [26s elapsed, eta 284s]
+  [6/60]  selfplay-v12 vs selfplay-v15 (P1-P2)   20p  selfplay-v15 W  [27s elapsed, eta 244s]
+  [7/60]  selfplay-v12 vs selfplay-v15 (P1-P2)   17p  selfplay-v12 W  [32s elapsed, eta 239s]
+  [8/60]  selfplay-v11 vs selfplay-v15 (P1-P2)   16p  selfplay-v15 W  [35s elapsed, eta 227s]
+  [9/60]  selfplay-v15 vs selfplay-v11 (P2-P1)   18p  selfplay-v15 W  [39s elapsed, eta 222s]
+  [10/60]  selfplay-v15 vs warmstart_10x128 (P1-P2)   15p  selfplay-v15 W  [49s elapsed, eta 246s]
+  [11/60]  warmstart_10x128 vs selfplay-v15 (P2-P1)   15p  selfplay-v15 W  [57s elapsed, eta 252s]
+  [12/60]  selfplay-v15 vs warmstart_10x128 (P1-P2)   15p  selfplay-v15 W  [65s elapsed, eta 261s]
+  [13/60]  warmstart_10x128 vs selfplay-v15 (P2-P1)   19p  selfplay-v15 W  [77s elapsed, eta 280s]
+  [14/60]  selfplay-v15 vs iter_0034 (P2-P1)   18p  selfplay-v15 W  [87s elapsed, eta 287s]
+  [15/60]  iter_0034 vs selfplay-v15 (P1-P2)   21p   iter_0034 W  [102s elapsed, eta 307s]
+  [16/60]  selfplay-v15 vs selfplay-v14 (P2-P1)  100p             D  [107s elapsed, eta 294s]
+  [17/60]  selfplay-v15 vs iter_0034 (P2-P1)   18p  selfplay-v15 W  [111s elapsed, eta 280s]
+  [18/60]  selfplay-v14 vs selfplay-v12 (P2-P1)   25p  selfplay-v12 W  [126s elapsed, eta 293s]
+  [19/60]  selfplay-v15 vs selfplay-v11 (P2-P1)  100p             D  [129s elapsed, eta 278s]
+  [20/60]  selfplay-v11 vs selfplay-v15 (P1-P2)  100p             D  [130s elapsed, eta 260s]
+  [21/60]  selfplay-v12 vs selfplay-v14 (P1-P2)   22p  selfplay-v14 W  [139s elapsed, eta 257s]
+  [22/60]  selfplay-v14 vs selfplay-v12 (P2-P1)   20p  selfplay-v14 W  [140s elapsed, eta 242s]
+  [23/60]  selfplay-v12 vs selfplay-v14 (P1-P2)   20p  selfplay-v14 W  [141s elapsed, eta 227s]
+  [24/60]  selfplay-v14 vs selfplay-v11 (P2-P1)   19p  selfplay-v11 W  [154s elapsed, eta 231s]
+  [25/60]  selfplay-v11 vs selfplay-v14 (P1-P2)   23p  selfplay-v11 W  [156s elapsed, eta 219s]
+  [26/60]  selfplay-v14 vs warmstart_10x128 (P1-P2)   19p  selfplay-v14 W  [165s elapsed, eta 216s]
+  [27/60]  selfplay-v11 vs selfplay-v14 (P1-P2)   23p  selfplay-v11 W  [171s elapsed, eta 209s]
+  [28/60]  warmstart_10x128 vs selfplay-v14 (P2-P1)   23p  selfplay-v14 W  [181s elapsed, eta 207s]
+  [29/60]  selfplay-v14 vs warmstart_10x128 (P1-P2)   22p  warmstart_10x128 W  [186s elapsed, eta 199s]
+  [30/60]  warmstart_10x128 vs selfplay-v14 (P2-P1)   14p  warmstart_10x128 W  [188s elapsed, eta 188s]
+  [31/60]  iter_0034 vs selfplay-v14 (P1-P2)   16p  selfplay-v14 W  [198s elapsed, eta 185s]
+  [32/60]  selfplay-v14 vs iter_0034 (P2-P1)   17p   iter_0034 W  [200s elapsed, eta 175s]
+  [33/60]  selfplay-v14 vs iter_0034 (P2-P1)   24p  selfplay-v14 W  [213s elapsed, eta 174s]
+  [34/60]  iter_0034 vs selfplay-v14 (P1-P2)   17p   iter_0034 W  [215s elapsed, eta 164s]
+  [35/60]  selfplay-v12 vs selfplay-v11 (P2-P1)   18p  selfplay-v12 W  [222s elapsed, eta 158s]
+  [36/60]  selfplay-v12 vs selfplay-v11 (P2-P1)   20p  selfplay-v12 W  [234s elapsed, eta 156s]
+  [37/60]  iter_0034 vs selfplay-v15 (P1-P2)  100p  selfplay-v15 W  [236s elapsed, eta 146s]
+  [38/60]  selfplay-v12 vs warmstart_10x128 (P1-P2)   15p  selfplay-v12 W  [244s elapsed, eta 142s]
+  [39/60]  warmstart_10x128 vs selfplay-v12 (P2-P1)   14p  warmstart_10x128 W  [251s elapsed, eta 135s]
+  [40/60]  selfplay-v14 vs selfplay-v11 (P2-P1)  100p             D  [260s elapsed, eta 130s]
+  [41/60]  selfplay-v12 vs warmstart_10x128 (P1-P2)   18p  warmstart_10x128 W  [263s elapsed, eta 122s]
+  [42/60]  selfplay-v12 vs iter_0034 (P2-P1)   15p   iter_0034 W  [271s elapsed, eta 116s]
+  [43/60]  warmstart_10x128 vs selfplay-v12 (P2-P1)   18p  warmstart_10x128 W  [275s elapsed, eta 109s]
+  [44/60]  selfplay-v11 vs selfplay-v12 (P1-P2)  100p  selfplay-v11 W  [283s elapsed, eta 103s]
+  [45/60]  selfplay-v12 vs iter_0034 (P2-P1)   17p   iter_0034 W  [284s elapsed, eta 95s]
+  [46/60]  selfplay-v11 vs warmstart_10x128 (P1-P2)   15p  selfplay-v11 W  [292s elapsed, eta 89s]
+  [47/60]  iter_0034 vs selfplay-v12 (P1-P2)   23p   iter_0034 W  [292s elapsed, eta 81s]
+  [48/60]  iter_0034 vs selfplay-v12 (P1-P2)   27p   iter_0034 W  [302s elapsed, eta 75s]
+  [49/60]  selfplay-v11 vs warmstart_10x128 (P1-P2)   14p  warmstart_10x128 W  [304s elapsed, eta 68s]
+  [50/60]  warmstart_10x128 vs selfplay-v11 (P2-P1)   18p  warmstart_10x128 W  [309s elapsed, eta 62s]
+  [51/60]  warmstart_10x128 vs selfplay-v11 (P2-P1)   14p  warmstart_10x128 W  [309s elapsed, eta 55s]
+  [52/60]  selfplay-v11 vs iter_0034 (P2-P1)   14p  selfplay-v11 W  [313s elapsed, eta 48s]
+  [53/60]  selfplay-v11 vs iter_0034 (P2-P1)   15p   iter_0034 W  [319s elapsed, eta 42s]
+  [54/60]  iter_0034 vs selfplay-v11 (P1-P2)   17p   iter_0034 W  [321s elapsed, eta 36s]
+  [55/60]  iter_0034 vs selfplay-v11 (P1-P2)   19p   iter_0034 W  [323s elapsed, eta 29s]
+  [56/60]  warmstart_10x128 vs iter_0034 (P2-P1)   16p  warmstart_10x128 W  [330s elapsed, eta 24s]
+  [57/60]  iter_0034 vs warmstart_10x128 (P1-P2)   18p  warmstart_10x128 W  [334s elapsed, eta 18s]
+  [58/60]  warmstart_10x128 vs iter_0034 (P2-P1)   19p   iter_0034 W  [335s elapsed, eta 12s]
+  [59/60]  iter_0034 vs warmstart_10x128 (P1-P2)   17p   iter_0034 W  [341s elapsed, eta 6s]
+  [60/60]  selfplay-v11 vs selfplay-v12 (P1-P2)  100p  selfplay-v11 W  [344s elapsed, eta 0s]
+
+Match summary (row beats column, score %):
+                      selfplay-v15   selfplay-v14   selfplay-v12   selfplay-v11 warmstart_10x128      iter_0034
+selfplay-v15                      -            n/a            n/a            n/a    50% (2-2-0)            n/a
+selfplay-v14            12% (0-3-1)              -            n/a            n/a    50% (2-2-0)            n/a
+selfplay-v12            50% (2-2-0)    25% (1-3-0)              -            n/a    75% (3-1-0)            n/a
+selfplay-v11            50% (1-1-2)    62% (2-1-1)   100% (4-0-0)              -    75% (3-1-0)            n/a
+warmstart_10x128        50% (2-2-0)    50% (2-2-0)    25% (3-1-0)    25% (3-1-0)              -            n/a
+iter_0034               75% (3-1-0)    50% (2-2-0)    50% (2-2-0)    75% (3-1-0)    50% (2-2-0)              -
+
+Elo ratings (anchored at 1000 for 'selfplay-v15', 95% CI from 200 bootstrap resamples):
+   1. selfplay-v11               1060.4   [  894.9,  1243.4]
+   2. iter_0034                  1045.0   [  839.1,  1256.2]
+   3. selfplay-v15               1000.0   [ 1000.0,  1000.0]
+   4. selfplay-v14                955.4   [  798.7,  1107.7]
+   5. selfplay-v12                925.3   [  743.5,  1093.5]
+   6. warmstart_10x128            925.3   [  706.4,  1108.1]
+
+Saved checkpoints/_tournament_current.json
+Saved 11 tournament games into data/quoridor_v3.db
+  Calibrated Elo (tournament):
+     1. selfplay-v11               1060.4
+     2. iter_0034                  1045.0
+     3. selfplay-v15               1000.0 ←
+     4. selfplay-v14                955.4
+     5. selfplay-v12                925.3
+     6. warmstart_10x128            925.3
+  >>> REVERTING best_net: selfplay-v15 -> selfplay-v11
+  Mining hard examples from ['selfplay-v15', 'selfplay-v14', 'selfplay-v12']...

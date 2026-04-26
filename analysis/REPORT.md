@@ -1,6 +1,12 @@
 # Quoridor AI — Analysis Report
 
-Generated: 2026-04-25T12:56:46
+Generated: 2026-04-25T21:32:41
+
+## Current training recipe
+
+Each iteration runs (1) self-play, (2) training, (3) gating, (4) periodic round-robin tournament. Six knobs do most of the work. **High-sim MCTS** (sims=600) gives the net a teacher stronger than itself. **Alpha-beta mix** (20% of self-play games) breaks the self-imitation loop with a fundamentally different evaluator. **Auxiliary path-diff value blend** (α=0.4) densifies value supervision from one outcome label per game to ~30 per game. **Hard-example mining** on revert concentrates supervision on positions where the net previously made the wrong call. **Lightweight PBT** (sibling every 6 iters) explores hparam neighborhoods cheaply. **Round-robin tournament every 5 iters** with held-out anchors (warmstart, iter_0034, iter_0040) catches drift the local gating signal can't see, with revert-to-champion semantics.
+
+See `PROCESS.md` §34 for the full launch command and a per-knob explanation of why each one helps.
 
 ---
 
@@ -8,20 +14,17 @@ Generated: 2026-04-25T12:56:46
 ## 00_summary
 
 ```
-8 iterations parsed
-Promoted: 2    Rejected: 5    Reverts: 1
-Self-play: 700 games, 8 drawn (1%)
-Eval: 210 games, 3 drawn (1%)
+5 iterations parsed
+Promoted: 3    Rejected: 2    Reverts: 1
+Self-play: 500 games, 6 drawn (1%)
+Eval: 150 games, 4 drawn (3%)
 
 iter  global  sp(W1/W2/D)     epoch1 train  epoch1 val   eval  CI                     WLD  result
-   1       1  60/39/1                1.658       1.522    30%  [17%,48%]           9/21/0  kept
-   2       2  56/44/0                1.686       1.646    40%  [25%,58%]          12/18/0  kept
-   3       3  50/50/0                1.713       1.670    37%  [22%,55%]          11/19/0  kept
-   4       4  58/42/0                1.740       1.635    47%  [30%,64%]          14/16/0  kept
-   5       5  54/46/0                1.767       1.625    57%  [39%,73%]          17/13/0  REVERTED→iter_0034
-   6       6  52/43/5                1.715       1.639    57%  [39%,73%]          17/13/0  PROMOTED
-   7       7  44/54/2                1.586       1.441    32%  [18%,50%]           8/19/3  kept
-   8       8  0/0/0                      -           -      -  -                        -
+   1      12  48/51/1                1.663       1.545    57%  [39%,73%]          17/13/0  PROMOTED
+   2      13  49/49/2                1.609       1.456    52%  [35%,68%]          15/14/1  kept
+   3      14  52/48/0                1.640       1.470    57%  [39%,73%]          16/12/2  PROMOTED
+   4      15  57/41/2                1.603       1.432    63%  [46%,78%]          19/11/0  PROMOTED
+   5      16  48/51/1                1.592       1.373    45%  [29%,62%]          13/16/1  REVERTED→selfplay-v11
 ```
 
 ## 01_elo_history
@@ -29,7 +32,7 @@ iter  global  sp(W1/W2/D)     epoch1 train  epoch1 val   eval  CI               
 ```
 Saved analysis/plots/01_elo_history.png
 
-78 versions plotted (9 calibrated, 69 gating-only)
+82 versions plotted (12 calibrated, 70 gating-only)
 ```
 
 ![01_elo_history](analysis/plots/01_elo_history.png)
@@ -63,7 +66,7 @@ v1: 133 games, 50% draws, avg 111.9 plies, versions v1-v2
 
 v2: 13995 games, 38% draws, avg 56.3 plies, versions v1-v83
 
-v3: 5350 games, 10% draws, avg 50.9 plies, versions v1-v55
+v3: 6280 games, 9% draws, avg 48.5 plies, versions v1-v55
 ```
 
 ![03_database_stats](analysis/plots/03_database_stats.png)
@@ -74,7 +77,7 @@ v3: 5350 games, 10% draws, avg 50.9 plies, versions v1-v55
 ```
 Saved analysis/plots/04_training_progress.png
 
-8 iterations parsed, 2 promoted, 1 reverts
+5 iterations parsed, 3 promoted, 1 reverts
 ```
 
 ![04_training_progress](analysis/plots/04_training_progress.png)
@@ -101,8 +104,8 @@ Saved analysis/plots/06_activity_timeline.png
 Games per DB:
   v1: 133
   v2: 13,995
-  v3: 5,357
-  Active span: 2026-04-18 → 2026-04-25
+  v3: 6,307
+  Active span: 2026-04-18 → 2026-04-26
 ```
 
 ![06_activity_timeline](analysis/plots/06_activity_timeline.png)
@@ -113,7 +116,7 @@ Games per DB:
 ```
 Saved analysis/plots/07_intervention_metrics.png
 
-8 metrics rows across iterations 1–7
+18 metrics rows across iterations 1–16
 ```
 
 ![07_intervention_metrics](analysis/plots/07_intervention_metrics.png)

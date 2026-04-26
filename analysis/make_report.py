@@ -32,7 +32,32 @@ def main() -> None:
     log_lines = []
     log_lines.append(f"# Quoridor AI — Analysis Report")
     log_lines.append(f"\nGenerated: {datetime.now().isoformat(timespec='seconds')}")
-    log_lines.append(f"\n---\n")
+    log_lines.append("")
+    log_lines.append("## Current training recipe")
+    log_lines.append("")
+    log_lines.append(
+        "Each iteration runs (1) self-play, (2) training, (3) gating, "
+        "(4) periodic round-robin tournament. Six knobs do most of the "
+        "work. **High-sim MCTS** (sims=600) gives the net a teacher "
+        "stronger than itself. **Alpha-beta mix** (20% of self-play "
+        "games) breaks the self-imitation loop with a fundamentally "
+        "different evaluator. **Auxiliary path-diff value blend** "
+        "(α=0.4) densifies value supervision from one outcome label "
+        "per game to ~30 per game. **Hard-example mining** on revert "
+        "concentrates supervision on positions where the net previously "
+        "made the wrong call. **Lightweight PBT** (sibling every 6 "
+        "iters) explores hparam neighborhoods cheaply. **Round-robin "
+        "tournament every 5 iters** with held-out anchors "
+        "(warmstart, iter_0034, iter_0040) catches drift the local "
+        "gating signal can't see, with revert-to-champion semantics."
+    )
+    log_lines.append("")
+    log_lines.append(
+        "See `PROCESS.md` §34 for the full launch command and a "
+        "per-knob explanation of why each one helps."
+    )
+    log_lines.append("")
+    log_lines.append("---\n")
 
     for script in SCRIPTS:
         title = os.path.basename(script).replace(".py", "")
