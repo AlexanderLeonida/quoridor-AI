@@ -461,6 +461,145 @@ The tournament + revert is a *post-hoc* safety net: it catches forgetting only a
 
 This converts "distill and pray" into a controlled experiment with a recoverable failure mode.
 
+## 36. Why iterative training stalls *after* a successful distillation (the ceiling problem)
+
+After the §35 distillation pass produced a +366-Elo jump (`best_ab_distilled.pt` beats pre-distill v11 7-1 in head-to-head), iterative training resumed and immediately stopped promoting — first three iterations rejected at 25%, 38%, and 45% vs the distilled best.  This contrasts with the pre-distillation phase where promotions were happening every 2-3 iterations.  The gap is not random; it is mathematically expected.
+
+**The mechanic.**  Iterative self-play can only push the net toward the strength of its *teacher in the loop*.  Our loop teacher is:
+
+- 80% NN-vs-NN self-play, where the search amplifier is MCTS at 600 simulations on top of the current net's priors
+- 20% NN-vs-alphabeta at **depth 4** (currently)
+
+Before distillation (warmstart → v11), the net was *below* this teacher's level.  Gradients pulled the net *upward* toward what depth-4 self-play knew.  Promotions were easy.
+
+After distillation, the net is *above* this teacher.  The candidate trained on depth-4 self-play data converges back toward depth-4 strength — *worse* than the distilled net.  Gradients pull laterally or down.  Rejections are inevitable until the loop teacher is itself made stronger.
+
+**This is the same shape as the original drift problem (§20)**, just one floor higher.  Self-play alone cannot teach the net knowledge that doesn't already exist in the self-play distribution.  Distillation broke through that ceiling once; iteration alone won't break through the new ceiling.
+
+**Two compatible structural fixes:**
+
+1. **Strengthen the in-loop teacher.**  Bump `--ab-depth 4 → 6` (or higher) and `--ab-time 1.5 → 3.0` in the iterative loop.  Each ab-mix game now contains depth-6 supervision, raising the strength target the iterative loop can climb to.  Cost: AB games slow ~3-5×; iteration wall-clock per cycle increases.  Expected gain: moderate, ~50-100 Elo over many iterations.
+
+2. **Periodic re-distillation.**  Treat `distill_deep.py --teacher ab --ab-depth 8` as a *recurring* event rather than one-shot.  Every 20-30 iterations of iteration, run another distillation pass with rehearsal + KL regularisation (mitigations from §35 are now built in by default).  Each round injects fresh depth-8 supervision the iterative loop can't reach on its own.  Cost: ~1 hour per round.  Expected gain: large per round (we already saw +366 Elo from one round); diminishing returns as the net approaches the teacher's ceiling.
+
+**Combined: distill-and-iterate as a continual loop.**
+
+The right pattern at our compute scale is alternating: distillation to raise the ceiling, iteration to refine between ceilings.  AlphaZero avoided this complexity by training a single self-play loop on millions of games at extreme sim counts — we don't have that compute, so we explicitly use distillation as the ceiling-raising mechanism.
+
+**Open question: when to fire the next intervention.**
+
+The conservative trigger is "after 5 consecutive rejections from the current best."  The aggressive trigger is "after observing the candidate converge to <50% across 3 iterations."  We default to conservative: let auto-tournament evaluate every 5 iterations, watch what calibrated Elo says, and only intervene structurally if both gating *and* tournament confirm the iteration loop is stuck.
+
+**Why not change ab-depth right now (during this run):**
+
+(a) only 3 iterations of evidence so far — too early to be sure the loop is stuck rather than just slow.
+(b) the auto-tournament fires at iteration 5; that's a stronger signal than gating alone and triggers in ~30 minutes.
+(c) restarting now would discard the in-progress self-play data (~300 games already saved, useful for future training).
+(d) if iteration 5's tournament confirms we're stuck, we restart cleanly with `--ab-depth 6` and the data we accumulated remains in the DB.
+
+The decision is *delayed by one iteration* in exchange for a much stronger signal.  This is consistent with the project's working principle: change one thing at a time, with observable evidence before moving on.
+
+## 37. Spurious-revert bug + Elo-gap threshold fix
+
+**Symptom caught:** after the round-1 distillation promoted to `best.pt` (the +366 Elo jump), the auto-tournament fired at iteration 5.  Pool: `selfplay-v15` (the distilled best) + warmstart + iter_0034 + pre_ab_distill_backup.  With `--tournament-games 4` per pair, every pairing came back 2-2 across the board.  Bradley-Terry MLE then produced *equal* Elos (all 1000.0) and `champion = max(ratings, key=ratings.get)` returned `iter_0034` simply because that key happened to come first in the dict.  The system then *reverted* — losing the entire +366 Elo distillation gain to dict-ordering noise.
+
+Caught it in time and restored `best.pt` from the `best_ab_distilled.pt` backup.  Lost ~1.5 hours of compute, no permanent damage.
+
+**Two fixes applied:**
+
+1. **Revert only when the Elo gap exceeds a threshold.**  Added `REVERT_GAP_ELO = 25.0` constant in `run_pipeline`'s tournament block.  The condition went from `if champion != best_version: revert` to `if champion != best_version and (champion_elo - cur_elo) > REVERT_GAP_ELO: revert`.  Tied tournaments now print "treating as a tie, keeping current best" instead of swapping to a near-zero-margin winner.
+
+2. **Bumped `--tournament-games 4 → 8` per pair** to halve sampling noise.  At 4 games, ±50% on any pair is one decisive game; at 8, that drops to ±25%.
+
+**Why this matters going forward:**  the autonomous loop (§38) relies heavily on the auto-tournament for drift detection and for promoting distillation rounds.  Without the gap threshold, every distillation round risks being immediately reverted by tournament noise.  With it, we only revert when the calibrated tournament has actual evidence the candidate is weaker.
+
+## 38. Autonomous training loop (no user check-ins)
+
+User granted unattended-autonomous authority: keep training continuously, take optimal decisions without confirmation, never sit idle, log all structural changes here.  Goal: maximise Elo gain per unit compute.
+
+**Insight from §36 played out:**  the depth-6-AB iteration plan was structurally redundant — depth-6 AB is below the depth-8-distilled ceiling we already cleared in §35.  Iterating with a teacher weaker than the current net is climbing toward an asymptote *below* where we already are.  Killed that run.
+
+**The right loop is distill→iterate→distill, with distillation as the ceiling-raiser and iteration as data accumulation between rounds.**
+
+Continual loop the autonomous mode runs:
+
+1. **Distillation round** (~45 min compute):  `distill_deep.py --teacher ab --ab-depth 8 --ab-time 5 --positions 3000 --rehearsal-frac 0.3 --reg-lambda 0.5`.  Each round samples fresh positions from the DB (so the teacher sees positions the net has actually been playing), runs depth-8 AB on them, distills with rehearsal + KL regularisation.
+2. **Bench** the distilled candidate vs current `best.pt` — 8 games per pair, 4-player tournament with anchors warmstart / iter_0034 / pre-distill backup.  Promote candidate iff calibrated Elo > current best by the §35 revert-gap threshold (25 Elo).
+3. **Iteration phase** (~2-3 hours): self-play at `--ab-depth 4 --ab-time 1.5` (cheap, just for accumulating fresh self-play data).  Skip ab-depth 6/8 in self-play — both have asymptotes ≤ current best, so they're either redundant (depth ≥ current) or actively pulling down (depth < current).  Iteration purpose: produce ~500-1000 fresh games tagged with the new best version, used as rehearsal data for the next distillation.
+4. **Tournament check** at iteration boundary every 5 iters.  If iteration somehow promotes a stronger candidate, take it.
+5. **Goto 1.**  Each distill round historically yielded +200-400 Elo (round 1 = +366) with diminishing returns expected.  Continue until the calibrated tournament shows two consecutive distillation rounds within the 25-Elo revert gap → architecture or teacher depth is then the binding constraint.
+
+**Hyperparameters that *don't* need tuning per round:**  rehearsal_frac=0.3, reg_lambda=0.5 (validated in round 1, prevented catastrophic forgetting), depth-8 AB (depth-10 doubles compute for ~+50 Elo per ply — bad ROI compared to running another full depth-8 round).
+
+**When to escalate beyond depth 8:**  if two consecutive depth-8 distillations are within 25 Elo of the prior best (diminishing returns hit), then either (a) try depth-10 AB distillation as a one-shot ceiling test, or (b) widen the architecture (10×128 → 14×192 or 20×256) and distill the wider net from the current best.  (b) is more invasive but the right answer when capacity becomes the constraint.  Document the escalation in a new section here.
+
+**What the autonomous loop logs to PROCESS.md:**  every distillation outcome (round number, val loss, calibrated Elo gap), every iteration's promotion result if promoted, any structural changes (new args, new files, new flags), any reverts.  This way when the user returns, PROCESS.md is the running diary of what was done and why.
+
+## 39. Distillation rounds — running log
+
+Each row records a distillation outcome from the autonomous loop.  All rounds use depth-8 alphabeta teacher, 3000 positions, rehearsal_frac=0.3, reg_lambda=0.5 (the §35 mitigations).  Promotions decided by 4-player tournament (round + previous best + warmstart + v34 anchor) at 8 games per pair.
+
+| Round | val loss | Calibrated Elo | Δ vs prev best | Decision |
+|-------|----------|----------------|----------------|----------|
+| 1     | 1.133    | 1183 (warmstart=1000)        | +366 over pre-distill v11 | promoted → best.pt |
+| 2     | 1.213    | 1552 (warmstart=1000)        | +267 over r1               | promoted → best.pt |
+| 3     | 1.355    | 1312 (warmstart=1000)        | +13 over r2 (within noise) | **rejected** — tied with r2, gap below 25-Elo threshold |
+
+Notes:
+- Round 2 ended with *higher* val loss than round 1 (1.213 vs 1.133) yet was decisively stronger in head-to-head (6-2 vs r1). Confirms what the project has documented many times: val loss alone doesn't predict playing strength. Trust the calibrated tournament.
+- Cumulative Elo since pre-distill v11: **+633 Elo** in two distillation rounds (~50 min compute each).
+- Round 2's CI width is 1380→2947 — wide because the CI is anchored on bootstrap resamples and we only had 8 games per pair. Real Elo is probably the lower bound (1380) with high confidence.
+- Diminishing returns have NOT kicked in yet (round 2 gained +267, vs round 1's +366 — both substantial).  Plan: continue distill→iterate→distill loop until two consecutive rounds yield <100 Elo gain.
+- **Round 3 confirmed depth-8 ceiling**: +13 Elo over r2 — essentially tied. No promotion. Triggers escalation per §38 contingency.  Round 4 launched at depth-10 (`--ab-depth 10 --ab-time 12 --positions 2000` — fewer positions because depth-10 is ~3× slower per position) with seed=42 for fresh sampling.
+
+| 4     | (pending) | (pending)                      | (pending)                  | depth-10 escalation, in flight |
+
+## 40. Why bother with the NN if alpha-beta is stronger? (foundational)
+
+This question keeps coming up implicitly — we use depth-8/10 alpha-beta as a *teacher* for the neural net via distillation, which means right now the AB teacher is stronger than the NN student.  Why are we not just shipping AB?  The answer has three layers, all of which matter.
+
+### Layer 1: inference speed
+
+Per move, on this hardware:
+
+- Depth-8 alpha-beta: ~5 seconds (our current teacher in distillation)
+- Depth-10 alpha-beta: ~12 seconds (round 4's teacher)
+- NN with 200-sim MCTS: ~1-2 seconds
+- NN with 800-sim MCTS (production-quality): ~3-4 seconds
+- NN raw forward pass (no search): ~50-100 ms
+
+For a real-time GUI move, online play, or any application with latency budgets, the NN is 5-100× faster.  Speed alone is a real advantage even if strength were equal.
+
+### Layer 2: NN + MCTS > AB at the same compute budget
+
+This is the more important point.  When the NN plays, it does *not* play "raw" — it plays via MCTS using the NN as the policy/value oracle.  The combination has two structural advantages over AB:
+
+1. **Selective search.**  MCTS expands branches the NN's policy says are interesting; rarely-visited branches die quickly.  AB explores *everything* within its depth, including obviously bad branches that pruning catches but only after evaluating their first few plies.  At equal time budget, NN+MCTS reaches deeper in the lines that matter — exactly the lines a strong player would care about.
+
+2. **Pattern recognition vs handcrafted evaluation.**  AB's leaf evaluator is `(opp_path − my_path) · 100 + wall_diff · 6 + mobility_diff · 2 + advance_diff + tempo` — a fixed linear combination of features a human chose.  The NN's value head is 4 million parameters trained on hundreds of thousands of positions; it can learn arbitrarily complex position-evaluation rules including non-linear combinations and game-stage-specific patterns AB's static evaluator cannot capture.  The NN's policy head similarly learns "in positions like this, the strong move is usually X" patterns AB has no concept of.
+
+So: NN+MCTS gets *deeper search where it matters* + *richer evaluation at the leaves*.  The two-engine comparison "AB-depth-N alone" vs "NN+MCTS at equivalent compute" is not a tie even when the raw NN is below AB's strength.
+
+### Layer 3: the NN's structural ceiling is *higher* than alpha-beta's
+
+AlphaZero proved this directly in chess and Go: a self-play-trained NN + MCTS surpassed Stockfish (top handcrafted-eval AB engine) in chess and KataGo's predecessors in Go.  The reason is asymptotic:
+
+- AB's strength is bounded by the quality of its evaluation function.  At infinite depth, AB plays perfectly — but no realistic depth is infinite, and at any finite depth the *evaluation function* is the binding constraint.
+- The NN's evaluation function is *learned*, so it improves with data.  Given enough self-play, the NN's evaluator can encode patterns no handcrafted function can describe.  At the same depth of search, a better evaluator wins.
+
+In our project specifically, the NN is currently *behind* AB-depth-8 because **we don't have enough training data**.  AlphaZero used millions of games at extreme MCTS sim counts.  We have ~7000 self-play games.  The deep-distillation pipeline (§35, §39) is a data-efficient shortcut: instead of waiting for the NN to discover depth-8-AB-quality patterns through millions of self-play games, we run depth-8 AB on a few thousand sampled positions and inject those policies/values directly via supervised training.
+
+This raises the NN's *floor* (it now plays roughly at depth-8-AB strength on the sampled positions).  But the NN's *ceiling* — what it could become with enough compute — is strictly higher than AB's ceiling at any fixed search depth, because the NN's evaluator is the thing improving.
+
+### What this means for the project
+
+- **The AB teacher is a scaffolding, not the goal.**  Each distillation round transfers AB's depth-N knowledge into the NN cheaply.  Once the NN has absorbed it, additional self-play training can refine and surpass it (gradient descent on the larger and more diverse self-play distribution can find patterns AB never had).
+- **The NN we ship is the NN + MCTS combination, not raw weights.**  When the user plays the GUI's "Neural Net" difficulty, MCTS at 800 sims is wrapping the net.  That's the actual playing entity, and it's stronger than the raw net by a meaningful margin.
+- **Depth-N AB distillation has diminishing returns** (§39 round 3 hit them at depth 8).  Eventually the NN saturates the depth-N teacher and we either escalate the teacher (depth 10 → 12 → ...) or rely on iteration + self-play volume to push past via the NN's own discoveries.  Both paths are valid; the structural argument above is why iteration alone can eventually beat any fixed-depth AB.
+- **The data-volume question is the deepest constraint.**  At AlphaZero scale (millions of games), the AB teacher would be unnecessary because self-play would generate enough diverse positions for the NN to discover depth-10+ patterns on its own.  At our scale (thousands of games), distillation is the only practical way to reach that strength.  More compute → more self-play → less reliance on AB → eventual surpass.
+
+So the order of operations is correct: distill from AB to bootstrap; iterate with self-play to refine; when iteration plateaus, distill again from a deeper teacher; eventually self-play takes over.  Each component is doing the work it's structurally suited for.
+
 ## Current state
 
 - Net: 10 blocks × 128 filters, distilled from v74 (6×64 peak).

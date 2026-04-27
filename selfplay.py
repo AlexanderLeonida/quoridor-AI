@@ -1825,12 +1825,28 @@ def run_pipeline(args) -> None:
                             marker = " ←" if label == best_version else ""
                             print(f"    {i:>2}. {label:<25s} {r:7.1f}{marker}")
 
-                        if champion and champion != best_version:
+                        # Only revert if the champion is meaningfully
+                        # ahead of the current best.  With small game
+                        # counts per pair (--tournament-games 4), a
+                        # tied 2-2 record produces equal Elos and
+                        # max() then picks an arbitrary key — that
+                        # would otherwise cause spurious reverts (e.g.
+                        # losing the distilled +366-Elo gain to dict
+                        # ordering noise).
+                        REVERT_GAP_ELO = 25.0
+                        cur_elo = ratings.get(best_version, ratings.get(champion))
+                        champ_elo = ratings.get(champion, cur_elo)
+                        gap = champ_elo - cur_elo
+                        if (
+                            champion and champion != best_version
+                            and gap > REVERT_GAP_ELO
+                        ):
                             # Find champion checkpoint and reload weights.
                             champ_path = dict(pool).get(champion)
                             if champ_path and os.path.exists(champ_path):
                                 print(f"  >>> REVERTING best_net: "
-                                      f"{best_version} -> {champion}")
+                                      f"{best_version} -> {champion}  "
+                                      f"(Elo gap {gap:+.1f})")
                                 # Identify rejected candidates: every
                                 # promoted version since the champion
                                 # turned out to be a wrong turn.  Their
@@ -1885,8 +1901,15 @@ def run_pipeline(args) -> None:
                                     "reverted_to": champion,
                                 })
                         else:
-                            print("  Current best is the tournament champion. "
-                                  "No revert.")
+                            if champion and champion != best_version:
+                                print(f"  Tournament champion is {champion} "
+                                      f"but Elo gap {gap:+.1f} <= "
+                                      f"{REVERT_GAP_ELO} threshold; "
+                                      "treating as a tie and keeping "
+                                      f"current {best_version}.")
+                            else:
+                                print("  Current best is the tournament "
+                                      "champion. No revert.")
 
     finally:
         db.close()

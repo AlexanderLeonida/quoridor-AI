@@ -1,0 +1,65 @@
+Players (4 after dedup): ['v11_current', 'v11_distilled', 'v34_old_peak', 'warmstart']
+Total games: 48  (8 per pair × 6 pairs)
+  [1/48]  v11_distilled vs v11_current (P2-P1)   23p  v11_current W  [14s elapsed, eta 643s]
+  [2/48]  v11_current vs v11_distilled (P1-P2)   24p  v11_distilled W  [14s elapsed, eta 325s]
+  [3/48]  v11_distilled vs v11_current (P2-P1)   31p  v11_current W  [21s elapsed, eta 308s]
+  [4/48]  v11_current vs v11_distilled (P1-P2)   24p  v11_distilled W  [29s elapsed, eta 319s]
+  [5/48]  v11_current vs v11_distilled (P1-P2)   32p  v11_distilled W  [38s elapsed, eta 323s]
+  [6/48]  v11_distilled vs v11_current (P2-P1)   23p  v11_current W  [43s elapsed, eta 303s]
+  [7/48]  v11_current vs v34_old_peak (P1-P2)   17p  v11_current W  [47s elapsed, eta 273s]
+  [8/48]  v34_old_peak vs v11_current (P2-P1)   21p  v11_current W  [53s elapsed, eta 263s]
+  [9/48]  v11_current vs v34_old_peak (P1-P2)   16p  v34_old_peak W  [53s elapsed, eta 231s]
+  [10/48]  v34_old_peak vs v11_current (P2-P1)   16p  v34_old_peak W  [59s elapsed, eta 224s]
+  [11/48]  v11_current vs v34_old_peak (P1-P2)   18p  v34_old_peak W  [61s elapsed, eta 205s]
+  [12/48]  v34_old_peak vs v11_current (P2-P1)   17p  v11_current W  [65s elapsed, eta 196s]
+  [13/48]  v11_current vs v34_old_peak (P1-P2)   16p  v34_old_peak W  [69s elapsed, eta 186s]
+  [14/48]  v34_old_peak vs v11_current (P2-P1)   17p  v11_current W  [72s elapsed, eta 174s]
+  [15/48]  v11_current vs warmstart (P1-P2)   16p   warmstart W  [77s elapsed, eta 169s]
+  [16/48]  v11_distilled vs v11_current (P2-P1)  100p  v11_current W  [79s elapsed, eta 158s]
+  [17/48]  warmstart vs v11_current (P2-P1)   17p  v11_current W  [83s elapsed, eta 151s]
+  [18/48]  v11_current vs warmstart (P1-P2)   16p   warmstart W  [85s elapsed, eta 141s]
+  [19/48]  warmstart vs v11_current (P2-P1)   14p   warmstart W  [86s elapsed, eta 131s]
+  [20/48]  v11_current vs warmstart (P1-P2)   18p   warmstart W  [91s elapsed, eta 128s]
+  [21/48]  v11_current vs warmstart (P1-P2)   16p   warmstart W  [94s elapsed, eta 120s]
+  [22/48]  warmstart vs v11_current (P2-P1)   19p  v11_current W  [95s elapsed, eta 112s]
+  [23/48]  warmstart vs v11_current (P2-P1)   20p   warmstart W  [104s elapsed, eta 113s]
+  [24/48]  v34_old_peak vs v11_distilled (P2-P1)   14p  v34_old_peak W  [107s elapsed, eta 107s]
+  [25/48]  v11_distilled vs v34_old_peak (P1-P2)   27p  v11_distilled W  [111s elapsed, eta 102s]
+  [26/48]  v11_distilled vs v34_old_peak (P1-P2)   19p  v11_distilled W  [115s elapsed, eta 97s]
+  [27/48]  v34_old_peak vs v11_distilled (P2-P1)   35p  v11_distilled W  [122s elapsed, eta 95s]
+  [28/48]  v34_old_peak vs v11_distilled (P2-P1)   18p  v34_old_peak W  [127s elapsed, eta 91s]
+  [29/48]  v11_distilled vs v34_old_peak (P1-P2)   28p  v34_old_peak W  [129s elapsed, eta 85s]
+  [30/48]  v11_current vs v11_distilled (P1-P2)  100p  v11_current W  [135s elapsed, eta 81s]
+  [31/48]  v11_distilled vs v34_old_peak (P1-P2)   21p  v11_distilled W  [135s elapsed, eta 74s]
+  [32/48]  v34_old_peak vs v11_distilled (P2-P1)   16p  v34_old_peak W  [136s elapsed, eta 68s]
+  [33/48]  warmstart vs v11_distilled (P2-P1)   14p   warmstart W  [142s elapsed, eta 64s]
+  [34/48]  v11_distilled vs warmstart (P1-P2)   21p  v11_distilled W  [143s elapsed, eta 59s]
+  [35/48]  v11_distilled vs warmstart (P1-P2)   21p  v11_distilled W  [149s elapsed, eta 55s]
+  [36/48]  warmstart vs v11_distilled (P2-P1)   31p  v11_distilled W  [156s elapsed, eta 52s]
+  [37/48]  v11_distilled vs warmstart (P1-P2)   33p  v11_distilled W  [160s elapsed, eta 47s]
+  [38/48]  v11_distilled vs warmstart (P1-P2)   25p  v11_distilled W  [167s elapsed, eta 44s]
+  [39/48]  v34_old_peak vs warmstart (P1-P2)   16p   warmstart W  [169s elapsed, eta 39s]
+  [40/48]  warmstart vs v11_distilled (P2-P1)   23p  v11_distilled W  [169s elapsed, eta 34s]
+  [41/48]  warmstart vs v34_old_peak (P2-P1)   14p   warmstart W  [173s elapsed, eta 29s]
+  [42/48]  v34_old_peak vs warmstart (P1-P2)   18p   warmstart W  [177s elapsed, eta 25s]
+  [43/48]  v34_old_peak vs warmstart (P1-P2)   14p   warmstart W  [180s elapsed, eta 21s]
+  [44/48]  warmstart vs v34_old_peak (P2-P1)   18p   warmstart W  [180s elapsed, eta 16s]
+  [45/48]  warmstart vs v34_old_peak (P2-P1)   14p   warmstart W  [184s elapsed, eta 12s]
+  [46/48]  warmstart vs v34_old_peak (P2-P1)   16p   warmstart W  [187s elapsed, eta 8s]
+  [47/48]  v34_old_peak vs warmstart (P1-P2)   16p   warmstart W  [188s elapsed, eta 4s]
+  [48/48]  warmstart vs v11_distilled (P2-P1)  100p   warmstart W  [206s elapsed, eta 0s]
+
+Match summary (row beats column, score %):
+                       v11_current  v11_distilled   v34_old_peak      warmstart
+v11_current                       -    12% (1-7-0)    25% (2-6-0)    25% (2-6-0)
+v11_distilled           88% (1-7-0)              -    75% (6-2-0)    75% (6-2-0)
+v34_old_peak            75% (2-6-0)    25% (6-2-0)              -    50% (4-4-0)
+warmstart               75% (2-6-0)    25% (6-2-0)    50% (4-4-0)              -
+
+Elo ratings (anchored at 1000 for 'warmstart', 95% CI from 200 bootstrap resamples):
+   1. v11_distilled              1183.2   [ 1044.6,  1480.4]
+   2. v34_old_peak               1000.0   [  830.0,  1236.9]
+   3. warmstart                  1000.0   [ 1000.0,  1000.0]
+   4. v11_current                 816.8   [  564.6,  1000.6]
+
+Saved checkpoints/elo_tournament.json
