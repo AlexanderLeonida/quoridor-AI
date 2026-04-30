@@ -1,0 +1,65 @@
+Players (4 after dedup): ['r2_distilled', 'r4_d10', 'r3_distilled', 'warmstart']
+Total games: 48  (8 per pair × 6 pairs)
+  [1/48]  r2_distilled vs r4_d10 (P1-P2)  100p      r4_d10 W  [72s elapsed, eta 3369s]
+  [2/48]  r4_d10 vs r2_distilled (P2-P1)  100p      r4_d10 W  [94s elapsed, eta 2154s]
+  [3/48]  r4_d10 vs r2_distilled (P2-P1)  100p  r2_distilled W  [115s elapsed, eta 1722s]
+  [4/48]  r2_distilled vs r4_d10 (P1-P2)  100p  r2_distilled W  [124s elapsed, eta 1369s]
+  [5/48]  r4_d10 vs r2_distilled (P2-P1)  100p  r2_distilled W  [173s elapsed, eta 1486s]
+  [6/48]  r2_distilled vs r4_d10 (P1-P2)  100p  r2_distilled W  [186s elapsed, eta 1301s]
+  [7/48]  r2_distilled vs r4_d10 (P1-P2)  100p  r2_distilled W  [204s elapsed, eta 1195s]
+  [8/48]  r3_distilled vs r2_distilled (P2-P1)   33p  r2_distilled W  [212s elapsed, eta 1059s]
+  [9/48]  r4_d10 vs r2_distilled (P2-P1)  100p      r4_d10 W  [229s elapsed, eta 992s]
+  [10/48]  r2_distilled vs r3_distilled (P1-P2)  100p  r2_distilled W  [244s elapsed, eta 925s]
+  [11/48]  r3_distilled vs r2_distilled (P2-P1)   44p  r3_distilled W  [246s elapsed, eta 827s]
+  [12/48]  r2_distilled vs r3_distilled (P1-P2)  100p  r3_distilled W  [314s elapsed, eta 941s]
+  [13/48]  r2_distilled vs r3_distilled (P1-P2)  100p  r3_distilled W  [320s elapsed, eta 863s]
+  [14/48]  r2_distilled vs warmstart (P1-P2)   15p  r2_distilled W  [331s elapsed, eta 804s]
+  [15/48]  r2_distilled vs r3_distilled (P1-P2)  100p  r3_distilled W  [333s elapsed, eta 732s]
+  [16/48]  r3_distilled vs r2_distilled (P2-P1)  100p  r2_distilled W  [345s elapsed, eta 690s]
+  [17/48]  warmstart vs r2_distilled (P2-P1)   14p   warmstart W  [354s elapsed, eta 646s]
+  [18/48]  warmstart vs r2_distilled (P2-P1)   31p  r2_distilled W  [357s elapsed, eta 595s]
+  [19/48]  warmstart vs r2_distilled (P2-P1)   22p   warmstart W  [374s elapsed, eta 571s]
+  [20/48]  r2_distilled vs warmstart (P1-P2)   23p  r2_distilled W  [388s elapsed, eta 543s]
+  [21/48]  r2_distilled vs warmstart (P1-P2)  100p  r2_distilled W  [389s elapsed, eta 500s]
+  [22/48]  r3_distilled vs r2_distilled (P2-P1)  100p  r2_distilled W  [411s elapsed, eta 486s]
+  [23/48]  warmstart vs r2_distilled (P2-P1)   27p  r2_distilled W  [414s elapsed, eta 450s]
+  [24/48]  r2_distilled vs warmstart (P1-P2)  100p   warmstart W  [441s elapsed, eta 441s]
+  [25/48]  r4_d10 vs r3_distilled (P2-P1)   72p      r4_d10 W  [471s elapsed, eta 433s]
+  [26/48]  r4_d10 vs r3_distilled (P2-P1)  100p      r4_d10 W  [476s elapsed, eta 403s]
+  [27/48]  r3_distilled vs r4_d10 (P1-P2)  100p             D  [535s elapsed, eta 416s]
+  [28/48]  r3_distilled vs r4_d10 (P1-P2)  100p  r3_distilled W  [550s elapsed, eta 393s]
+  [29/48]  r3_distilled vs r4_d10 (P1-P2)  100p  r3_distilled W  [560s elapsed, eta 367s]
+  [30/48]  r4_d10 vs r3_distilled (P2-P1)  100p      r4_d10 W  [581s elapsed, eta 349s]
+  [31/48]  r4_d10 vs r3_distilled (P2-P1)   57p  r3_distilled W  [581s elapsed, eta 319s]
+  [32/48]  r4_d10 vs warmstart (P1-P2)   48p   warmstart W  [592s elapsed, eta 296s]
+  [33/48]  warmstart vs r4_d10 (P2-P1)   20p   warmstart W  [596s elapsed, eta 271s]
+  [34/48]  r4_d10 vs warmstart (P1-P2)   21p      r4_d10 W  [597s elapsed, eta 246s]
+  [35/48]  r4_d10 vs warmstart (P1-P2)   28p   warmstart W  [613s elapsed, eta 228s]
+  [36/48]  warmstart vs r4_d10 (P2-P1)   40p   warmstart W  [622s elapsed, eta 207s]
+  [37/48]  warmstart vs r4_d10 (P2-P1)   14p   warmstart W  [631s elapsed, eta 188s]
+  [38/48]  r4_d10 vs warmstart (P1-P2)   38p   warmstart W  [644s elapsed, eta 170s]
+  [39/48]  r3_distilled vs warmstart (P1-P2)   33p  r3_distilled W  [650s elapsed, eta 150s]
+  [40/48]  r3_distilled vs r4_d10 (P1-P2)  100p      r4_d10 W  [658s elapsed, eta 132s]
+  [41/48]  warmstart vs r3_distilled (P2-P1)   18p   warmstart W  [671s elapsed, eta 115s]
+  [42/48]  warmstart vs r4_d10 (P2-P1)  100p             D  [672s elapsed, eta 96s]
+  [43/48]  r3_distilled vs warmstart (P1-P2)   33p  r3_distilled W  [684s elapsed, eta 80s]
+  [44/48]  r3_distilled vs warmstart (P1-P2)   23p  r3_distilled W  [688s elapsed, eta 63s]
+  [45/48]  r3_distilled vs warmstart (P1-P2)   23p  r3_distilled W  [699s elapsed, eta 47s]
+  [46/48]  warmstart vs r3_distilled (P2-P1)   42p   warmstart W  [726s elapsed, eta 32s]
+  [47/48]  warmstart vs r3_distilled (P2-P1)  100p   warmstart W  [763s elapsed, eta 16s]
+  [48/48]  warmstart vs r3_distilled (P2-P1)  100p   warmstart W  [773s elapsed, eta 0s]
+
+Match summary (row beats column, score %):
+                      r2_distilled         r4_d10   r3_distilled      warmstart
+r2_distilled                      -    62% (5-3-0)    25% (2-6-0)    62% (5-3-0)
+r4_d10                  38% (5-3-0)              -            n/a    56% (4-3-1)
+r3_distilled            75% (2-6-0)    69% (5-2-1)              -   100% (8-0-0)
+warmstart               38% (5-3-0)    44% (4-3-1)     0% (8-0-0)              -
+
+Elo ratings (anchored at 1000 for 'warmstart', 95% CI from 200 bootstrap resamples):
+   1. r3_distilled               1336.1   [ 1209.4,  1617.4]
+   2. r2_distilled               1137.7   [  972.7,  1344.8]
+   3. r4_d10                     1089.0   [  911.3,  1285.5]
+   4. warmstart                  1000.0   [ 1000.0,  1000.0]
+
+Saved checkpoints/elo_tournament.json

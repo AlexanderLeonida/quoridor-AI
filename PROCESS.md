@@ -543,16 +543,21 @@ Each row records a distillation outcome from the autonomous loop.  All rounds us
 |-------|----------|----------------|----------------|----------|
 | 1     | 1.133    | 1183 (warmstart=1000)        | +366 over pre-distill v11 | promoted → best.pt |
 | 2     | 1.213    | 1552 (warmstart=1000)        | +267 over r1               | promoted → best.pt |
-| 3     | 1.355    | 1312 (warmstart=1000)        | +13 over r2 (within noise) | **rejected** — tied with r2, gap below 25-Elo threshold |
+| 3     | 1.355    | 1336 (warmstart=1000)        | initially +13 (rejected); on r4 bench: +199 over r2 — actually stronger | **late-promoted** to best.pt after r4 bench confirmed |
+| 4 (d10) | 1.373  | 1089 (warmstart=1000)        | -47 vs r2; -247 vs r3      | **rejected** — depth-10 was a regression |
 
 Notes:
 - Round 2 ended with *higher* val loss than round 1 (1.213 vs 1.133) yet was decisively stronger in head-to-head (6-2 vs r1). Confirms what the project has documented many times: val loss alone doesn't predict playing strength. Trust the calibrated tournament.
 - Cumulative Elo since pre-distill v11: **+633 Elo** in two distillation rounds (~50 min compute each).
 - Round 2's CI width is 1380→2947 — wide because the CI is anchored on bootstrap resamples and we only had 8 games per pair. Real Elo is probably the lower bound (1380) with high confidence.
 - Diminishing returns have NOT kicked in yet (round 2 gained +267, vs round 1's +366 — both substantial).  Plan: continue distill→iterate→distill loop until two consecutive rounds yield <100 Elo gain.
-- **Round 3 confirmed depth-8 ceiling**: +13 Elo over r2 — essentially tied. No promotion. Triggers escalation per §38 contingency.  Round 4 launched at depth-10 (`--ab-depth 10 --ab-time 12 --positions 2000` — fewer positions because depth-10 is ~3× slower per position) with seed=42 for fresh sampling.
-
-| 4     | (pending) | (pending)                      | (pending)                  | depth-10 escalation, in flight |
+- **Round 3's first bench was a tie at the noise floor (+13 Elo gap, 8 games per pair).**  Re-bench at the round-4 tournament (different opponent set) showed r3 actually beats r2 6-2 head-to-head; combining both benches (16 total r2-vs-r3 games) gives r3 a 59% record.  Late-promoted to best.pt.  **Lesson: 8 games per pair has a wide CI; multi-tournament aggregation is more reliable than any single tournament.**
+- **Round 4 (depth-10 escalation) was a regression.**  The depth-10 distilled net (`r4_d10`) ranked below both r2 and r3 in head-to-head.  Three plausible causes:
+  - **Smaller teacher set** (2000 positions vs 3000 for prior rounds — to keep depth-10 generation under 80 minutes), so the supervision was sparser
+  - **More divergent teacher** — depth-10 makes substantively different moves than depth-8 in some positions, so the rehearsal+KL anchoring (set for depth-8 rounds) under-protected against forgetting
+  - **Insufficient strength gap** — depth-10 vs depth-8 alphabeta in Quoridor may simply not be the +200 Elo we'd hope for; a smaller gap means less to transfer than the catastrophic-forgetting cost of moving the student
+  
+  **Conclusion: depth-10 is not the next ceiling-raiser.**  Stay at depth-8 with more rehearsal data and seed variation, or escalate to *architecture widening* (the §38 alternative).
 
 ## 40. Why bother with the NN if alpha-beta is stronger? (foundational)
 
