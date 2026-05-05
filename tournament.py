@@ -345,15 +345,20 @@ def main() -> None:
             else:
                 key, swap = (b_side, a_side), True
             wld.setdefault(key, [0, 0, 0])
+            # a_side is always the first mover (P0 in the engine, "P1" in
+            # human-readable labels); b_side is the second mover.  swap is
+            # only used to canonicalise the wld key, never to relabel sides.
             if winner is None:
                 wld[key][2] += 1
                 tag = "D"
-            elif (winner == 0 and not swap) or (winner == 1 and swap):
-                wld[key][0] += 1
-                tag = f"{a_side} W"
             else:
-                wld[key][1] += 1
-                tag = f"{b_side} W"
+                first_won = (winner == 0)
+                actual_winner = a_side if first_won else b_side
+                if (first_won and not swap) or (not first_won and swap):
+                    wld[key][0] += 1
+                else:
+                    wld[key][1] += 1
+                tag = f"{actual_winner} W"
             if cfg["record_policies"] and moves_played is not None:
                 recorded.append({
                     "p1_label": a_side,
@@ -364,9 +369,8 @@ def main() -> None:
                 })
             elapsed = time.perf_counter() - t0
             eta = elapsed / done * (total_games - done)
-            print(f"  [{done}/{total_games}]  {a_side} vs {b_side} "
-                  f"({'P1' if not swap else 'P2'}-P{2 if not swap else 1})  "
-                  f"{moves:3}p  {tag:>12}  "
+            print(f"  [{done}/{total_games}]  {a_side} (P1) vs {b_side} (P2)  "
+                  f"{moves:3}p  {tag:>30}  "
                   f"[{elapsed:.0f}s elapsed, eta {eta:.0f}s]")
 
     # Print match matrix

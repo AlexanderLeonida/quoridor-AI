@@ -1,0 +1,65 @@
+Players (4 after dedup): ['best_ab_distilled_r5', 'best', 'warmstart_10x128', 'iter_0034']
+Total games: 48  (8 per pair × 6 pairs)
+  [1/48]  best vs best_ab_distilled_r5 (P1-P2)  100p        best W  [90s elapsed, eta 4220s]
+  [2/48]  best vs best_ab_distilled_r5 (P1-P2)  100p  best_ab_distilled_r5 W  [126s elapsed, eta 2901s]
+  [3/48]  best vs best_ab_distilled_r5 (P1-P2)  100p        best W  [139s elapsed, eta 2092s]
+  [4/48]  best_ab_distilled_r5 vs warmstart_10x128 (P1-P2)   15p  best_ab_distilled_r5 W  [155s elapsed, eta 1709s]
+  [5/48]  best_ab_distilled_r5 vs best (P2-P1)  100p        best W  [158s elapsed, eta 1361s]
+  [6/48]  best_ab_distilled_r5 vs best (P2-P1)  100p        best W  [160s elapsed, eta 1117s]
+  [7/48]  best_ab_distilled_r5 vs warmstart_10x128 (P1-P2)   19p  best_ab_distilled_r5 W  [186s elapsed, eta 1087s]
+  [8/48]  best_ab_distilled_r5 vs warmstart_10x128 (P1-P2)   19p  best_ab_distilled_r5 W  [207s elapsed, eta 1033s]
+  [9/48]  warmstart_10x128 vs best_ab_distilled_r5 (P2-P1)   32p  warmstart_10x128 W  [211s elapsed, eta 914s]
+  [10/48]  best_ab_distilled_r5 vs best (P2-P1)  100p  best_ab_distilled_r5 W  [214s elapsed, eta 812s]
+  [11/48]  warmstart_10x128 vs best_ab_distilled_r5 (P2-P1)   14p  warmstart_10x128 W  [221s elapsed, eta 742s]
+  [12/48]  best_ab_distilled_r5 vs best (P2-P1)  100p             D  [222s elapsed, eta 667s]
+  [13/48]  warmstart_10x128 vs best_ab_distilled_r5 (P2-P1)   14p  warmstart_10x128 W  [228s elapsed, eta 613s]
+  [14/48]  best_ab_distilled_r5 vs iter_0034 (P1-P2)   21p  best_ab_distilled_r5 W  [235s elapsed, eta 571s]
+  [15/48]  best_ab_distilled_r5 vs iter_0034 (P1-P2)   27p  best_ab_distilled_r5 W  [248s elapsed, eta 545s]
+  [16/48]  iter_0034 vs best_ab_distilled_r5 (P2-P1)   26p   iter_0034 W  [257s elapsed, eta 515s]
+  [17/48]  best_ab_distilled_r5 vs iter_0034 (P1-P2)   25p  best_ab_distilled_r5 W  [278s elapsed, eta 507s]
+  [18/48]  best vs best_ab_distilled_r5 (P1-P2)  100p        best W  [279s elapsed, eta 465s]
+  [19/48]  warmstart_10x128 vs best_ab_distilled_r5 (P2-P1)  100p  warmstart_10x128 W  [279s elapsed, eta 426s]
+  [20/48]  best_ab_distilled_r5 vs iter_0034 (P1-P2)   19p  best_ab_distilled_r5 W  [293s elapsed, eta 411s]
+  [21/48]  best vs warmstart_10x128 (P1-P2)   21p        best W  [314s elapsed, eta 404s]
+  [22/48]  best_ab_distilled_r5 vs warmstart_10x128 (P1-P2)  100p  best_ab_distilled_r5 W  [349s elapsed, eta 412s]
+  [23/48]  iter_0034 vs best_ab_distilled_r5 (P2-P1)  100p   iter_0034 W  [389s elapsed, eta 422s]
+  [24/48]  iter_0034 vs best_ab_distilled_r5 (P2-P1)  100p   iter_0034 W  [404s elapsed, eta 404s]
+  [25/48]  best vs warmstart_10x128 (P1-P2)  100p             D  [413s elapsed, eta 380s]
+  [26/48]  warmstart_10x128 vs best (P2-P1)   18p  warmstart_10x128 W  [417s elapsed, eta 353s]
+  [27/48]  warmstart_10x128 vs best (P2-P1)  100p        best W  [421s elapsed, eta 328s]
+  [28/48]  warmstart_10x128 vs best (P2-P1)  100p  warmstart_10x128 W  [429s elapsed, eta 306s]
+  [29/48]  best vs warmstart_10x128 (P1-P2)   31p        best W  [435s elapsed, eta 285s]
+  [30/48]  iter_0034 vs best_ab_distilled_r5 (P2-P1)  100p             D  [463s elapsed, eta 278s]
+  [31/48]  best vs iter_0034 (P1-P2)   31p        best W  [468s elapsed, eta 257s]
+  [32/48]  iter_0034 vs best (P2-P1)   22p   iter_0034 W  [487s elapsed, eta 243s]
+  [33/48]  iter_0034 vs best (P2-P1)   20p   iter_0034 W  [511s elapsed, eta 232s]
+  [34/48]  iter_0034 vs best (P2-P1)  100p   iter_0034 W  [516s elapsed, eta 212s]
+  [35/48]  best vs iter_0034 (P1-P2)   46p   iter_0034 W  [521s elapsed, eta 194s]
+  [36/48]  best vs warmstart_10x128 (P1-P2)  100p        best W  [523s elapsed, eta 174s]
+  [37/48]  warmstart_10x128 vs iter_0034 (P2-P1)   15p   iter_0034 W  [530s elapsed, eta 158s]
+  [38/48]  iter_0034 vs warmstart_10x128 (P1-P2)   15p   iter_0034 W  [534s elapsed, eta 141s]
+  [39/48]  iter_0034 vs best (P2-P1)   24p   iter_0034 W  [534s elapsed, eta 123s]
+  [40/48]  warmstart_10x128 vs iter_0034 (P2-P1)   14p  warmstart_10x128 W  [543s elapsed, eta 109s]
+  [41/48]  warmstart_10x128 vs iter_0034 (P2-P1)   16p  warmstart_10x128 W  [544s elapsed, eta 93s]
+  [42/48]  iter_0034 vs warmstart_10x128 (P1-P2)   18p  warmstart_10x128 W  [548s elapsed, eta 78s]
+  [43/48]  warmstart_10x128 vs iter_0034 (P2-P1)   14p  warmstart_10x128 W  [553s elapsed, eta 64s]
+  [44/48]  iter_0034 vs warmstart_10x128 (P1-P2)   16p  warmstart_10x128 W  [556s elapsed, eta 51s]
+  [45/48]  iter_0034 vs warmstart_10x128 (P1-P2)   17p   iter_0034 W  [558s elapsed, eta 37s]
+  [46/48]  warmstart_10x128 vs best (P2-P1)  100p        best W  [560s elapsed, eta 24s]
+  [47/48]  best vs iter_0034 (P1-P2)  100p        best W  [569s elapsed, eta 12s]
+  [48/48]  best vs iter_0034 (P1-P2)  100p        best W  [577s elapsed, eta 0s]
+
+Match summary (row beats column, score %):
+                    best_ab_distilled_r5           best warmstart_10x128      iter_0034
+best_ab_distilled_r5              -            n/a   100% (8-0-0)    94% (7-0-1)
+best                    56% (4-3-1)              -    69% (5-2-1)    88% (7-1-0)
+warmstart_10x128         0% (8-0-0)    31% (5-2-1)              -            n/a
+iter_0034                6% (7-0-1)    12% (7-1-0)    62% (5-3-0)              -
+
+Elo ratings (anchored at 1000 for 'warmstart_10x128', 95% CI from 200 bootstrap resamples):
+   1. best_ab_distilled_r5       1386.2   [ 1221.3,  1758.0]
+   2. best                       1325.2   [ 1107.6,  1770.7]
+   3. iter_0034                  1030.3   [  839.3,  1199.4]
+   4. warmstart_10x128           1000.0   [ 1000.0,  1000.0]
+
+Saved checkpoints/elo_tournament_r5.json

@@ -41,7 +41,8 @@ CREATE TABLE IF NOT EXISTS games (
     p1_time_limit  REAL,
     p2_time_limit  REAL,
     model_version  TEXT,
-    notes          TEXT
+    notes          TEXT,
+    final_path_gap INTEGER
 );
 
 CREATE TABLE IF NOT EXISTS moves (
@@ -68,6 +69,26 @@ DEFAULT_DB_PATH = os.path.join(
 )
 
 
+def compute_final_path_gap(
+    moves: Sequence[Move], winner: Optional[int]
+) -> Optional[int]:
+    """Replay ``moves`` from the initial position and return the loser's
+    shortest path to their goal at game end.
+
+    Higher = more decisive win.  Returns None for draws/unknown winners
+    or if replay fails (e.g., illegal move in stored data).
+    """
+    if winner is None:
+        return None
+    board = Board.initial()
+    try:
+        for m in moves:
+            board = board.apply(m)
+    except Exception:
+        return None
+    return board.shortest_path_length(1 - winner)
+
+
 class GameDB:
     def __init__(self, path: Optional[str] = None):
         self.path = path or DEFAULT_DB_PATH
@@ -77,6 +98,11 @@ class GameDB:
         self._conn = sqlite3.connect(self.path)
         self._conn.execute("PRAGMA foreign_keys = ON")
         self._conn.executescript(_SCHEMA)
+        # Migration: add final_path_gap column on pre-existing DBs.
+        try:
+            self._conn.execute("ALTER TABLE games ADD COLUMN final_path_gap INTEGER")
+        except sqlite3.OperationalError:
+            pass  # column already exists
         self._conn.commit()
 
     def close(self) -> None:
@@ -104,15 +130,24 @@ class GameDB:
         notes: Optional[str] = None,
         elapsed_ms: Optional[Sequence[Optional[int]]] = None,
         policies: Optional[Sequence[Optional[bytes]]] = None,
+        final_path_gap: Optional[int] = None,
     ) -> int:
-        """Persist a game. Returns the new game's id."""
+        """Persist a game. Returns the new game's id.
+
+        ``final_path_gap`` is the loser's shortest-path-to-goal at game
+        end (higher = more decisive win).  None for draws/unfinished or
+        when not computed.  If ``moves`` and ``winner`` are provided and
+        ``final_path_gap`` is not, computes it by replay.
+        """
+        if final_path_gap is None and winner is not None:
+            final_path_gap = compute_final_path_gap(moves, winner)
         cur = self._conn.cursor()
         cur.execute(
             """INSERT INTO games
                (finished_at, winner, num_plies,
                 p1_source, p2_source, p1_time_limit, p2_time_limit,
-                model_version, notes)
-               VALUES (datetime('now'), ?, ?, ?, ?, ?, ?, ?, ?)""",
+                model_version, notes, final_path_gap)
+               VALUES (datetime('now'), ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
             (
                 winner,
                 len(moves),
@@ -122,6 +157,7 @@ class GameDB:
                 p2_time_limit,
                 model_version,
                 notes,
+                final_path_gap,
             ),
         )
         game_id = cur.lastrowid
@@ -160,8 +196,13 @@ class GameDB:
         return self._conn.execute(q).fetchone()[0]
 
     def iter_games(self, finished_only: bool = False):
+        # Column order is part of the API; existing callers index by
+        # position.  New columns must be appended at the end.
+        # row[0]=id, [1]=created_at, [2]=finished_at, [3]=winner,
+        # [4]=num_plies, [5]=p1_source, [6]=p2_source, [7]=model_version,
+        # [8]=final_path_gap.
         q = ("SELECT id, created_at, finished_at, winner, num_plies, "
-             "p1_source, p2_source, model_version "
+             "p1_source, p2_source, model_version, final_path_gap "
              "FROM games")
         if finished_only:
             q += " WHERE winner IS NOT NULL"

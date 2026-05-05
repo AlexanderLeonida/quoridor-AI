@@ -545,6 +545,7 @@ Each row records a distillation outcome from the autonomous loop.  All rounds us
 | 2     | 1.213    | 1552 (warmstart=1000)        | +267 over r1               | promoted → best.pt |
 | 3     | 1.355    | 1336 (warmstart=1000)        | initially +13 (rejected); on r4 bench: +199 over r2 — actually stronger | **late-promoted** to best.pt after r4 bench confirmed |
 | 4 (d10) | 1.373  | 1089 (warmstart=1000)        | -47 vs r2; -247 vs r3      | **rejected** — depth-10 was a regression |
+| 5     | 1.092    | 1386 (warmstart=1000) [CI 1221–1758] | +61 over r3 (point); +386 over warmstart | **promoted → best.pt** |
 
 Notes:
 - Round 2 ended with *higher* val loss than round 1 (1.213 vs 1.133) yet was decisively stronger in head-to-head (6-2 vs r1). Confirms what the project has documented many times: val loss alone doesn't predict playing strength. Trust the calibrated tournament.
@@ -605,11 +606,95 @@ This raises the NN's *floor* (it now plays roughly at depth-8-AB strength on the
 
 So the order of operations is correct: distill from AB to bootstrap; iterate with self-play to refine; when iteration plateaus, distill again from a deeper teacher; eventually self-play takes over.  Each component is doing the work it's structurally suited for.
 
+## 41. Round 5 result + the head-to-head vs anchor-domination tension
+
+After round 4's depth-10 regression, round 5 returned to depth-8 with two changes per the §39 recovery plan: **4000 positions** (up from 3000) and **seed=42** (different from prior rounds' default 0).  Mitigations kept identical: rehearsal_frac=0.3, reg_lambda=0.5, KL anchor on the pre-distill student.
+
+**Outcome — promoted, but the picture is non-trivial.**
+
+| Comparison | Result |
+|------------|--------|
+| r5 val loss | **1.092** — best of any round (r1: 1.133, r2: 1.213, r3: 1.355) |
+| r5 vs r3 head-to-head (8 games) | r3 wins 4-3-1 (close) |
+| r5 vs warmstart (8 games) | **r5 sweeps 8-0** |
+| r5 vs iter_0034 (8 games) | **r5 wins 7-0-1** |
+| Bradley-Terry calibrated Elo | **r5 = 1386 vs r3 = 1325 → +61 Elo for r5** |
+
+The interesting wrinkle: r5 *loses the direct head-to-head 4-3-1*, yet wins the global Elo by +61.  How?  Because r5 dominates the anchors much more decisively than r3 does — r5 went 15-0-1 vs the two anchors combined, while r3 went 12-3-1.  The Bradley-Terry MLE absorbs both signals; the anchor-domination outweighs the slight h2h deficit because BT measures consistency across opponents, not just against the top contender.
+
+This is *not* the standard "just look at h2h" pattern.  Three readings:
+
+1. **r5 has better positional understanding overall**, but r3 has a few specific tactical exploits against r5's policy.  Possible — both nets have ~4M parameters, plenty of room for stylistic divergence.
+2. **Non-transitive cycling at 200 sims** — common between similarly-rated nets when search is shallow.  At higher sim counts the picture might tighten toward one or the other.
+3. **The 8-games-per-pair CI is wide enough** that 4-3-1 is essentially a coin flip.  Bootstrap CIs on the Elos overlap heavily ([1221, 1758] for r5 vs [1108, 1771] for r3) — the +61 point estimate is real but not conclusive.
+
+**Decision rule applied (§37):** revert/promote only when Elo gap > 25.  Point estimate +61 → promote.  The §37 threshold was *designed* to absorb this kind of bootstrap-CI noise; promoting when the point estimate clears 25 is the rule, even with overlapping CIs.
+
+**Lesson recorded:** anchor strength in tournaments matters — a net that sweeps anchors but ties the current best in h2h *will* end up the BT champion.  This is the right thing if anchors are calibrated reference points; the wrong thing if they're noise.  Worth re-reading §39 round 3 — that one initially *failed* gating but later won at the round-4 multi-tournament.  Pattern repeats: trust the calibrated tournament over single-pair head-to-head.
+
+## 42. Tournament.py per-game label bug (caught during round 5 bench)
+
+While watching round-5's tournament live, the per-game printed result lines looked inverted vs the final match summary matrix.  Investigated and confirmed a real bug at `tournament.py:351-356`.  When the canonical pair-key needed swapping (a_side > b_side alphabetically), the `tag` string named the *opposite* of the actual winner.  The `wld` aggregation was correct in all cases — only the human-readable line was wrong.
+
+The display label `({'P1' if not swap else 'P2'}-P{...})` was also misleading: a_side is *always* the first mover regardless of canonical key ordering, so showing it as "P2" on swap was confusing.
+
+Fixed by:
+1. Computing `actual_winner = a_side if winner == 0 else b_side` independent of swap.  Tag is now always correct.
+2. Always printing `{a_side} (P1) vs {b_side} (P2)` — a_side is always the first mover.
+
+Round 5's match summary matrix and BT Elos were unaffected (those use `wld`, not `tag`).  Future tournaments will read correctly live.
+
+## 43. Value target & sample weighting — consolidated formula
+
+The pieces that turn the value head's training signal from "binary win/loss outcome" into a *graded* per-position target are spread across §5 (draw penalty + stall scaling + progress bonus), §6/§19 (adjudication), §27 (aux-value blend), §22/§23 (tournament-champion games), and the per-position weight at line 120.  Spelling them out together:
+
+For every (state, π_target, z) training triple drawn from the DB, with `me = state.turn`, `opp = 1 - me`, and `path_diff = d_opp - d_me` measured at *that* state:
+
+**Outcome z (decisive games, possibly via adjudication):**
+```
+z_outcome = +1   if winner == me
+            -1   if winner == opp
+```
+
+**Outcome z (drawn games — never simply 0):**
+```
+effective_penalty = draw_penalty + stall_weight · min(plies / max_moves, 1)
+progress          = tanh((d_opp_final - d_me_final) / 6)        # at final board
+z_outcome         = clip(-effective_penalty + progress · progress_weight, -1, 1)
+```
+Defaults: `stall_weight = 0.4`, `progress_weight = 0.5`, `draw_penalty = 0.5` (run.sh).
+
+**Aux-value blend (§27 — applied on every position regardless of outcome) when `--aux-value-weight α > 0`:**
+```
+path_signal = tanh(path_diff / 6)
+z_final     = clip((1 - α) · z_outcome + α · path_signal, -1, 1)
+```
+Default in `run.sh`: `α = 0.4`.  α=0 turns the blend off and reverts to pure outcome.
+
+**Per-position sample weight** (`selfplay.py:720`, normalised so the mean weight across the dataset is 1):
+```
+decisive_mult = 4.0 if game has a winner else 1.0
+tourney_mult  = 2.0 if model_version startswith "tourney-" else 1.0
+weight        = decisive_mult · tourney_mult / max(len(game), 1)
+```
+
+So a position from a 30-ply tournament-champion win contributes  `4 · 2 / 30 ≈ 0.267` raw weight, vs a position from a 100-ply self-play draw at `1 · 1 / 100 = 0.010` — a 27× ratio in the gradient before normalisation.  Combined with `--train-from-best-version` (§23) which filters out rejected-candidate self-play below `best_iteration`, the effective training distribution is heavily skewed toward champion-quality positions.
+
+**The combined effect on the loss:**
+```
+L_v = mean( weight · (v_pred - z_final)² )
+L_p = mean( weight · -Σ π_target · log_softmax(p_logits) )
+L   = L_p + value_weight · L_v
+```
+
+This is what `train_on_recent_games` actually computes (`selfplay.py:868–890`).  The value head therefore sees a graded, board-geometry-aware target on every position rather than the same ±1 stamped across all 80 plies of a long win.
+
 ## Current state
 
 - Net: 10 blocks × 128 filters, distilled from v74 (6×64 peak).
-- `best.pt` is now `selfplay-v11` (post-tournament-revert). Promotion chain in this session: warmstart → v5 (reverted) → v6 → v11 → v12 → v14 → v15 (reverted to v11). Both reverts caught real drift.
-- Tournament-calibrated Elos: warmstart=1059, iter_0034=1119, selfplay-v11=1060+ (latest, post-promotion). For the first time the trained net is competitive with v34 in calibrated round-robin.
-- All five anti-drift interventions verified working end-to-end with metrics-CSV instrumentation.
-- val loss progression this session: 1.52 → 1.36, value loss 0.5 → 0.11. Both unprecedented.
-- Net is still beatable by a human; deep AB distillation is the candidate next intervention but should be run with rehearsal + regularisation (§35) rather than naive distillation.
+- `best.pt` is now **round-5 deep-distilled** (depth-8 AB, 4000 positions, val loss 1.092 — best ever).  Backup chain on disk: `pre_r5_backup.pt` (= r3 weights), `best_ab_distilled_r{1,2,3,4_d10,5}.pt`.
+- Distillation chain so far: pre-distill v11 → r1 (+366) → r2 (+267) → r3 (+199) → r4 d10 *(rejected)* → r5 (+61 over r3).  Cumulative ~ +893 Elo over pre-distill v11 across four successful rounds.
+- Tournament-calibrated Elos from the r5 bench (warmstart=1000 anchor): r5=1386, r3=1325, iter_0034=1030, warmstart=1000.
+- The AB-distillation ceiling has *not yet been hit*; r5 still gained +61 Elo at depth-8.  Plan continues: distill→iterate→distill until two consecutive rounds yield <100 Elo gain (§38).
+- Tournament.py per-game label bug fixed (§42).  Future live monitoring will show correct W/L tags.
+- Net should now be substantially harder for a human to beat than r3 — r5 has lower val loss, decisive anchor wins, and a +61 Elo lead.  Worth re-testing manually when convenient.

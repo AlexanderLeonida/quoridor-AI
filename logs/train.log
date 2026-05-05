@@ -494,3 +494,2621 @@ Resuming from checkpoints/best.pt
   game   5/100  id=8005   plies=100   winner=P2     108.6s  avg_len=74
   game   6/100  id=8006   plies=44    winner=P2     123.9s  avg_len=69
   game   7/100  id=8007   plies=34    winner=P2     126.1s  avg_len=64 [AB]
+Device:            mps
+Workers:           8
+Simulations/move:  1000
+Games/iteration:   100
+Training epochs:   3
+Eval games:        30
+Training window:   5000 games
+Max game length:   100
+Opening random:    8
+Draw penalty:      0.5
+
+Resuming from checkpoints/best.pt
+  meta: {'iteration': 23, 'best_iteration': 15, 'deep_distilled_from': 'ab', 'deep_distill_positions': 4285, 'deep_distill_val_loss': 1.3549786359071732, 'rehearsal_frac': 0.3, 'reg_lambda': 0.5}
+
+============================================================
+  Iteration 1/12  (global 24)
+============================================================
+
+[1/3] Self-play
+  (parallel self-play on 8 CPU workers)
+  game   1/100  id=8008   plies=43    winner=P1     71.8s  avg_len=43
+  game   2/100  id=8009   plies=48    winner=P2     78.2s  avg_len=46
+  game   3/100  id=8010   plies=100   winner=P1     82.4s  avg_len=64
+  game   4/100  id=8011   plies=75    winner=P1     85.2s  avg_len=66
+  game   5/100  id=8012   plies=100   winner=P1     86.2s  avg_len=73
+  game   6/100  id=8013   plies=38    winner=P2     88.5s  avg_len=67 [AB]
+  game   7/100  id=8014   plies=100   winner=P2     131.4s  avg_len=72
+  game   8/100  id=8015   plies=34    winner=P2     80.1s  avg_len=67 [AB]
+  game   9/100  id=8016   plies=34    winner=P2     87.8s  avg_len=64
+  game  10/100  id=8017   plies=55    winner=P1     102.8s  avg_len=63
+  game  11/100  id=8018   plies=40    winner=P2     126.7s  avg_len=61 [AB]
+  game  12/100  id=8019   plies=100   winner=P2     127.8s  avg_len=64
+  game  13/100  id=8020   plies=100   winner=P2     127.3s  avg_len=67
+  game  14/100  id=8021   plies=37    winner=P1     119.0s  avg_len=65
+  game  15/100  id=8022   plies=49    winner=P1     88.2s  avg_len=64
+  game  16/100  id=8023   plies=37    winner=P1     109.0s  avg_len=62
+  game  17/100  id=8024   plies=100   winner=P2     150.9s  avg_len=64
+  game  18/100  id=8025   plies=100   winner=P1     133.0s  avg_len=66
+  game  19/100  id=8026   plies=100   winner=P2     346.5s  avg_len=68 [AB]
+  game  20/100  id=8027   plies=43    winner=P1     175.4s  avg_len=67
+  game  21/100  id=8028   plies=100   winner=P1     180.1s  avg_len=68
+  game  22/100  id=8029   plies=100   winner=P2     127.5s  avg_len=70
+  game  23/100  id=8030   plies=100   winner=P2     251.3s  avg_len=71
+  game  24/100  id=8031   plies=100   winner=P1     179.3s  avg_len=72
+  game  25/100  id=8032   plies=100   winner=P1     160.3s  avg_len=73
+  game  26/100  id=8033   plies=51    winner=P1     210.0s  avg_len=72 [AB]
+  game  27/100  id=8034   plies=100   winner=P1     84.1s  avg_len=73
+  game  28/100  id=8035   plies=100   winner=P1     149.2s  avg_len=74
+  game  29/100  id=8036   plies=100   winner=P2     413.1s  avg_len=75 [AB]
+  game  30/100  id=8037   plies=100   winner=P2     176.1s  avg_len=76
+  game  31/100  id=8038   plies=35    winner=P1     150.1s  avg_len=75
+  game  32/100  id=8039   plies=100   winner=P2     140.1s  avg_len=76
+  game  33/100  id=8040   plies=29    winner=P1     134.8s  avg_len=74
+  game  34/100  id=8041   plies=100   winner=draw   120.8s  avg_len=75
+Device:            mps
+Workers:           8
+Simulations/move:  1000
+Games/iteration:   100
+Training epochs:   3
+Eval games:        30
+Training window:   5000 games
+Max game length:   100
+Opening random:    8
+Draw penalty:      0.5
+
+Resuming from checkpoints/best.pt
+  meta: {'iteration': 23, 'best_iteration': 15, 'deep_distilled_from': 'ab', 'deep_distill_positions': 5714, 'deep_distill_val_loss': 1.0920280703931655, 'rehearsal_frac': 0.3, 'reg_lambda': 0.5}
+
+============================================================
+  Iteration 1/12  (global 24)
+============================================================
+
+[1/3] Self-play
+  (parallel self-play on 8 CPU workers)
+  game   1/100  id=8042   plies=30    winner=P2     85.4s  avg_len=30
+  game   2/100  id=8043   plies=43    winner=P1     128.2s  avg_len=36
+  game   3/100  id=8044   plies=52    winner=P2     136.4s  avg_len=42
+  game   4/100  id=8045   plies=56    winner=P2     140.1s  avg_len=45 [AB]
+  game   5/100  id=8046   plies=44    winner=P2     159.0s  avg_len=45
+  game   6/100  id=8047   plies=52    winner=P2     173.5s  avg_len=46
+  game   7/100  id=8048   plies=42    winner=P2     230.4s  avg_len=46 [AB]
+  game   8/100  id=8049   plies=40    winner=P2     155.5s  avg_len=45 [AB]
+  game   9/100  id=8050   plies=100   winner=P1     335.2s  avg_len=51
+  game  10/100  id=8051   plies=38    winner=P2     250.9s  avg_len=50 [AB]
+  game  11/100  id=8052   plies=100   winner=P2     228.7s  avg_len=54
+  game  12/100  id=8053   plies=100   winner=P2     281.2s  avg_len=58
+  game  13/100  id=8054   plies=100   winner=P2     131.3s  avg_len=61
+  game  14/100  id=8055   plies=100   winner=P2     273.1s  avg_len=64
+  game  15/100  id=8056   plies=100   winner=P2     221.5s  avg_len=66
+  game  16/100  id=8057   plies=48    winner=P2     125.8s  avg_len=65 [AB]
+  game  17/100  id=8058   plies=100   winner=P1     350.8s  avg_len=67
+  game  18/100  id=8059   plies=36    winner=P2     118.4s  avg_len=66
+  game  19/100  id=8060   plies=61    winner=P1     168.6s  avg_len=65
+  game  20/100  id=8061   plies=100   winner=P1     90.5s  avg_len=67
+  game  21/100  id=8062   plies=100   winner=P1     120.5s  avg_len=69
+  game  22/100  id=8063   plies=38    winner=P2     127.6s  avg_len=67
+  game  23/100  id=8064   plies=63    winner=P1     191.7s  avg_len=67
+  game  24/100  id=8065   plies=100   winner=P1     198.6s  avg_len=68
+  game  25/100  id=8066   plies=35    winner=P1     251.1s  avg_len=67 [AB]
+  game  26/100  id=8067   plies=100   winner=P2     295.5s  avg_len=68
+  game  27/100  id=8068   plies=50    winner=P2     242.9s  avg_len=68
+  game  28/100  id=8069   plies=100   winner=P2     236.8s  avg_len=69
+  game  29/100  id=8070   plies=100   winner=draw   150.7s  avg_len=70
+  game  30/100  id=8071   plies=100   winner=P1     274.1s  avg_len=71
+  game  31/100  id=8072   plies=39    winner=P1     301.4s  avg_len=70 [AB]
+  game  32/100  id=8073   plies=100   winner=P1     379.8s  avg_len=71
+  game  33/100  id=8074   plies=55    winner=P1     617.7s  avg_len=70 [AB]
+  game  34/100  id=8075   plies=100   winner=P2     677.0s  avg_len=71
+  game  35/100  id=8076   plies=100   winner=draw   690.2s  avg_len=72
+  game  36/100  id=8077   plies=100   winner=P2     654.5s  avg_len=73
+  game  37/100  id=8078   plies=48    winner=P2     764.1s  avg_len=72
+  game  38/100  id=8079   plies=100   winner=draw   881.3s  avg_len=73
+  game  39/100  id=8080   plies=58    winner=P2     753.4s  avg_len=73
+  game  40/100  id=8081   plies=67    winner=P1     469.4s  avg_len=72
+  game  41/100  id=8082   plies=51    winner=P1     1161.4s  avg_len=72 [AB]
+  game  42/100  id=8083   plies=45    winner=P1     815.5s  avg_len=71
+  game  43/100  id=8084   plies=41    winner=P1     769.2s  avg_len=71
+  game  44/100  id=8085   plies=100   winner=P2     934.5s  avg_len=71
+  game  45/100  id=8086   plies=50    winner=P2     810.1s  avg_len=71
+  game  46/100  id=8087   plies=100   winner=P2     1078.9s  avg_len=71
+  game  47/100  id=8088   plies=79    winner=P1     714.1s  avg_len=72
+  game  48/100  id=8089   plies=40    winner=P2     960.8s  avg_len=71 [AB]
+  game  49/100  id=8090   plies=42    winner=P2     629.5s  avg_len=70
+  game  50/100  id=8091   plies=42    winner=P2     877.6s  avg_len=70 [AB]
+  game  51/100  id=8092   plies=100   winner=draw   572.0s  avg_len=70
+  game  52/100  id=8093   plies=100   winner=P2     1303.7s  avg_len=71
+  game  53/100  id=8094   plies=30    winner=P2     397.3s  avg_len=70
+  game  54/100  id=8095   plies=100   winner=P1     842.2s  avg_len=71
+  game  55/100  id=8096   plies=100   winner=P2     509.5s  avg_len=71
+  game  56/100  id=8097   plies=66    winner=P2     609.7s  avg_len=71 [AB]
+  game  57/100  id=8098   plies=33    winner=P1     95.6s  avg_len=70
+  game  58/100  id=8099   plies=100   winner=draw   99.8s  avg_len=71
+  game  59/100  id=8100   plies=100   winner=P1     742.4s  avg_len=71
+  game  60/100  id=8101   plies=100   winner=P1     230.2s  avg_len=72
+  game  61/100  id=8102   plies=100   winner=P1     143.5s  avg_len=72
+  game  62/100  id=8103   plies=39    winner=P1     74.5s  avg_len=72
+  game  63/100  id=8104   plies=100   winner=draw   98.9s  avg_len=72
+  game  64/100  id=8105   plies=38    winner=P2     100.9s  avg_len=72
+  game  65/100  id=8106   plies=37    winner=P1     81.5s  avg_len=71
+  game  66/100  id=8107   plies=100   winner=P2     106.9s  avg_len=72
+  game  67/100  id=8108   plies=62    winner=P2     258.4s  avg_len=71 [AB]
+  game  68/100  id=8109   plies=44    winner=P2     190.9s  avg_len=71 [AB]
+  game  69/100  id=8110   plies=100   winner=P1     173.2s  avg_len=72
+  game  70/100  id=8111   plies=100   winner=P2     144.4s  avg_len=72
+  game  71/100  id=8112   plies=100   winner=P2     100.5s  avg_len=72
+  game  72/100  id=8113   plies=100   winner=P2     153.1s  avg_len=73
+  game  73/100  id=8114   plies=45    winner=P1     105.2s  avg_len=72
+  game  74/100  id=8115   plies=39    winner=P1     168.3s  avg_len=72 [AB]
+  game  75/100  id=8116   plies=100   winner=P1     146.9s  avg_len=72
+Device:            mps
+Workers:           8
+Simulations/move:  1000
+Games/iteration:   100
+Training epochs:   3
+Eval games:        30
+Training window:   5000 games
+Max game length:   100
+Opening random:    8
+Draw penalty:      0.5
+
+Resuming from checkpoints/best.pt
+  meta: {'iteration': 23, 'best_iteration': 15, 'deep_distilled_from': 'ab', 'deep_distill_positions': 5714, 'deep_distill_val_loss': 1.0920280703931655, 'rehearsal_frac': 0.3, 'reg_lambda': 0.5}
+
+============================================================
+  Iteration 1/12  (global 24)
+============================================================
+
+[1/3] Self-play
+  (parallel self-play on 8 CPU workers)
+  game   1/100  id=8117   plies=40    winner=P2     83.9s  avg_len=40
+  game   2/100  id=8118   plies=36    winner=P2     86.9s  avg_len=38
+  game   3/100  id=8119   plies=35    winner=P1     88.7s  avg_len=37
+  game   4/100  id=8120   plies=36    winner=P2     112.4s  avg_len=37 [AB]
+  game   5/100  id=8121   plies=100   winner=P2     150.0s  avg_len=49
+  game   6/100  id=8122   plies=38    winner=P2     151.4s  avg_len=48 [AB]
+  game   7/100  id=8123   plies=100   winner=P2     159.5s  avg_len=55
+  game   8/100  id=8124   plies=32    winner=P2     74.4s  avg_len=52
+  game   9/100  id=8125   plies=39    winner=P1     90.3s  avg_len=51
+  game  10/100  id=8126   plies=100   winner=P1     97.0s  avg_len=56
+  game  11/100  id=8127   plies=100   winner=P2     147.2s  avg_len=60
+  game  12/100  id=8128   plies=60    winner=P2     190.4s  avg_len=60 [AB]
+  game  13/100  id=8129   plies=64    winner=P2     118.8s  avg_len=60
+  game  14/100  id=8130   plies=100   winner=P1     304.4s  avg_len=63
+  game  15/100  id=8131   plies=100   winner=P2     229.2s  avg_len=65
+  game  16/100  id=8132   plies=40    winner=P2     77.9s  avg_len=64
+  game  17/100  id=8133   plies=41    winner=P1     88.1s  avg_len=62
+  game  18/100  id=8134   plies=38    winner=P2     152.5s  avg_len=61 [AB]
+  game  19/100  id=8135   plies=52    winner=P2     97.0s  avg_len=61
+  game  20/100  id=8136   plies=100   winner=P2     139.5s  avg_len=63
+  game  21/100  id=8137   plies=100   winner=P2     281.4s  avg_len=64 [AB]
+  game  22/100  id=8138   plies=100   winner=P1     175.9s  avg_len=66
+  game  23/100  id=8139   plies=100   winner=draw   135.2s  avg_len=67
+  game  24/100  id=8140   plies=75    winner=P1     156.0s  avg_len=68
+  game  25/100  id=8141   plies=31    winner=P1     74.5s  avg_len=66
+  game  26/100  id=8142   plies=49    winner=P1     153.3s  avg_len=66
+  game  27/100  id=8143   plies=37    winner=P1     124.9s  avg_len=65 [AB]
+  game  28/100  id=8144   plies=68    winner=P2     144.5s  avg_len=65
+  game  29/100  id=8145   plies=40    winner=P2     112.3s  avg_len=64
+  game  30/100  id=8146   plies=35    winner=P1     151.3s  avg_len=63 [AB]
+  game  31/100  id=8147   plies=100   winner=P1     173.9s  avg_len=64
+  game  32/100  id=8148   plies=100   winner=P1     113.1s  avg_len=65
+  game  33/100  id=8149   plies=36    winner=P2     113.5s  avg_len=64
+  game  34/100  id=8150   plies=100   winner=draw   160.8s  avg_len=65
+  game  35/100  id=8151   plies=100   winner=P2     174.3s  avg_len=66
+  game  36/100  id=8152   plies=100   winner=P2     129.8s  avg_len=67
+  game  37/100  id=8153   plies=100   winner=P2     138.8s  avg_len=68
+  game  38/100  id=8154   plies=100   winner=P1     166.6s  avg_len=69
+  game  39/100  id=8155   plies=100   winner=P1     233.7s  avg_len=70
+  game  40/100  id=8156   plies=29    winner=P1     64.1s  avg_len=69
+  game  41/100  id=8157   plies=100   winner=P1     111.9s  avg_len=70
+  game  42/100  id=8158   plies=46    winner=P2     113.3s  avg_len=69
+  game  43/100  id=8159   plies=34    winner=P2     66.9s  avg_len=68
+  game  44/100  id=8160   plies=100   winner=P2     164.7s  avg_len=69
+  game  45/100  id=8161   plies=86    winner=P2     211.9s  avg_len=69
+  game  46/100  id=8162   plies=28    winner=P2     73.8s  avg_len=68
+  game  47/100  id=8163   plies=100   winner=P1     396.5s  avg_len=69 [AB]
+  game  48/100  id=8164   plies=44    winner=P2     152.2s  avg_len=69 [AB]
+  game  49/100  id=8165   plies=34    winner=P2     117.2s  avg_len=68 [AB]
+  game  50/100  id=8166   plies=100   winner=P1     123.4s  avg_len=68
+  game  51/100  id=8167   plies=72    winner=P2     130.0s  avg_len=69
+  game  52/100  id=8168   plies=30    winner=P2     89.8s  avg_len=68
+  game  53/100  id=8169   plies=55    winner=P1     149.3s  avg_len=68
+  game  54/100  id=8170   plies=100   winner=P1     139.0s  avg_len=68
+  game  55/100  id=8171   plies=50    winner=P2     185.8s  avg_len=68 [AB]
+  game  56/100  id=8172   plies=22    winner=P2     66.5s  avg_len=67
+  game  57/100  id=8173   plies=40    winner=P2     108.9s  avg_len=67
+  game  58/100  id=8174   plies=100   winner=P1     550.4s  avg_len=67 [AB]
+  game  59/100  id=8175   plies=35    winner=P1     99.0s  avg_len=67
+  game  60/100  id=8176   plies=100   winner=P1     116.9s  avg_len=67
+  game  61/100  id=8177   plies=30    winner=P2     142.5s  avg_len=67 [AB]
+  game  62/100  id=8178   plies=100   winner=draw   201.2s  avg_len=67
+  game  63/100  id=8179   plies=100   winner=P1     117.9s  avg_len=68
+  game  64/100  id=8180   plies=36    winner=P2     127.1s  avg_len=67 [AB]
+  game  65/100  id=8181   plies=100   winner=draw   91.9s  avg_len=68
+  game  66/100  id=8182   plies=55    winner=P1     121.2s  avg_len=67
+  game  67/100  id=8183   plies=100   winner=P2     187.9s  avg_len=68
+  game  68/100  id=8184   plies=54    winner=P2     108.0s  avg_len=68
+  game  69/100  id=8185   plies=100   winner=P2     100.2s  avg_len=68
+  game  70/100  id=8186   plies=100   winner=P2     180.3s  avg_len=69
+  game  71/100  id=8187   plies=100   winner=P1     123.0s  avg_len=69
+  game  72/100  id=8188   plies=100   winner=P1     164.4s  avg_len=69
+  game  73/100  id=8189   plies=100   winner=P1     235.9s  avg_len=70
+  game  74/100  id=8190   plies=35    winner=P1     98.4s  avg_len=69 [AB]
+  game  75/100  id=8191   plies=51    winner=P1     189.0s  avg_len=69 [AB]
+  game  76/100  id=8192   plies=42    winner=P2     128.9s  avg_len=69
+  game  77/100  id=8193   plies=100   winner=P1     121.0s  avg_len=69
+  game  78/100  id=8194   plies=100   winner=P1     209.3s  avg_len=70
+  game  79/100  id=8195   plies=43    winner=P1     115.4s  avg_len=69
+  game  80/100  id=8196   plies=100   winner=P1     144.8s  avg_len=70
+  game  81/100  id=8197   plies=100   winner=P1     190.3s  avg_len=70
+  game  82/100  id=8198   plies=100   winner=draw   173.1s  avg_len=70
+  game  83/100  id=8199   plies=51    winner=P1     98.9s  avg_len=70
+  game  84/100  id=8200   plies=100   winner=P1     134.3s  avg_len=71
+  game  85/100  id=8201   plies=53    winner=P1     193.4s  avg_len=70 [AB]
+  game  86/100  id=8202   plies=100   winner=P2     207.0s  avg_len=71
+  game  87/100  id=8203   plies=100   winner=P1     304.0s  avg_len=71 [AB]
+  game  88/100  id=8204   plies=100   winner=P1     123.1s  avg_len=71
+  game  89/100  id=8205   plies=100   winner=P1     144.2s  avg_len=72
+  game  90/100  id=8206   plies=100   winner=P2     122.3s  avg_len=72
+  game  91/100  id=8207   plies=34    winner=P2     115.6s  avg_len=72 [AB]
+  game  92/100  id=8208   plies=100   winner=P2     121.2s  avg_len=72
+  game  93/100  id=8209   plies=38    winner=P2     104.3s  avg_len=71
+  game  94/100  id=8210   plies=41    winner=P1     121.3s  avg_len=71
+  game  95/100  id=8211   plies=100   winner=P2     179.4s  avg_len=71
+  game  96/100  id=8212   plies=100   winner=draw   218.3s  avg_len=72
+  game  97/100  id=8213   plies=34    winner=P2     63.4s  avg_len=71
+  game  98/100  id=8214   plies=100   winner=P1     149.0s  avg_len=72
+  game  99/100  id=8215   plies=38    winner=P2     114.7s  avg_len=71
+  game 100/100  id=8216   plies=100   winner=P2     299.7s  avg_len=72 [AB]
+  P1 wins: 44  P2 wins: 50  draws: 6
+  DB total: 8216 games, 409,696 positions
+
+[2/3] Training
+  224,469 positions from 5000 game(s) (4885 decisive, 115 draws)
+    epoch 1/3  loss=1.8599 (p=1.6986 v=0.1613)  val=1.8846 (p=1.6128 v=0.2718)  [best]
+    epoch 2/3  loss=1.6877 (p=1.5767 v=0.1109)  val=1.9032 (p=1.6248 v=0.2785)
+    epoch 3/3  loss=1.5781 (p=1.4828 v=0.0953)  val=1.9032 (p=1.6275 v=0.2757)
+
+[3/3] Evaluation
+    (parallel evaluation on 8 CPU workers)
+    eval game 1/30  (idx 6)  new=P1  moves=33  W  (100% W1/L0/D0)
+    eval game 2/30  (idx 7)  new=P2  moves=29  L  (50% W1/L1/D0)
+    eval game 3/30  (idx 1)  new=P2  moves=36  W  (67% W2/L1/D0)
+    eval game 4/30  (idx 0)  new=P1  moves=49  W  (75% W3/L1/D0)
+    eval game 5/30  (idx 3)  new=P2  moves=100  L  (60% W3/L2/D0)
+    eval game 6/30  (idx 9)  new=P2  moves=36  W  (67% W4/L2/D0)
+    eval game 7/30  (idx 10)  new=P1  moves=32  L  (57% W4/L3/D0)
+    eval game 8/30  (idx 8)  new=P1  moves=32  L  (50% W4/L4/D0)
+    eval game 9/30  (idx 5)  new=P2  moves=100  L  (44% W4/L5/D0)
+    eval game 10/30  (idx 12)  new=P1  moves=32  L  (40% W4/L6/D0)
+    eval game 11/30  (idx 4)  new=P1  moves=100  W  (45% W5/L6/D0)
+    eval game 12/30  (idx 13)  new=P2  moves=33  L  (42% W5/L7/D0)
+    eval game 13/30  (idx 16)  new=P1  moves=36  L  (38% W5/L8/D0)
+    eval game 14/30  (idx 2)  new=P1  moves=100  L  (36% W5/L9/D0)
+    eval game 15/30  (idx 17)  new=P2  moves=45  L  (33% W5/L10/D0)
+    eval game 16/30  (idx 18)  new=P1  moves=49  W  (38% W6/L10/D0)
+    eval game 17/30  (idx 19)  new=P2  moves=48  W  (41% W7/L10/D0)
+    eval game 18/30  (idx 22)  new=P1  moves=37  W  (44% W8/L10/D0)
+    eval game 19/30  (idx 20)  new=P1  moves=32  L  (42% W8/L11/D0)
+    eval game 20/30  (idx 11)  new=P2  moves=100  L  (40% W8/L12/D0)
+    eval game 21/30  (idx 21)  new=P2  moves=45  L  (38% W8/L13/D0)
+    eval game 22/30  (idx 27)  new=P2  moves=42  W  (41% W9/L13/D0)
+    eval game 23/30  (idx 15)  new=P2  moves=100  L  (39% W9/L14/D0)
+    eval game 24/30  (idx 28)  new=P1  moves=30  L  (38% W9/L15/D0)
+    eval game 25/30  (idx 14)  new=P1  moves=100  L  (36% W9/L16/D0)
+    eval game 26/30  (idx 25)  new=P2  moves=100  W  (38% W10/L16/D0)
+    eval game 27/30  (idx 23)  new=P2  moves=100  W  (41% W11/L16/D0)
+    eval game 28/30  (idx 24)  new=P1  moves=100  W  (43% W12/L16/D0)
+    eval game 29/30  (idx 26)  new=P1  moves=100  L  (41% W12/L17/D0)
+    eval game 30/30  (idx 29)  new=P2  moves=100  W  (43% W13/L17/D0)
+  New net score: 43.3%  (W13/L17/D0)  95% CI: [27.4%, 60.8%]
+  Elo: selfplay-v24=990  selfplay-v15=1040
+  --- Keeping previous network.
+  Saved checkpoints/iter_0024.pt
+
+  Elo ratings (top 10):
+   1. selfplay-v34               1094.1
+   2. init                       1046.7
+   3. selfplay-v15               1040.3
+   4. selfplay-v74               1032.7
+   5. selfplay-v19               1021.7
+   6. selfplay-v48               1014.7
+   7. selfplay-v71               1011.3
+   8. selfplay-v57               1009.5
+   9. selfplay-v28               1009.3
+  10. selfplay-v65               1007.4
+
+============================================================
+  Iteration 2/12  (global 25)
+============================================================
+
+[1/3] Self-play
+  (parallel self-play on 8 CPU workers)
+  game   1/100  id=8217   plies=32    winner=P2     137.4s  avg_len=32
+  game   2/100  id=8218   plies=100   winner=P2     144.3s  avg_len=66
+  game   3/100  id=8219   plies=100   winner=P2     166.6s  avg_len=77
+  game   4/100  id=8220   plies=40    winner=P2     172.4s  avg_len=68 [AB]
+  game   5/100  id=8221   plies=40    winner=P2     197.5s  avg_len=62 [AB]
+  game   6/100  id=8222   plies=53    winner=P1     214.6s  avg_len=61
+  game   7/100  id=8223   plies=100   winner=P2     216.0s  avg_len=66
+  game   8/100  id=8224   plies=100   winner=P1     226.1s  avg_len=71
+  game   9/100  id=8225   plies=32    winner=P2     119.3s  avg_len=66 [AB]
+  game  10/100  id=8226   plies=49    winner=P1     122.9s  avg_len=65
+  game  11/100  id=8227   plies=37    winner=P1     119.8s  avg_len=62
+  game  12/100  id=8228   plies=45    winner=P1     196.1s  avg_len=61
+  game  13/100  id=8229   plies=100   winner=P1     261.5s  avg_len=64
+  game  14/100  id=8230   plies=38    winner=P2     128.1s  avg_len=62
+  game  15/100  id=8231   plies=100   winner=P2     214.1s  avg_len=64
+  game  16/100  id=8232   plies=100   winner=P2     227.0s  avg_len=67
+  game  17/100  id=8233   plies=75    winner=P1     257.8s  avg_len=67 [AB]
+  game  18/100  id=8234   plies=54    winner=P2     135.1s  avg_len=66
+  game  19/100  id=8235   plies=42    winner=P2     285.6s  avg_len=65 [AB]
+  game  20/100  id=8236   plies=100   winner=P1     203.5s  avg_len=67
+  game  21/100  id=8237   plies=61    winner=P1     166.1s  avg_len=67
+  game  22/100  id=8238   plies=50    winner=P2     134.3s  avg_len=66
+  game  23/100  id=8239   plies=51    winner=P1     168.5s  avg_len=65
+  game  24/100  id=8240   plies=100   winner=P1     333.9s  avg_len=67
+  game  25/100  id=8241   plies=100   winner=draw   189.4s  avg_len=68
+  game  26/100  id=8242   plies=100   winner=P1     312.1s  avg_len=69
+  game  27/100  id=8243   plies=33    winner=P1     130.7s  avg_len=68
+  game  28/100  id=8244   plies=61    winner=P1     179.2s  avg_len=68
+  game  29/100  id=8245   plies=100   winner=P1     204.1s  avg_len=69
+  game  30/100  id=8246   plies=41    winner=P1     207.6s  avg_len=68 [AB]
+  game  31/100  id=8247   plies=100   winner=P2     168.4s  avg_len=69
+  game  32/100  id=8248   plies=34    winner=P2     139.0s  avg_len=68
+  game  33/100  id=8249   plies=100   winner=P1     147.4s  avg_len=69
+  game  34/100  id=8250   plies=100   winner=P1     149.9s  avg_len=70
+  game  35/100  id=8251   plies=100   winner=P1     136.8s  avg_len=71
+  game  36/100  id=8252   plies=31    winner=P1     153.8s  avg_len=69 [AB]
+  game  37/100  id=8253   plies=45    winner=P1     140.1s  avg_len=69
+  game  38/100  id=8254   plies=33    winner=P1     149.2s  avg_len=68
+  game  39/100  id=8255   plies=52    winner=P2     165.3s  avg_len=67
+  game  40/100  id=8256   plies=100   winner=P2     163.2s  avg_len=68
+  game  41/100  id=8257   plies=100   winner=P1     279.8s  avg_len=69
+  game  42/100  id=8258   plies=34    winner=P2     111.2s  avg_len=68
+  game  43/100  id=8259   plies=100   winner=P1     461.4s  avg_len=69 [AB]
+  game  44/100  id=8260   plies=100   winner=P1     272.0s  avg_len=70
+  game  45/100  id=8261   plies=92    winner=P2     221.9s  avg_len=70
+  game  46/100  id=8262   plies=47    winner=P1     180.4s  avg_len=70
+  game  47/100  id=8263   plies=39    winner=P1     128.3s  avg_len=69
+  game  48/100  id=8264   plies=100   winner=P1     228.9s  avg_len=70
+  game  49/100  id=8265   plies=52    winner=P2     266.1s  avg_len=69 [AB]
+  game  50/100  id=8266   plies=48    winner=P2     166.2s  avg_len=69 [AB]
+  game  51/100  id=8267   plies=44    winner=P2     174.2s  avg_len=68
+  game  52/100  id=8268   plies=36    winner=P2     127.3s  avg_len=68 [AB]
+  game  53/100  id=8269   plies=100   winner=P1     898.5s  avg_len=68 [AB]
+  game  54/100  id=8270   plies=54    winner=P2     156.2s  avg_len=68
+  game  55/100  id=8271   plies=52    winner=P2     125.4s  avg_len=68
+  game  56/100  id=8272   plies=100   winner=P2     160.3s  avg_len=68
+  game  57/100  id=8273   plies=26    winner=P2     102.9s  avg_len=68
+  game  58/100  id=8274   plies=35    winner=P1     122.3s  avg_len=67
+  game  59/100  id=8275   plies=100   winner=P1     343.8s  avg_len=68
+  game  60/100  id=8276   plies=52    winner=P2     215.0s  avg_len=67 [AB]
+  game  61/100  id=8277   plies=53    winner=P1     149.6s  avg_len=67
+  game  62/100  id=8278   plies=100   winner=P2     160.3s  avg_len=68
+  game  63/100  id=8279   plies=50    winner=P2     213.2s  avg_len=67
+  game  64/100  id=8280   plies=44    winner=P2     190.0s  avg_len=67 [AB]
+  game  65/100  id=8281   plies=100   winner=P2     222.9s  avg_len=67
+  game  66/100  id=8282   plies=24    winner=P2     87.1s  avg_len=67
+  game  67/100  id=8283   plies=100   winner=P1     158.0s  avg_len=67
+  game  68/100  id=8284   plies=100   winner=P2     158.2s  avg_len=68
+  game  69/100  id=8285   plies=100   winner=P1     151.7s  avg_len=68
+  game  70/100  id=8286   plies=100   winner=draw   220.6s  avg_len=69
+  game  71/100  id=8287   plies=50    winner=P2     141.1s  avg_len=68
+  game  72/100  id=8288   plies=100   winner=P2     217.4s  avg_len=69
+  game  73/100  id=8289   plies=100   winner=draw   312.4s  avg_len=69
+  game  74/100  id=8290   plies=100   winner=P1     194.6s  avg_len=70
+  game  75/100  id=8291   plies=55    winner=P1     259.1s  avg_len=70 [AB]
+  game  76/100  id=8292   plies=100   winner=P1     197.6s  avg_len=70
+  game  77/100  id=8293   plies=33    winner=P1     132.1s  avg_len=69
+  game  78/100  id=8294   plies=56    winner=P2     178.4s  avg_len=69
+  game  79/100  id=8295   plies=55    winner=P1     135.9s  avg_len=69
+  game  80/100  id=8296   plies=55    winner=P1     276.3s  avg_len=69 [AB]
+  game  81/100  id=8297   plies=46    winner=P2     180.8s  avg_len=69
+  game  82/100  id=8298   plies=35    winner=P1     201.9s  avg_len=68 [AB]
+  game  83/100  id=8299   plies=38    winner=P2     106.5s  avg_len=68
+  game  84/100  id=8300   plies=34    winner=P2     117.5s  avg_len=67
+  game  85/100  id=8301   plies=51    winner=P1     174.2s  avg_len=67
+  game  86/100  id=8302   plies=100   winner=P1     201.2s  avg_len=68
+  game  87/100  id=8303   plies=100   winner=P1     149.4s  avg_len=68
+  game  88/100  id=8304   plies=49    winner=P1     164.0s  avg_len=68
+  game  89/100  id=8305   plies=41    winner=P1     104.8s  avg_len=68
+  game  90/100  id=8306   plies=100   winner=P2     381.0s  avg_len=68
+  game  91/100  id=8307   plies=35    winner=P1     130.7s  avg_len=68
+  game  92/100  id=8308   plies=100   winner=P1     254.8s  avg_len=68
+  game  93/100  id=8309   plies=39    winner=P1     178.6s  avg_len=68
+  game  94/100  id=8310   plies=36    winner=P2     151.9s  avg_len=67 [AB]
+  game  95/100  id=8311   plies=26    winner=P2     81.7s  avg_len=67
+  game  96/100  id=8312   plies=100   winner=draw   228.3s  avg_len=67
+  game  97/100  id=8313   plies=96    winner=P2     187.8s  avg_len=67
+  game  98/100  id=8314   plies=100   winner=P2     294.5s  avg_len=68 [AB]
+  game  99/100  id=8315   plies=47    winner=P1     121.9s  avg_len=68
+  game 100/100  id=8316   plies=100   winner=P1     640.7s  avg_len=68 [AB]
+  P1 wins: 51  P2 wins: 45  draws: 4
+  DB total: 8316 games, 416,484 positions
+
+[2/3] Training
+  223,709 positions from 5000 game(s) (4903 decisive, 97 draws)
+    epoch 1/3  loss=1.8745 (p=1.7123 v=0.1622)  val=1.8662 (p=1.6095 v=0.2567)  [best]
+    epoch 2/3  loss=1.6993 (p=1.5885 v=0.1108)  val=1.9016 (p=1.6383 v=0.2633)
+    epoch 3/3  loss=1.5901 (p=1.4953 v=0.0947)  val=1.9097 (p=1.6414 v=0.2683)
+
+[3/3] Evaluation
+    (parallel evaluation on 8 CPU workers)
+    eval game 1/30  (idx 4)  new=P1  moves=16  L  (0% W0/L1/D0)
+    eval game 2/30  (idx 5)  new=P2  moves=36  W  (50% W1/L1/D0)
+    eval game 3/30  (idx 1)  new=P2  moves=31  L  (33% W1/L2/D0)
+    eval game 4/30  (idx 0)  new=P1  moves=100  L  (25% W1/L3/D0)
+    eval game 5/30  (idx 10)  new=P1  moves=22  L  (20% W1/L4/D0)
+    eval game 6/30  (idx 9)  new=P2  moves=29  L  (17% W1/L5/D0)
+    eval game 7/30  (idx 6)  new=P1  moves=100  L  (14% W1/L6/D0)
+    eval game 8/30  (idx 11)  new=P2  moves=38  W  (25% W2/L6/D0)
+    eval game 9/30  (idx 2)  new=P1  moves=100  W  (33% W3/L6/D0)
+    eval game 10/30  (idx 12)  new=P1  moves=100  L  (30% W3/L7/D0)
+    eval game 11/30  (idx 7)  new=P2  moves=100  L  (27% W3/L8/D0)
+    eval game 12/30  (idx 3)  new=P2  moves=100  W  (33% W4/L8/D0)
+    eval game 13/30  (idx 13)  new=P2  moves=100  L  (31% W4/L9/D0)
+    eval game 14/30  (idx 8)  new=P1  moves=100  L  (29% W4/L10/D0)
+    eval game 15/30  (idx 18)  new=P1  moves=100  W  (33% W5/L10/D0)
+    eval game 16/30  (idx 20)  new=P1  moves=100  L  (31% W5/L11/D0)
+    eval game 17/30  (idx 22)  new=P1  moves=41  W  (35% W6/L11/D0)
+    eval game 18/30  (idx 21)  new=P2  moves=46  W  (39% W7/L11/D0)
+    eval game 19/30  (idx 14)  new=P1  moves=100  L  (37% W7/L12/D0)
+    eval game 20/30  (idx 17)  new=P2  moves=100  W  (40% W8/L12/D0)
+    eval game 21/30  (idx 16)  new=P1  moves=100  W  (43% W9/L12/D0)
+    eval game 22/30  (idx 24)  new=P1  moves=26  L  (41% W9/L13/D0)
+    eval game 23/30  (idx 15)  new=P2  moves=100  W  (43% W10/L13/D0)
+Device:            mps
+Workers:           8
+Simulations/move:  1000
+Games/iteration:   100
+Training epochs:   2
+Eval games:        30
+Training window:   5000 games
+Max game length:   100
+Opening random:    8
+Draw penalty:      0.5
+
+Resuming from checkpoints/best.pt
+  meta: {'iteration': 24, 'best_iteration': 15, 'train_loss': 1.5780591766976724, 'policy_loss': 1.4828056703867398, 'value_loss': 0.0952535054517223, 'best_val_loss': 1.884608591593674}
+
+============================================================
+  Iteration 1/12  (global 25)
+============================================================
+
+[1/3] Self-play
+  (parallel self-play on 8 CPU workers)
+Process SpawnPoolWorker-31:
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/pool.py", line 131, in worker
+    put((job, i, result))
+    ~~~^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 206, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 444, in _send_bytes
+    self._send(header + buf)
+    ~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 400, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/process.py", line 320, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/pool.py", line 136, in worker
+    put((job, i, (False, wrapped)))
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 206, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 444, in _send_bytes
+    self._send(header + buf)
+    ~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 400, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+  game   1/100  id=8317   plies=27    winner=P1     171.2s  avg_len=27
+Process SpawnPoolWorker-25:
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/pool.py", line 131, in worker
+    put((job, i, result))
+    ~~~^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 206, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 444, in _send_bytes
+    self._send(header + buf)
+    ~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 400, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/process.py", line 320, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/pool.py", line 136, in worker
+    put((job, i, (False, wrapped)))
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 206, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 444, in _send_bytes
+    self._send(header + buf)
+    ~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 400, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+Process SpawnPoolWorker-32:
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/pool.py", line 131, in worker
+    put((job, i, result))
+    ~~~^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 206, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 444, in _send_bytes
+    self._send(header + buf)
+    ~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 400, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/process.py", line 320, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/pool.py", line 136, in worker
+    put((job, i, (False, wrapped)))
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 206, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 444, in _send_bytes
+    self._send(header + buf)
+    ~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 400, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+Process SpawnPoolWorker-27:
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/pool.py", line 131, in worker
+    put((job, i, result))
+    ~~~^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 206, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 444, in _send_bytes
+    self._send(header + buf)
+    ~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 400, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/process.py", line 320, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/pool.py", line 136, in worker
+    put((job, i, (False, wrapped)))
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 206, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 444, in _send_bytes
+    self._send(header + buf)
+    ~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 400, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+  game   2/100  id=8318   plies=54    winner=P2     291.0s  avg_len=40
+Process SpawnPoolWorker-28:
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/pool.py", line 131, in worker
+    put((job, i, result))
+    ~~~^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 206, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 444, in _send_bytes
+    self._send(header + buf)
+    ~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 400, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/process.py", line 320, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/pool.py", line 136, in worker
+    put((job, i, (False, wrapped)))
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 206, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 444, in _send_bytes
+    self._send(header + buf)
+    ~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 400, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+  game   3/100  id=8319   plies=48    winner=P2     303.9s  avg_len=43 [AB]
+  game   4/100  id=8320   plies=100   winner=P1     347.1s  avg_len=57
+  game   5/100  id=8321   plies=56    winner=P2     361.9s  avg_len=57 [AB]
+  game   6/100  id=8322   plies=100   winner=P1     369.0s  avg_len=64
+  game   7/100  id=8323   plies=100   winner=P2     396.8s  avg_len=69
+  game   8/100  id=8324   plies=33    winner=P1     125.5s  avg_len=65
+Process SpawnPoolWorker-29:
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/pool.py", line 131, in worker
+    put((job, i, result))
+    ~~~^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 206, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 444, in _send_bytes
+    self._send(header + buf)
+    ~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 400, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/process.py", line 320, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/pool.py", line 136, in worker
+    put((job, i, (False, wrapped)))
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 206, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 444, in _send_bytes
+    self._send(header + buf)
+    ~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 400, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+  game   9/100  id=8325   plies=36    winner=P2     272.8s  avg_len=62 [AB]
+  game  10/100  id=8326   plies=25    winner=P1     129.2s  avg_len=58
+  game  11/100  id=8327   plies=100   winner=P2     495.1s  avg_len=62
+  game  12/100  id=8328   plies=100   winner=P2     222.6s  avg_len=65
+Process SpawnPoolWorker-4:
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/pool.py", line 131, in worker
+    put((job, i, result))
+    ~~~^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 206, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 437, in _send_bytes
+    self._send(header)
+    ~~~~~~~~~~^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 400, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/process.py", line 320, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/pool.py", line 136, in worker
+    put((job, i, (False, wrapped)))
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 206, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 437, in _send_bytes
+    self._send(header)
+    ~~~~~~~~~~^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 400, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+Process SpawnPoolWorker-3:
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/pool.py", line 131, in worker
+    put((job, i, result))
+    ~~~^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 206, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 437, in _send_bytes
+    self._send(header)
+    ~~~~~~~~~~^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 400, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/process.py", line 320, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/pool.py", line 136, in worker
+    put((job, i, (False, wrapped)))
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 206, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 437, in _send_bytes
+    self._send(header)
+    ~~~~~~~~~~^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 400, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+Process SpawnPoolWorker-7:
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/pool.py", line 131, in worker
+    put((job, i, result))
+    ~~~^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 206, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 437, in _send_bytes
+    self._send(header)
+    ~~~~~~~~~~^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 400, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/process.py", line 320, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/pool.py", line 136, in worker
+    put((job, i, (False, wrapped)))
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 206, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 437, in _send_bytes
+    self._send(header)
+    ~~~~~~~~~~^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 400, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+Process SpawnPoolWorker-8:
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/pool.py", line 131, in worker
+    put((job, i, result))
+    ~~~^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 206, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 437, in _send_bytes
+    self._send(header)
+    ~~~~~~~~~~^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 400, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/process.py", line 320, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/pool.py", line 136, in worker
+    put((job, i, (False, wrapped)))
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 206, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 437, in _send_bytes
+    self._send(header)
+    ~~~~~~~~~~^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 400, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+Process SpawnPoolWorker-5:
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/pool.py", line 131, in worker
+    put((job, i, result))
+    ~~~^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 206, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 437, in _send_bytes
+    self._send(header)
+    ~~~~~~~~~~^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 400, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/process.py", line 320, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/pool.py", line 136, in worker
+    put((job, i, (False, wrapped)))
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 206, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 437, in _send_bytes
+    self._send(header)
+    ~~~~~~~~~~^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 400, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+Process SpawnPoolWorker-6:
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/pool.py", line 131, in worker
+    put((job, i, result))
+    ~~~^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 206, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 437, in _send_bytes
+    self._send(header)
+    ~~~~~~~~~~^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 400, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/process.py", line 320, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/pool.py", line 136, in worker
+    put((job, i, (False, wrapped)))
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 206, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 437, in _send_bytes
+    self._send(header)
+    ~~~~~~~~~~^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 400, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+Process SpawnPoolWorker-2:
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/pool.py", line 131, in worker
+    put((job, i, result))
+    ~~~^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 206, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 437, in _send_bytes
+    self._send(header)
+    ~~~~~~~~~~^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 400, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/process.py", line 320, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/pool.py", line 136, in worker
+    put((job, i, (False, wrapped)))
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 206, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 437, in _send_bytes
+    self._send(header)
+    ~~~~~~~~~~^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 400, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+Process SpawnPoolWorker-1:
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/pool.py", line 131, in worker
+    put((job, i, result))
+    ~~~^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 206, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 437, in _send_bytes
+    self._send(header)
+    ~~~~~~~~~~^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 400, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/process.py", line 320, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/pool.py", line 136, in worker
+    put((job, i, (False, wrapped)))
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 206, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 437, in _send_bytes
+    self._send(header)
+    ~~~~~~~~~~^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 400, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/resource_tracker.py:396: UserWarning: resource_tracker: There appear to be 6 leaked semaphore objects to clean up at shutdown: {'/mp-4bq_98ey', '/mp-ipitkr7q', '/mp-2_2rg5rc', '/mp-g90kk6d5', '/mp-hlw7n0vd', '/mp-v1lshux5'}
+  warnings.warn(
+Process SpawnPoolWorker-26:
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/pool.py", line 131, in worker
+    put((job, i, result))
+    ~~~^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 206, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 444, in _send_bytes
+    self._send(header + buf)
+    ~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 400, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/process.py", line 320, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/pool.py", line 136, in worker
+    put((job, i, (False, wrapped)))
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 206, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 444, in _send_bytes
+    self._send(header + buf)
+    ~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 400, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/resource_tracker.py:396: UserWarning: resource_tracker: There appear to be 6 leaked semaphore objects to clean up at shutdown: {'/mp-qdr5irn7', '/mp-wpzewygk', '/mp-sto_n1rw', '/mp-c9p9q4nh', '/mp-mna0qgk3', '/mp-3274hw0x'}
+  warnings.warn(
+Device:            mps
+Workers:           8
+Simulations/move:  1000
+Games/iteration:   100
+Training epochs:   2
+Eval games:        30
+Training window:   5000 games
+Max game length:   100
+Opening random:    8
+Draw penalty:      0.5
+
+Resuming from checkpoints/best.pt
+  meta: {'iteration': 24, 'best_iteration': 15, 'train_loss': 1.5780591766976724, 'policy_loss': 1.4828056703867398, 'value_loss': 0.0952535054517223, 'best_val_loss': 1.884608591593674}
+
+============================================================
+  Iteration 1/12  (global 25)
+============================================================
+
+[1/3] Self-play
+  (parallel self-play on 8 CPU workers)
+  game   1/100  id=8329   plies=28    winner=P2     67.4s  avg_len=28
+  game   2/100  id=8330   plies=35    winner=P1     86.5s  avg_len=32
+  game   3/100  id=8331   plies=100   winner=P2     107.5s  avg_len=54
+  game   4/100  id=8332   plies=100   winner=P1     111.2s  avg_len=66
+  game   5/100  id=8333   plies=45    winner=P1     135.0s  avg_len=62
+  game   6/100  id=8334   plies=100   winner=draw   166.9s  avg_len=68
+  game   7/100  id=8335   plies=40    winner=P2     190.7s  avg_len=64 [AB]
+  game   8/100  id=8336   plies=34    winner=P2     140.9s  avg_len=60 [AB]
+  game   9/100  id=8337   plies=44    winner=P2     210.8s  avg_len=58 [AB]
+  game  10/100  id=8338   plies=24    winner=P2     83.9s  avg_len=55
+  game  11/100  id=8339   plies=100   winner=P2     152.3s  avg_len=59
+  game  12/100  id=8340   plies=62    winner=P2     194.9s  avg_len=59
+  game  13/100  id=8341   plies=100   winner=P2     240.6s  avg_len=62
+  game  14/100  id=8342   plies=100   winner=P1     173.0s  avg_len=65
+  game  15/100  id=8343   plies=36    winner=P2     177.7s  avg_len=63 [AB]
+  game  16/100  id=8344   plies=100   winner=P1     209.4s  avg_len=66
+  game  17/100  id=8345   plies=100   winner=draw   194.4s  avg_len=68
+  game  18/100  id=8346   plies=33    winner=P1     117.3s  avg_len=66
+  game  19/100  id=8347   plies=36    winner=P2     106.1s  avg_len=64
+  game  20/100  id=8348   plies=35    winner=P1     117.5s  avg_len=63
+  game  21/100  id=8349   plies=100   winner=P1     296.3s  avg_len=64
+  game  22/100  id=8350   plies=100   winner=P2     295.1s  avg_len=66
+  game  23/100  id=8351   plies=100   winner=P2     493.9s  avg_len=67 [AB]
+  game  24/100  id=8352   plies=100   winner=P2     205.7s  avg_len=69
+  game  25/100  id=8353   plies=58    winner=P2     111.4s  avg_len=68
+  game  26/100  id=8354   plies=51    winner=P1     251.0s  avg_len=68 [AB]
+  game  27/100  id=8355   plies=50    winner=P2     127.8s  avg_len=67
+  game  28/100  id=8356   plies=28    winner=P2     109.1s  avg_len=66
+  game  29/100  id=8357   plies=51    winner=P1     189.4s  avg_len=65 [AB]
+  game  30/100  id=8358   plies=100   winner=draw   265.6s  avg_len=66
+  game  31/100  id=8359   plies=100   winner=draw   356.7s  avg_len=67
+  game  32/100  id=8360   plies=100   winner=P1     359.4s  avg_len=68
+  game  33/100  id=8361   plies=42    winner=P2     126.3s  avg_len=68
+  game  34/100  id=8362   plies=100   winner=P2     226.9s  avg_len=69
+  game  35/100  id=8363   plies=42    winner=P2     146.7s  avg_len=68
+  game  36/100  id=8364   plies=100   winner=draw   184.5s  avg_len=69
+  game  37/100  id=8365   plies=100   winner=P1     199.0s  avg_len=70
+  game  38/100  id=8366   plies=32    winner=P2     118.6s  avg_len=69
+  game  39/100  id=8367   plies=100   winner=P2     203.4s  avg_len=69
+  game  40/100  id=8368   plies=100   winner=P1     135.8s  avg_len=70
+  game  41/100  id=8369   plies=100   winner=P2     150.3s  avg_len=71
+  game  42/100  id=8370   plies=34    winner=P2     109.9s  avg_len=70
+  game  43/100  id=8371   plies=38    winner=P2     124.1s  avg_len=69
+  game  44/100  id=8372   plies=100   winner=P1     360.5s  avg_len=70 [AB]
+  game  45/100  id=8373   plies=100   winner=P1     487.5s  avg_len=71 [AB]
+  game  46/100  id=8374   plies=40    winner=P2     183.9s  avg_len=70 [AB]
+  game  47/100  id=8375   plies=100   winner=P2     211.9s  avg_len=71
+  game  48/100  id=8376   plies=100   winner=P1     196.0s  avg_len=71
+  game  49/100  id=8377   plies=100   winner=P2     232.7s  avg_len=72
+  game  50/100  id=8378   plies=48    winner=P2     228.5s  avg_len=71 [AB]
+  game  51/100  id=8379   plies=100   winner=P2     302.9s  avg_len=72
+  game  52/100  id=8380   plies=100   winner=P2     137.4s  avg_len=72
+  game  53/100  id=8381   plies=100   winner=P1     196.0s  avg_len=73
+  game  54/100  id=8382   plies=100   winner=P2     197.2s  avg_len=73
+  game  55/100  id=8383   plies=100   winner=P2     322.7s  avg_len=74
+  game  56/100  id=8384   plies=100   winner=P2     222.6s  avg_len=74
+  game  57/100  id=8385   plies=100   winner=P1     215.5s  avg_len=75
+  game  58/100  id=8386   plies=45    winner=P1     129.5s  avg_len=74
+  game  59/100  id=8387   plies=44    winner=P2     306.0s  avg_len=74 [AB]
+  game  60/100  id=8388   plies=56    winner=P2     230.7s  avg_len=74 [AB]
+  game  61/100  id=8389   plies=40    winner=P2     120.5s  avg_len=73
+  game  62/100  id=8390   plies=100   winner=P1     223.6s  avg_len=73
+  game  63/100  id=8391   plies=34    winner=P2     143.3s  avg_len=73
+  game  64/100  id=8392   plies=40    winner=P2     187.6s  avg_len=72 [AB]
+  game  65/100  id=8393   plies=100   winner=P1     125.3s  avg_len=73
+  game  66/100  id=8394   plies=100   winner=P1     175.3s  avg_len=73
+  game  67/100  id=8395   plies=56    winner=P2     175.3s  avg_len=73
+  game  68/100  id=8396   plies=54    winner=P2     214.4s  avg_len=73
+  game  69/100  id=8397   plies=100   winner=draw   132.8s  avg_len=73
+  game  70/100  id=8398   plies=100   winner=P1     201.4s  avg_len=73
+  game  71/100  id=8399   plies=100   winner=P1     280.7s  avg_len=74
+  game  72/100  id=8400   plies=48    winner=P2     133.0s  avg_len=73
+  game  73/100  id=8401   plies=35    winner=P1     150.1s  avg_len=73 [AB]
+  game  74/100  id=8402   plies=100   winner=draw   379.8s  avg_len=73
+  game  75/100  id=8403   plies=32    winner=P2     111.1s  avg_len=73
+  game  76/100  id=8404   plies=37    winner=P1     121.4s  avg_len=72
+  game  77/100  id=8405   plies=100   winner=P2     251.2s  avg_len=73
+  game  78/100  id=8406   plies=40    winner=P2     137.5s  avg_len=72
+  game  79/100  id=8407   plies=37    winner=P1     165.9s  avg_len=72 [AB]
+  game  80/100  id=8408   plies=100   winner=P1     405.0s  avg_len=72 [AB]
+  game  81/100  id=8409   plies=39    winner=P1     161.2s  avg_len=72
+  game  82/100  id=8410   plies=100   winner=P1     191.7s  avg_len=72
+  game  83/100  id=8411   plies=100   winner=P1     194.5s  avg_len=72
+  game  84/100  id=8412   plies=100   winner=P2     178.2s  avg_len=73
+  game  85/100  id=8413   plies=100   winner=P2     214.4s  avg_len=73
+  game  86/100  id=8414   plies=39    winner=P1     217.6s  avg_len=73 [AB]
+  game  87/100  id=8415   plies=100   winner=P1     173.1s  avg_len=73
+  game  88/100  id=8416   plies=50    winner=P2     209.1s  avg_len=73
+  game  89/100  id=8417   plies=75    winner=P1     169.2s  avg_len=73
+  game  90/100  id=8418   plies=88    winner=P2     298.7s  avg_len=73
+  game  91/100  id=8419   plies=100   winner=P1     174.0s  avg_len=73
+  game  92/100  id=8420   plies=100   winner=P2     183.9s  avg_len=73
+  game  93/100  id=8421   plies=36    winner=P2     226.5s  avg_len=73 [AB]
+  game  94/100  id=8422   plies=83    winner=P1     288.9s  avg_len=73
+  game  95/100  id=8423   plies=55    winner=P1     157.5s  avg_len=73
+  game  96/100  id=8424   plies=100   winner=P1     255.2s  avg_len=73
+  game  97/100  id=8425   plies=100   winner=P2     144.2s  avg_len=73
+  game  98/100  id=8426   plies=100   winner=P2     264.5s  avg_len=74
+  game  99/100  id=8427   plies=100   winner=P2     284.5s  avg_len=74
+  game 100/100  id=8428   plies=100   winner=P2     372.0s  avg_len=74 [AB]
+  P1 wins: 38  P2 wins: 55  draws: 7
+  DB total: 8428 games, 424,692 positions
+
+[2/3] Training
+  284,258 positions from 5000 game(s) (4594 decisive, 406 draws)
+    epoch 1/2  loss=1.7362 (p=1.5810 v=0.1553)  val=1.6975 (p=1.4390 v=0.2586)  [best]
+    epoch 2/2  loss=1.5368 (p=1.4327 v=0.1041)  val=1.7297 (p=1.4616 v=0.2681)
+
+[3/3] Evaluation
+    (parallel evaluation on 8 CPU workers)
+    eval game 1/30  (idx 4)  new=P1  moves=25  W  (100% W1/L0/D0)
+    eval game 2/30  (idx 1)  new=P2  moves=33  L  (50% W1/L1/D0)
+    eval game 3/30  (idx 3)  new=P2  moves=27  L  (33% W1/L2/D0)
+    eval game 4/30  (idx 6)  new=P1  moves=39  W  (50% W2/L2/D0)
+    eval game 5/30  (idx 9)  new=P2  moves=35  L  (40% W2/L3/D0)
+    eval game 6/30  (idx 11)  new=P2  moves=46  W  (50% W3/L3/D0)
+    eval game 7/30  (idx 10)  new=P1  moves=100  L  (43% W3/L4/D0)
+    eval game 8/30  (idx 12)  new=P1  moves=100  L  (38% W3/L5/D0)
+    eval game 9/30  (idx 8)  new=P1  moves=100  L  (33% W3/L6/D0)
+    eval game 10/30  (idx 13)  new=P2  moves=33  L  (30% W3/L7/D0)
+    eval game 11/30  (idx 5)  new=P2  moves=100  W  (36% W4/L7/D0)
+    eval game 12/30  (idx 0)  new=P1  moves=100  D  (38% W4/L7/D1)
+    eval game 13/30  (idx 7)  new=P2  moves=100  D  (38% W4/L7/D2)
+    eval game 14/30  (idx 2)  new=P1  moves=100  L  (36% W4/L8/D2)
+    eval game 15/30  (idx 15)  new=P2  moves=100  W  (40% W5/L8/D2)
+    eval game 16/30  (idx 17)  new=P2  moves=100  L  (38% W5/L9/D2)
+    eval game 17/30  (idx 23)  new=P2  moves=34  W  (41% W6/L9/D2)
+    eval game 18/30  (idx 14)  new=P1  moves=100  L  (39% W6/L10/D2)
+    eval game 19/30  (idx 18)  new=P1  moves=100  L  (37% W6/L11/D2)
+    eval game 20/30  (idx 19)  new=P2  moves=100  L  (35% W6/L12/D2)
+    eval game 21/30  (idx 24)  new=P1  moves=47  W  (38% W7/L12/D2)
+    eval game 22/30  (idx 27)  new=P2  moves=35  L  (36% W7/L13/D2)
+    eval game 23/30  (idx 26)  new=P1  moves=38  L  (35% W7/L14/D2)
+    eval game 24/30  (idx 20)  new=P1  moves=100  L  (33% W7/L15/D2)
+    eval game 25/30  (idx 25)  new=P2  moves=52  W  (36% W8/L15/D2)
+    eval game 26/30  (idx 16)  new=P1  moves=100  L  (35% W8/L16/D2)
+    eval game 27/30  (idx 28)  new=P1  moves=35  W  (37% W9/L16/D2)
+    eval game 28/30  (idx 22)  new=P1  moves=100  L  (36% W9/L17/D2)
+    eval game 29/30  (idx 29)  new=P2  moves=100  L  (34% W9/L18/D2)
+    eval game 30/30  (idx 21)  new=P2  moves=100  D  (35% W9/L18/D3)
+  New net score: 35.0%  (W9/L18/D3)  95% CI: [20.5%, 52.9%]
+  Elo: selfplay-v25=998  selfplay-v15=1043
+  --- Keeping previous network.
+  Saved checkpoints/iter_0025.pt
+
+  Elo ratings (top 10):
+   1. selfplay-v34               1094.1
+   2. init                       1046.7
+   3. selfplay-v15               1043.3
+   4. selfplay-v74               1032.7
+   5. selfplay-v19               1021.7
+   6. selfplay-v48               1014.7
+   7. selfplay-v71               1011.3
+   8. selfplay-v57               1009.5
+   9. selfplay-v28               1009.3
+  10. selfplay-v65               1007.4
+
+============================================================
+  Iteration 2/12  (global 26)
+============================================================
+
+[1/3] Self-play
+  (parallel self-play on 8 CPU workers)
+  game   1/100  id=8429   plies=25    winner=P1     117.2s  avg_len=25
+  game   2/100  id=8430   plies=36    winner=P2     134.9s  avg_len=30 [AB]
+  game   3/100  id=8431   plies=100   winner=P1     164.7s  avg_len=54
+  game   4/100  id=8432   plies=100   winner=P2     198.0s  avg_len=65
+  game   5/100  id=8433   plies=100   winner=P1     207.0s  avg_len=72
+  game   6/100  id=8434   plies=38    winner=P2     212.3s  avg_len=66 [AB]
+  game   7/100  id=8435   plies=100   winner=P2     229.2s  avg_len=71
+  game   8/100  id=8436   plies=36    winner=P2     113.0s  avg_len=67
+  game   9/100  id=8437   plies=100   winner=P1     278.3s  avg_len=71
+  game  10/100  id=8438   plies=100   winner=P1     152.9s  avg_len=74
+  game  11/100  id=8439   plies=31    winner=P1     108.5s  avg_len=70
+  game  12/100  id=8440   plies=37    winner=P1     134.8s  avg_len=67
+  game  13/100  id=8441   plies=100   winner=P2     111.2s  avg_len=69
+  game  14/100  id=8442   plies=32    winner=P2     120.0s  avg_len=67 [AB]
+  game  15/100  id=8443   plies=100   winner=draw   180.9s  avg_len=69
+  game  16/100  id=8444   plies=64    winner=P2     214.4s  avg_len=69 [AB]
+  game  17/100  id=8445   plies=38    winner=P2     107.3s  avg_len=67
+  game  18/100  id=8446   plies=100   winner=P1     122.6s  avg_len=69
+  game  19/100  id=8447   plies=69    winner=P1     171.3s  avg_len=69
+  game  20/100  id=8448   plies=32    winner=P2     120.9s  avg_len=67
+  game  21/100  id=8449   plies=100   winner=P2     432.8s  avg_len=68 [AB]
+  game  22/100  id=8450   plies=48    winner=P2     141.4s  avg_len=68
+  game  23/100  id=8451   plies=100   winner=P1     264.0s  avg_len=69
+  game  24/100  id=8452   plies=100   winner=P2     198.1s  avg_len=70
+  game  25/100  id=8453   plies=100   winner=P1     230.0s  avg_len=71
+  game  26/100  id=8454   plies=34    winner=P2     79.7s  avg_len=70
+  game  27/100  id=8455   plies=59    winner=P1     140.1s  avg_len=70
+  game  28/100  id=8456   plies=33    winner=P1     161.8s  avg_len=68 [AB]
+  game  29/100  id=8457   plies=100   winner=P1     220.7s  avg_len=69
+  game  30/100  id=8458   plies=23    winner=P1     125.4s  avg_len=68 [AB]
+  game  31/100  id=8459   plies=42    winner=P2     103.4s  avg_len=67
+  game  32/100  id=8460   plies=47    winner=P1     169.8s  avg_len=66
+  game  33/100  id=8461   plies=100   winner=P1     317.5s  avg_len=67
+  game  34/100  id=8462   plies=100   winner=draw   263.8s  avg_len=68
+  game  35/100  id=8463   plies=100   winner=P1     412.1s  avg_len=69 [AB]
+  game  36/100  id=8464   plies=37    winner=P1     112.0s  avg_len=68
+  game  37/100  id=8465   plies=100   winner=P1     186.3s  avg_len=69
+  game  38/100  id=8466   plies=100   winner=P2     214.2s  avg_len=70
+  game  39/100  id=8467   plies=35    winner=P1     155.4s  avg_len=69 [AB]
+  game  40/100  id=8468   plies=47    winner=P1     126.9s  avg_len=69
+  game  41/100  id=8469   plies=100   winner=P1     246.7s  avg_len=69
+  game  42/100  id=8470   plies=36    winner=P2     123.4s  avg_len=69
+  game  43/100  id=8471   plies=100   winner=P1     187.9s  avg_len=69
+  game  44/100  id=8472   plies=100   winner=P2     164.5s  avg_len=70
+  game  45/100  id=8473   plies=100   winner=draw   206.5s  avg_len=71
+  game  46/100  id=8474   plies=100   winner=P2     198.4s  avg_len=71
+  game  47/100  id=8475   plies=48    winner=P2     198.9s  avg_len=71 [AB]
+  game  48/100  id=8476   plies=100   winner=P2     247.1s  avg_len=71
+  game  49/100  id=8477   plies=75    winner=P1     188.3s  avg_len=71
+  game  50/100  id=8478   plies=33    winner=P1     140.1s  avg_len=71
+  game  51/100  id=8479   plies=44    winner=P2     174.9s  avg_len=70 [AB]
+  game  52/100  id=8480   plies=100   winner=P1     150.5s  avg_len=71
+  game  53/100  id=8481   plies=100   winner=P2     129.6s  avg_len=71
+  game  54/100  id=8482   plies=28    winner=P2     73.4s  avg_len=70
+  game  55/100  id=8483   plies=100   winner=P2     281.6s  avg_len=71
+  game  56/100  id=8484   plies=52    winner=P2     153.6s  avg_len=71
+  game  57/100  id=8485   plies=56    winner=P2     233.4s  avg_len=70 [AB]
+  game  58/100  id=8486   plies=100   winner=P1     153.6s  avg_len=71
+  game  59/100  id=8487   plies=100   winner=P1     191.0s  avg_len=71
+  game  60/100  id=8488   plies=57    winner=P1     124.2s  avg_len=71
+  game  61/100  id=8489   plies=44    winner=P2     248.7s  avg_len=71 [AB]
+  game  62/100  id=8490   plies=100   winner=P1     197.4s  avg_len=71
+  game  63/100  id=8491   plies=44    winner=P2     140.2s  avg_len=71
+  game  64/100  id=8492   plies=100   winner=P2     101.4s  avg_len=71
+  game  65/100  id=8493   plies=100   winner=P2     296.5s  avg_len=72
+  game  66/100  id=8494   plies=100   winner=P2     200.3s  avg_len=72
+  game  67/100  id=8495   plies=41    winner=P1     115.2s  avg_len=72
+  game  68/100  id=8496   plies=100   winner=P2     130.7s  avg_len=72
+  game  69/100  id=8497   plies=50    winner=P2     302.8s  avg_len=72 [AB]
+  game  70/100  id=8498   plies=38    winner=P2     116.0s  avg_len=71
+  game  71/100  id=8499   plies=100   winner=P2     139.7s  avg_len=72
+  game  72/100  id=8500   plies=100   winner=P1     142.1s  avg_len=72
+  game  73/100  id=8501   plies=60    winner=P2     245.6s  avg_len=72
+  game  74/100  id=8502   plies=100   winner=P2     212.3s  avg_len=72
+  game  75/100  id=8503   plies=41    winner=P1     182.2s  avg_len=72 [AB]
+  game  76/100  id=8504   plies=43    winner=P1     108.4s  avg_len=71
+  game  77/100  id=8505   plies=53    winner=P1     273.0s  avg_len=71 [AB]
+  game  78/100  id=8506   plies=100   winner=P1     218.2s  avg_len=72
+  game  79/100  id=8507   plies=100   winner=P2     213.6s  avg_len=72
+  game  80/100  id=8508   plies=38    winner=P2     122.1s  avg_len=72
+  game  81/100  id=8509   plies=47    winner=P1     197.6s  avg_len=71 [AB]
+Device:            mps
+Workers:           8
+Simulations/move:  1000
+Games/iteration:   100
+Training epochs:   2
+Eval games:        30
+Training window:   5000 games
+Max game length:   100
+Opening random:    8
+Draw penalty:      0.5
+
+Resuming from checkpoints/best.pt
+  meta: {'iteration': 25, 'best_iteration': 15, 'train_loss': 1.5367651047470772, 'policy_loss': 1.4326648906421, 'value_loss': 0.10410021444438863, 'best_val_loss': 1.6975277524136745}
+
+============================================================
+  Iteration 1/12  (global 26)
+============================================================
+
+[1/3] Self-play
+  (parallel self-play on 8 CPU workers)
+  game  82/100  id=8510   plies=100   winner=P1     148.4s  avg_len=72
+  game  83/100  id=8511   plies=100   winner=P1     184.1s  avg_len=72
+  game  84/100  id=8512   plies=52    winner=P2     175.8s  avg_len=72
+  game  85/100  id=8513   plies=100   winner=P2     205.3s  avg_len=72
+  game  86/100  id=8514   plies=100   winner=P1     264.0s  avg_len=72
+  game  87/100  id=8515   plies=47    winner=P1     289.4s  avg_len=72 [AB]
+  game   1/100  id=8516   plies=32    winner=P2     169.9s  avg_len=32
+  game   2/100  id=8517   plies=34    winner=P2     185.5s  avg_len=33
+  game  88/100  id=8518   plies=100   winner=P2     225.3s  avg_len=72
+  game  89/100  id=8519   plies=100   winner=draw   281.1s  avg_len=73
+  game   3/100  id=8520   plies=27    winner=P1     200.3s  avg_len=31
+  game   4/100  id=8521   plies=34    winner=P2     220.8s  avg_len=32 [AB]
+  game  90/100  id=8522   plies=40    winner=P2     247.6s  avg_len=72
+  game  91/100  id=8523   plies=100   winner=P1     192.0s  avg_len=73
+  game   5/100  id=8524   plies=100   winner=P2     300.0s  avg_len=45
+  game   6/100  id=8525   plies=42    winner=P2     400.8s  avg_len=45 [AB]
+  game   7/100  id=8526   plies=100   winner=draw   408.6s  avg_len=53
+  game  92/100  id=8527   plies=100   winner=P1     385.8s  avg_len=73
+  game  93/100  id=8528   plies=40    winner=P2     233.4s  avg_len=73
+  game   8/100  id=8529   plies=100   winner=P1     429.9s  avg_len=59
+  game   9/100  id=8530   plies=100   winner=P1     218.4s  avg_len=63
+  game  94/100  id=8531   plies=100   winner=P1     330.9s  avg_len=73
+  game  95/100  id=8532   plies=49    winner=P1     219.8s  avg_len=73
+  game  10/100  id=8533   plies=100   winner=P2     301.6s  avg_len=67
+  game  96/100  id=8534   plies=39    winner=P1     337.2s  avg_len=72
+  game  97/100  id=8535   plies=34    winner=P2     298.1s  avg_len=72 [AB]
+  game  98/100  id=8536   plies=100   winner=P2     260.9s  avg_len=72
+  game  11/100  id=8537   plies=100   winner=P1     345.8s  avg_len=70
+  game  12/100  id=8538   plies=40    winner=P2     381.1s  avg_len=67 [AB]
+  game  99/100  id=8539   plies=64    winner=P2     453.2s  avg_len=72 [AB]
+  game  13/100  id=8540   plies=31    winner=P1     142.2s  avg_len=65
+  game  14/100  id=8541   plies=40    winner=P2     193.5s  avg_len=63
+  game  15/100  id=8542   plies=100   winner=P2     275.8s  avg_len=65
+  game  16/100  id=8543   plies=100   winner=P2     206.0s  avg_len=68
+  game  17/100  id=8544   plies=100   winner=P1     176.5s  avg_len=69
+  game 100/100  id=8545   plies=100   winner=P1     309.3s  avg_len=72
+  P1 wins: 48  P2 wins: 48  draws: 4
+  DB total: 8545 games, 433,108 positions
+
+[2/3] Training
+  285,972 positions from 5000 game(s) (4608 decisive, 392 draws)
+  game  18/100  id=8546   plies=23    winner=P1     116.9s  avg_len=67
+  game  19/100  id=8547   plies=100   winner=P1     232.0s  avg_len=69
+  game  20/100  id=8548   plies=100   winner=P2     561.2s  avg_len=70 [AB]
+  game  21/100  id=8549   plies=46    winner=P2     508.1s  avg_len=69 [AB]
+  game  22/100  id=8550   plies=38    winner=P2     253.4s  avg_len=68
+  game  23/100  id=8551   plies=100   winner=P1     527.1s  avg_len=69
+  game  24/100  id=8552   plies=25    winner=P1     297.6s  avg_len=67 [AB]
+  game  25/100  id=8553   plies=100   winner=P1     391.1s  avg_len=68
+  game  26/100  id=8554   plies=100   winner=P1     459.5s  avg_len=70
+  game  27/100  id=8555   plies=100   winner=draw   637.9s  avg_len=71
+  game  28/100  id=8556   plies=47    winner=P1     356.0s  avg_len=70
+    epoch 1/2  loss=1.7358 (p=1.5797 v=0.1561)  val=1.7408 (p=1.4985 v=0.2423)  [best]
+  game  29/100  id=8557   plies=34    winner=P2     376.1s  avg_len=69
+  game  30/100  id=8558   plies=33    winner=P1     354.7s  avg_len=68 [AB]
+  game  31/100  id=8559   plies=48    winner=P2     452.8s  avg_len=67
+  game  32/100  id=8560   plies=42    winner=P2     443.7s  avg_len=66
+  game  33/100  id=8561   plies=55    winner=P1     394.9s  avg_len=66
+  game  34/100  id=8562   plies=100   winner=P1     520.3s  avg_len=67
+  game  35/100  id=8563   plies=47    winner=P1     527.9s  avg_len=66 [AB]
+    epoch 2/2  loss=1.5322 (p=1.4295 v=0.1026)  val=1.7417 (p=1.4955 v=0.2462)
+
+[3/3] Evaluation
+    (parallel evaluation on 8 CPU workers)
+  game  36/100  id=8564   plies=31    winner=P1     235.6s  avg_len=65
+  game  37/100  id=8565   plies=100   winner=P2     478.7s  avg_len=66
+  game  38/100  id=8566   plies=100   winner=P1     605.9s  avg_len=67
+  game  39/100  id=8567   plies=100   winner=P2     315.4s  avg_len=68
+  game  40/100  id=8568   plies=40    winner=P2     241.9s  avg_len=67
+    eval game 1/30  (idx 2)  new=P1  moves=24  L  (0% W0/L1/D0)
+  game  41/100  id=8569   plies=45    winner=P1     519.8s  avg_len=67 [AB]
+    eval game 2/30  (idx 6)  new=P1  moves=43  W  (50% W1/L1/D0)
+    eval game 3/30  (idx 7)  new=P2  moves=27  L  (33% W1/L2/D0)
+  game  42/100  id=8570   plies=100   winner=P2     406.2s  avg_len=67
+    eval game 4/30  (idx 0)  new=P1  moves=39  W  (50% W2/L2/D0)
+  game  43/100  id=8571   plies=100   winner=P1     473.8s  avg_len=68
+    eval game 5/30  (idx 1)  new=P2  moves=42  W  (60% W3/L2/D0)
+    eval game 6/30  (idx 4)  new=P1  moves=47  W  (67% W4/L2/D0)
+  game  44/100  id=8572   plies=36    winner=P2     271.4s  avg_len=68 [AB]
+    eval game 7/30  (idx 5)  new=P2  moves=46  W  (71% W5/L2/D0)
+  game  45/100  id=8573   plies=100   winner=P1     368.7s  avg_len=68
+  game  46/100  id=8574   plies=100   winner=P1     448.6s  avg_len=69
+  game  47/100  id=8575   plies=100   winner=P1     308.6s  avg_len=70
+    eval game 8/30  (idx 11)  new=P2  moves=29  L  (62% W5/L3/D0)
+  game  48/100  id=8576   plies=100   winner=P1     255.8s  avg_len=70
+  game  49/100  id=8577   plies=33    winner=P1     160.2s  avg_len=69
+  game  50/100  id=8578   plies=100   winner=P1     501.7s  avg_len=70
+  game  51/100  id=8579   plies=52    winner=P2     208.8s  avg_len=70
+    eval game 9/30  (idx 3)  new=P2  moves=100  W  (67% W6/L3/D0)
+    eval game 10/30  (idx 14)  new=P1  moves=28  L  (60% W6/L4/D0)
+  game  52/100  id=8580   plies=100   winner=P2     561.0s  avg_len=70
+  game  53/100  id=8581   plies=38    winner=P2     203.9s  avg_len=70
+  game  54/100  id=8582   plies=100   winner=P1     279.2s  avg_len=70
+    eval game 11/30  (idx 15)  new=P2  moves=34  W  (64% W7/L4/D0)
+  game  55/100  id=8583   plies=48    winner=P2     303.7s  avg_len=70 [AB]
+  game  56/100  id=8584   plies=48    winner=P2     269.7s  avg_len=69
+  game  57/100  id=8585   plies=54    winner=P2     279.0s  avg_len=69
+  game  58/100  id=8586   plies=40    winner=P2     305.4s  avg_len=69 [AB]
+    eval game 12/30  (idx 12)  new=P1  moves=100  W  (67% W8/L4/D0)
+  game  59/100  id=8587   plies=30    winner=P2     194.0s  avg_len=68
+  game  60/100  id=8588   plies=100   winner=P2     642.4s  avg_len=69 [AB]
+  game  61/100  id=8589   plies=100   winner=P1     229.0s  avg_len=69
+    eval game 13/30  (idx 17)  new=P2  moves=35  L  (62% W8/L5/D0)
+    eval game 14/30  (idx 18)  new=P1  moves=31  W  (64% W9/L5/D0)
+  game  62/100  id=8590   plies=100   winner=P2     251.0s  avg_len=70
+  game  63/100  id=8591   plies=80    winner=P2     255.6s  avg_len=70
+  game  64/100  id=8592   plies=95    winner=P1     354.0s  avg_len=70
+  game  65/100  id=8593   plies=100   winner=P2     215.6s  avg_len=71
+  game  66/100  id=8594   plies=64    winner=P2     243.1s  avg_len=70
+    eval game 15/30  (idx 8)  new=P1  moves=100  D  (63% W9/L5/D1)
+    eval game 16/30  (idx 20)  new=P1  moves=43  W  (66% W10/L5/D1)
+  game  67/100  id=8595   plies=52    winner=P2     414.0s  avg_len=70 [AB]
+  game  68/100  id=8596   plies=100   winner=P2     352.7s  avg_len=71
+    eval game 17/30  (idx 10)  new=P1  moves=100  L  (62% W10/L6/D1)
+    eval game 18/30  (idx 19)  new=P2  moves=52  W  (64% W11/L6/D1)
+  game  69/100  id=8597   plies=35    winner=P1     238.9s  avg_len=70 [AB]
+  game  70/100  id=8598   plies=37    winner=P1     231.8s  avg_len=70
+    eval game 19/30  (idx 13)  new=P2  moves=100  L  (61% W11/L7/D1)
+  game  71/100  id=8599   plies=50    winner=P2     319.8s  avg_len=69
+    eval game 20/30  (idx 23)  new=P2  moves=23  L  (57% W11/L8/D1)
+  game  72/100  id=8600   plies=100   winner=P1     341.2s  avg_len=70
+  game  73/100  id=8601   plies=100   winner=draw   538.9s  avg_len=70
+    eval game 21/30  (idx 9)  new=P2  moves=100  W  (60% W12/L8/D1)
+  game  74/100  id=8602   plies=29    winner=P1     205.9s  avg_len=70
+  game  75/100  id=8603   plies=100   winner=P2     398.9s  avg_len=70
+  game  76/100  id=8604   plies=100   winner=P2     364.2s  avg_len=70
+    eval game 22/30  (idx 16)  new=P1  moves=100  D  (59% W12/L8/D2)
+  game  77/100  id=8605   plies=54    winner=P2     242.3s  avg_len=70
+    eval game 23/30  (idx 22)  new=P1  moves=42  L  (57% W12/L9/D2)
+  game  78/100  id=8606   plies=51    winner=P1     290.2s  avg_len=70
+    eval game 24/30  (idx 28)  new=P1  moves=36  L  (54% W12/L10/D2)
+    eval game 25/30  (idx 21)  new=P2  moves=100  L  (52% W12/L11/D2)
+  game  79/100  id=8607   plies=100   winner=draw   402.1s  avg_len=70
+  game  80/100  id=8608   plies=53    winner=P1     265.5s  avg_len=70
+    eval game 26/30  (idx 27)  new=P2  moves=52  W  (54% W13/L11/D2)
+  game  81/100  id=8609   plies=38    winner=P2     231.9s  avg_len=70
+  game  82/100  id=8610   plies=39    winner=P1     289.1s  avg_len=69 [AB]
+  game  83/100  id=8611   plies=100   winner=P1     357.8s  avg_len=70
+    eval game 27/30  (idx 25)  new=P2  moves=100  W  (56% W14/L11/D2)
+  game  84/100  id=8612   plies=97    winner=P1     707.6s  avg_len=70 [AB]
+  game  85/100  id=8613   plies=39    winner=P1     170.3s  avg_len=70
+  game  86/100  id=8614   plies=56    winner=P2     159.2s  avg_len=70
+  game  87/100  id=8615   plies=100   winner=P2     215.3s  avg_len=70
+  game  88/100  id=8616   plies=100   winner=P1     309.2s  avg_len=70
+  game  89/100  id=8617   plies=100   winner=P1     205.4s  avg_len=71
+  game  90/100  id=8618   plies=100   winner=P1     151.9s  avg_len=71
+  game  91/100  id=8619   plies=100   winner=P1     790.2s  avg_len=71 [AB]
+  game  92/100  id=8620   plies=100   winner=P1     297.9s  avg_len=72
+  game  93/100  id=8621   plies=46    winner=P2     206.3s  avg_len=71
+    eval game 28/30  (idx 24)  new=P1  moves=100  L  (54% W14/L12/D2)
+  game  94/100  id=8622   plies=35    winner=P1     149.9s  avg_len=71
+  game  95/100  id=8623   plies=100   winner=P1     307.0s  avg_len=71
+  game  96/100  id=8624   plies=100   winner=P2     110.6s  avg_len=71
+  game  97/100  id=8625   plies=35    winner=P1     109.3s  avg_len=71
+  game  98/100  id=8626   plies=58    winner=P2     298.4s  avg_len=71 [AB]
+    eval game 29/30  (idx 26)  new=P1  moves=100  D  (53% W14/L12/D3)
+    eval game 30/30  (idx 29)  new=P2  moves=100  L  (52% W14/L13/D3)
+  New net score: 51.7%  (W14/L13/D3)  95% CI: [34.6%, 68.3%]
+  Elo: selfplay-v26=1004  selfplay-v15=1041
+  --- Keeping previous network.
+  Saved checkpoints/iter_0026.pt
+
+  Elo ratings (top 10):
+   1. selfplay-v34               1094.1
+   2. init                       1046.7
+   3. selfplay-v15               1040.9
+   4. selfplay-v74               1032.7
+   5. selfplay-v19               1021.7
+   6. selfplay-v48               1014.7
+   7. selfplay-v71               1011.3
+   8. selfplay-v57               1009.5
+   9. selfplay-v28               1009.3
+  10. selfplay-v65               1007.4
+
+============================================================
+  Iteration 3/12  (global 27)
+============================================================
+
+[1/3] Self-play
+  (parallel self-play on 8 CPU workers)
+  game  99/100  id=8627   plies=100   winner=P1     444.7s  avg_len=71
+  game 100/100  id=8628   plies=100   winner=P2     539.6s  avg_len=72 [AB]
+  P1 wins: 49  P2 wins: 47  draws: 4
+  DB total: 8628 games, 439,084 positions
+
+[2/3] Training
+  game   1/100  id=8629   plies=100   winner=P1     154.9s  avg_len=100
+  285,506 positions from 5000 game(s) (4616 decisive, 384 draws)
+  game   2/100  id=8630   plies=42    winner=P2     169.2s  avg_len=71
+  game   3/100  id=8631   plies=100   winner=P1     186.9s  avg_len=81
+  game   4/100  id=8632   plies=42    winner=P2     274.3s  avg_len=71 [AB]
+  game   5/100  id=8633   plies=51    winner=P1     297.7s  avg_len=67
+  game   6/100  id=8634   plies=100   winner=P2     360.9s  avg_len=72
+  game   7/100  id=8635   plies=100   winner=P2     365.0s  avg_len=76
+  game   8/100  id=8636   plies=44    winner=P2     320.1s  avg_len=72
+    epoch 1/2  loss=1.6371 (p=1.5869 v=0.1672)  val=1.7200 (p=1.4489 v=0.2711)  [best]
+  game   9/100  id=8637   plies=28    winner=P2     296.3s  avg_len=67
+  game  10/100  id=8638   plies=40    winner=P2     509.4s  avg_len=65 [AB]
+  game  11/100  id=8639   plies=100   winner=P2     513.7s  avg_len=68
+  game  12/100  id=8640   plies=36    winner=P2     500.1s  avg_len=65 [AB]
+  game  13/100  id=8641   plies=100   winner=P2     547.1s  avg_len=68
+  game  14/100  id=8642   plies=58    winner=P2     386.1s  avg_len=67
+  game  15/100  id=8643   plies=100   winner=P2     571.3s  avg_len=69
+  game  16/100  id=8644   plies=100   winner=P1     804.3s  avg_len=71
+    epoch 2/2  loss=1.4684 (p=1.4332 v=0.1175)  val=1.7128 (p=1.4457 v=0.2672)  [best]
+
+[3/3] Evaluation
+    (parallel evaluation on 8 CPU workers)
+  game  17/100  id=8645   plies=44    winner=P2     565.8s  avg_len=70 [AB]
+  game  18/100  id=8646   plies=100   winner=P1     373.4s  avg_len=71
+  game  19/100  id=8647   plies=100   winner=P1     224.5s  avg_len=73
+  game  20/100  id=8648   plies=100   winner=P2     641.2s  avg_len=74
+  game  21/100  id=8649   plies=100   winner=P2     1403.0s  avg_len=75 [AB]
+  game  22/100  id=8650   plies=100   winner=draw   325.4s  avg_len=77
+  game  23/100  id=8651   plies=100   winner=P2     360.7s  avg_len=78
+    eval game 1/30  (idx 2)  new=P1  moves=41  W  (100% W1/L0/D0)
+    eval game 2/30  (idx 7)  new=P2  moves=100  W  (100% W2/L0/D0)
+  game  24/100  id=8652   plies=86    winner=P2     286.3s  avg_len=78
+  game  25/100  id=8653   plies=48    winner=P2     233.0s  avg_len=77
+  game  26/100  id=8654   plies=49    winner=P1     336.7s  avg_len=76 [AB]
+  game  27/100  id=8655   plies=49    winner=P1     235.1s  avg_len=75
+  game  28/100  id=8656   plies=100   winner=P2     341.3s  avg_len=76
+    eval game 3/30  (idx 8)  new=P1  moves=22  L  (67% W2/L1/D0)
+    eval game 4/30  (idx 3)  new=P2  moves=100  L  (50% W2/L2/D0)
+  game  29/100  id=8657   plies=100   winner=P1     259.0s  avg_len=76
+    eval game 5/30  (idx 1)  new=P2  moves=100  L  (40% W2/L3/D0)
+  game  30/100  id=8658   plies=100   winner=P2     928.8s  avg_len=77
+    eval game 6/30  (idx 0)  new=P1  moves=100  L  (33% W2/L4/D0)
+  game  31/100  id=8659   plies=59    winner=P1     227.7s  avg_len=77
+  game  32/100  id=8660   plies=100   winner=P2     296.6s  avg_len=77
+  game  33/100  id=8661   plies=43    winner=P1     226.1s  avg_len=76 [AB]
+    eval game 7/30  (idx 12)  new=P1  moves=39  W  (43% W3/L4/D0)
+    eval game 8/30  (idx 5)  new=P2  moves=100  L  (38% W3/L5/D0)
+    eval game 9/30  (idx 6)  new=P1  moves=100  L  (33% W3/L6/D0)
+  game  34/100  id=8662   plies=100   winner=P1     322.3s  avg_len=77
+  game  35/100  id=8663   plies=55    winner=P1     293.8s  avg_len=76
+    eval game 10/30  (idx 10)  new=P1  moves=30  L  (30% W3/L7/D0)
+  game  36/100  id=8664   plies=100   winner=P2     361.6s  avg_len=77
+  game  37/100  id=8665   plies=35    winner=P1     278.8s  avg_len=76 [AB]
+    eval game 11/30  (idx 13)  new=P2  moves=34  W  (36% W4/L7/D0)
+  game  38/100  id=8666   plies=100   winner=P2     306.4s  avg_len=77
+  game  39/100  id=8667   plies=100   winner=P1     312.6s  avg_len=77
+    eval game 12/30  (idx 4)  new=P1  moves=100  W  (42% W5/L7/D0)
+  game  40/100  id=8668   plies=23    winner=P1     144.9s  avg_len=76
+  game  41/100  id=8669   plies=33    winner=P1     212.4s  avg_len=75
+  game  42/100  id=8670   plies=100   winner=draw   340.5s  avg_len=75
+    eval game 13/30  (idx 14)  new=P1  moves=35  W  (46% W6/L7/D0)
+  game  43/100  id=8671   plies=100   winner=P2     238.0s  avg_len=76
+  game  44/100  id=8672   plies=100   winner=P1     844.4s  avg_len=76 [AB]
+  game  45/100  id=8673   plies=74    winner=P2     311.3s  avg_len=76
+  game  46/100  id=8674   plies=30    winner=P2     157.4s  avg_len=75
+    eval game 14/30  (idx 18)  new=P1  moves=48  L  (43% W6/L8/D0)
+    eval game 15/30  (idx 19)  new=P2  moves=25  L  (40% W6/L9/D0)
+  game  47/100  id=8675   plies=49    winner=P1     289.6s  avg_len=75
+    eval game 16/30  (idx 20)  new=P1  moves=41  W  (44% W7/L9/D0)
+  game  48/100  id=8676   plies=38    winner=P2     251.3s  avg_len=74
+  game  49/100  id=8677   plies=40    winner=P2     235.0s  avg_len=73
+  game  50/100  id=8678   plies=100   winner=P2     266.9s  avg_len=74
+  game  51/100  id=8679   plies=36    winner=P2     346.0s  avg_len=73 [AB]
+    eval game 17/30  (idx 11)  new=P2  moves=100  L  (41% W7/L10/D0)
+    eval game 18/30  (idx 21)  new=P2  moves=36  W  (44% W8/L10/D0)
+  game  52/100  id=8680   plies=100   winner=P2     449.8s  avg_len=74
+    eval game 19/30  (idx 23)  new=P2  moves=27  L  (42% W8/L11/D0)
+    eval game 20/30  (idx 15)  new=P2  moves=100  L  (40% W8/L12/D0)
+  game  53/100  id=8681   plies=100   winner=P2     566.6s  avg_len=74 [AB]
+  game  54/100  id=8682   plies=35    winner=P1     263.9s  avg_len=73
+    eval game 21/30  (idx 9)  new=P2  moves=100  L  (38% W8/L13/D0)
+Process SpawnPoolWorker-35:
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/pool.py", line 131, in worker
+    put((job, i, result))
+    ~~~^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 206, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 437, in _send_bytes
+    self._send(header)
+    ~~~~~~~~~~^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 400, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/process.py", line 320, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/pool.py", line 136, in worker
+    put((job, i, (False, wrapped)))
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 206, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 437, in _send_bytes
+    self._send(header)
+    ~~~~~~~~~~^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 400, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+Process SpawnPoolWorker-15:
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/pool.py", line 131, in worker
+    put((job, i, result))
+    ~~~^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 206, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 444, in _send_bytes
+    self._send(header + buf)
+    ~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 400, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/process.py", line 320, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/pool.py", line 136, in worker
+    put((job, i, (False, wrapped)))
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 206, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 444, in _send_bytes
+    self._send(header + buf)
+    ~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 400, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+Process SpawnPoolWorker-33:
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/pool.py", line 131, in worker
+    put((job, i, result))
+    ~~~^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 206, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 437, in _send_bytes
+    self._send(header)
+    ~~~~~~~~~~^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 400, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/process.py", line 320, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/pool.py", line 136, in worker
+    put((job, i, (False, wrapped)))
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 206, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 437, in _send_bytes
+    self._send(header)
+    ~~~~~~~~~~^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 400, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+Process SpawnPoolWorker-36:
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/pool.py", line 131, in worker
+    put((job, i, result))
+    ~~~^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 206, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 437, in _send_bytes
+    self._send(header)
+    ~~~~~~~~~~^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 400, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/process.py", line 320, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/pool.py", line 136, in worker
+    put((job, i, (False, wrapped)))
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 206, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 437, in _send_bytes
+    self._send(header)
+    ~~~~~~~~~~^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 400, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+Process SpawnPoolWorker-34:
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/pool.py", line 131, in worker
+    put((job, i, result))
+    ~~~^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 206, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 437, in _send_bytes
+    self._send(header)
+    ~~~~~~~~~~^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 400, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/process.py", line 320, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/pool.py", line 136, in worker
+    put((job, i, (False, wrapped)))
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 206, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 437, in _send_bytes
+    self._send(header)
+    ~~~~~~~~~~^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 400, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+Process SpawnPoolWorker-38:
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/pool.py", line 131, in worker
+    put((job, i, result))
+    ~~~^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 206, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 437, in _send_bytes
+    self._send(header)
+    ~~~~~~~~~~^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 400, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/process.py", line 320, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/pool.py", line 136, in worker
+    put((job, i, (False, wrapped)))
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 206, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 437, in _send_bytes
+    self._send(header)
+    ~~~~~~~~~~^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 400, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+Process SpawnPoolWorker-39:
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/pool.py", line 131, in worker
+    put((job, i, result))
+    ~~~^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 206, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 437, in _send_bytes
+    self._send(header)
+    ~~~~~~~~~~^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 400, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/process.py", line 320, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/pool.py", line 136, in worker
+    put((job, i, (False, wrapped)))
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 206, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 437, in _send_bytes
+    self._send(header)
+    ~~~~~~~~~~^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 400, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+Process SpawnPoolWorker-40:
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/pool.py", line 131, in worker
+    put((job, i, result))
+    ~~~^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 206, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 437, in _send_bytes
+    self._send(header)
+    ~~~~~~~~~~^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 400, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/process.py", line 320, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/pool.py", line 136, in worker
+    put((job, i, (False, wrapped)))
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 206, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 437, in _send_bytes
+    self._send(header)
+    ~~~~~~~~~~^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 400, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+Process SpawnPoolWorker-37:
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/pool.py", line 131, in worker
+    put((job, i, result))
+    ~~~^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 206, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 437, in _send_bytes
+    self._send(header)
+    ~~~~~~~~~~^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 400, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/process.py", line 320, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/pool.py", line 136, in worker
+    put((job, i, (False, wrapped)))
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 206, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 437, in _send_bytes
+    self._send(header)
+    ~~~~~~~~~~^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 400, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/resource_tracker.py:396: UserWarning: resource_tracker: There appear to be 6 leaked semaphore objects to clean up at shutdown: {'/mp-mn1s1k2m', '/mp-8bpihtvy', '/mp-x6qp4d9f', '/mp-qw8okx_h', '/mp-wf2ndzot', '/mp-k5_zjc0p'}
+  warnings.warn(
+Device:            mps
+Workers:           8
+Simulations/move:  1000
+Games/iteration:   100
+Training epochs:   2
+Eval games:        30
+Training window:   5000 games
+Max game length:   100
+Opening random:    8
+Draw penalty:      0.5
+
+Resuming from checkpoints/best.pt
+  meta: {'iteration': 26, 'best_iteration': 15, 'train_loss': 1.5321630180183077, 'policy_loss': 1.4295328057402739, 'value_loss': 0.10263021247071914, 'best_val_loss': 1.7408215022483824}
+
+============================================================
+  Iteration 1/12  (global 27)
+============================================================
+
+[1/3] Self-play
+  (parallel self-play on 8 CPU workers)
+Process SpawnPoolWorker-9:
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/pool.py", line 131, in worker
+    put((job, i, result))
+    ~~~^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 206, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 444, in _send_bytes
+    self._send(header + buf)
+    ~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 400, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/process.py", line 320, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/pool.py", line 136, in worker
+    put((job, i, (False, wrapped)))
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 206, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 444, in _send_bytes
+    self._send(header + buf)
+    ~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 400, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+  game   1/100  id=8683   plies=100   winner=P1     248.9s  avg_len=100
+  game   2/100  id=8684   plies=95    winner=P1     266.7s  avg_len=98
+  game   3/100  id=8685   plies=83    winner=P1     291.1s  avg_len=93
+  game   4/100  id=8686   plies=38    winner=P2     318.9s  avg_len=79 [AB]
+  game   5/100  id=8687   plies=100   winner=P2     375.1s  avg_len=83
+  game   6/100  id=8688   plies=100   winner=P2     396.6s  avg_len=86
+  game   7/100  id=8689   plies=100   winner=P2     439.3s  avg_len=88
+  game   8/100  id=8690   plies=23    winner=P1     174.1s  avg_len=80
+Process SpawnPoolWorker-11:
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/pool.py", line 131, in worker
+    put((job, i, result))
+    ~~~^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 206, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 444, in _send_bytes
+    self._send(header + buf)
+    ~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 400, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/process.py", line 320, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/pool.py", line 136, in worker
+    put((job, i, (False, wrapped)))
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 206, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 444, in _send_bytes
+    self._send(header + buf)
+    ~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 400, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+  game   9/100  id=8691   plies=100   winner=draw   180.8s  avg_len=82
+  game  10/100  id=8692   plies=48    winner=P2     242.7s  avg_len=79
+  game  11/100  id=8693   plies=100   winner=P2     537.9s  avg_len=81 [AB]
+Process SpawnPoolWorker-13:
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/pool.py", line 131, in worker
+    put((job, i, result))
+    ~~~^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 206, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 444, in _send_bytes
+    self._send(header + buf)
+    ~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 400, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/process.py", line 320, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/pool.py", line 136, in worker
+    put((job, i, (False, wrapped)))
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 206, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 444, in _send_bytes
+    self._send(header + buf)
+    ~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 400, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+  game  12/100  id=8694   plies=39    winner=P1     237.2s  avg_len=77
+Process SpawnPoolWorker-10:
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/pool.py", line 131, in worker
+    put((job, i, result))
+    ~~~^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 206, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 444, in _send_bytes
+    self._send(header + buf)
+    ~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 400, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/process.py", line 320, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/pool.py", line 136, in worker
+    put((job, i, (False, wrapped)))
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 206, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 444, in _send_bytes
+    self._send(header + buf)
+    ~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 400, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+Process SpawnPoolWorker-16:
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/pool.py", line 131, in worker
+    put((job, i, result))
+    ~~~^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 206, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 444, in _send_bytes
+    self._send(header + buf)
+    ~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 400, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/process.py", line 320, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/pool.py", line 136, in worker
+    put((job, i, (False, wrapped)))
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 206, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 444, in _send_bytes
+    self._send(header + buf)
+    ~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 400, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+  game  13/100  id=8695   plies=43    winner=P1     235.3s  avg_len=75
+  game  14/100  id=8696   plies=40    winner=P2     302.3s  avg_len=72 [AB]
+Process SpawnPoolWorker-12:
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/pool.py", line 131, in worker
+    put((job, i, result))
+    ~~~^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 206, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 444, in _send_bytes
+    self._send(header + buf)
+    ~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 400, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/process.py", line 320, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/pool.py", line 136, in worker
+    put((job, i, (False, wrapped)))
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 206, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 444, in _send_bytes
+    self._send(header + buf)
+    ~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 400, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+  game  15/100  id=8697   plies=100   winner=P2     264.9s  avg_len=74
+  game  16/100  id=8698   plies=48    winner=P2     197.7s  avg_len=72
+  game  17/100  id=8699   plies=100   winner=P1     219.8s  avg_len=74
+Process SpawnPoolWorker-14:
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/pool.py", line 131, in worker
+    put((job, i, result))
+    ~~~^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 206, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 444, in _send_bytes
+    self._send(header + buf)
+    ~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 400, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/process.py", line 320, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/pool.py", line 136, in worker
+    put((job, i, (False, wrapped)))
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/queues.py", line 397, in put
+    self._writer.send_bytes(obj)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 206, in send_bytes
+    self._send_bytes(m[offset:offset + size])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 444, in _send_bytes
+    self._send(header + buf)
+    ~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/connection.py", line 400, in _send
+    n = write(self._handle, buf)
+BrokenPipeError: [Errno 32] Broken pipe
+/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/resource_tracker.py:396: UserWarning: resource_tracker: There appear to be 6 leaked semaphore objects to clean up at shutdown: {'/mp-6988jl5h', '/mp-efhbag0r', '/mp-98hhbjwq', '/mp-61f5d4um', '/mp-ywgrdcw4', '/mp-61hki1dp'}
+  warnings.warn(
+  game  18/100  id=8700   plies=42    winner=P2     272.3s  avg_len=72 [AB]
+  game  19/100  id=8701   plies=30    winner=P2     93.2s  avg_len=70
+  game  20/100  id=8702   plies=100   winner=P1     196.2s  avg_len=71
+  game  21/100  id=8703   plies=100   winner=P2     593.9s  avg_len=73 [AB]
+  game  22/100  id=8704   plies=94    winner=P2     186.5s  avg_len=74
+  game  23/100  id=8705   plies=100   winner=P2     256.5s  avg_len=75
+  game  24/100  id=8706   plies=39    winner=P1     159.4s  avg_len=73 [AB]
+  game  25/100  id=8707   plies=30    winner=P2     118.3s  avg_len=72
+  game  26/100  id=8708   plies=100   winner=P2     201.6s  avg_len=73
+  game  27/100  id=8709   plies=100   winner=P2     259.7s  avg_len=74
+  game  28/100  id=8710   plies=100   winner=P2     187.0s  avg_len=75
+  game  29/100  id=8711   plies=100   winner=P1     278.1s  avg_len=76
+  game  30/100  id=8712   plies=48    winner=P2     157.1s  avg_len=75
+  game  31/100  id=8713   plies=100   winner=P2     164.3s  avg_len=75
+  game  32/100  id=8714   plies=43    winner=P1     195.7s  avg_len=74
+  game  33/100  id=8715   plies=100   winner=draw   143.4s  avg_len=75
+  game  34/100  id=8716   plies=100   winner=P1     341.9s  avg_len=76 [AB]
+  game  35/100  id=8717   plies=55    winner=P1     206.2s  avg_len=75
+  game  36/100  id=8718   plies=100   winner=P2     124.2s  avg_len=76
+  game  37/100  id=8719   plies=100   winner=P1     180.1s  avg_len=77
+  game  38/100  id=8720   plies=51    winner=P1     231.9s  avg_len=76 [AB]
+  game  39/100  id=8721   plies=27    winner=P1     73.4s  avg_len=75
+  game  40/100  id=8722   plies=100   winner=P2     238.7s  avg_len=75
+  game  41/100  id=8723   plies=100   winner=P1     246.0s  avg_len=76
+  game  42/100  id=8724   plies=80    winner=P2     194.8s  avg_len=76
+  game  43/100  id=8725   plies=25    winner=P1     115.3s  avg_len=75
+  game  44/100  id=8726   plies=74    winner=P2     201.9s  avg_len=75
+  game  45/100  id=8727   plies=95    winner=P1     247.2s  avg_len=75
+  game  46/100  id=8728   plies=58    winner=P2     144.2s  avg_len=75
+  game  47/100  id=8729   plies=36    winner=P2     202.7s  avg_len=74 [AB]
+  game  48/100  id=8730   plies=100   winner=P2     220.2s  avg_len=75
+  game  49/100  id=8731   plies=79    winner=P1     617.0s  avg_len=75 [AB]
+  game  50/100  id=8732   plies=100   winner=draw   183.2s  avg_len=75
+  game  51/100  id=8733   plies=40    winner=P2     186.5s  avg_len=75
+  game  52/100  id=8734   plies=66    winner=P2     179.6s  avg_len=74
+  game  53/100  id=8735   plies=35    winner=P1     149.2s  avg_len=74
+  game  54/100  id=8736   plies=68    winner=P2     335.7s  avg_len=74 [AB]
+  game  55/100  id=8737   plies=100   winner=P1     246.6s  avg_len=74
+  game  56/100  id=8738   plies=60    winner=P2     211.9s  avg_len=74
+  game  57/100  id=8739   plies=100   winner=P2     223.0s  avg_len=74
+  game  58/100  id=8740   plies=100   winner=P2     157.1s  avg_len=75
+  game  59/100  id=8741   plies=46    winner=P2     336.0s  avg_len=74 [AB]
+  game  60/100  id=8742   plies=59    winner=P1     140.0s  avg_len=74
+  game  61/100  id=8743   plies=34    winner=P2     196.1s  avg_len=73
+  game  62/100  id=8744   plies=100   winner=P1     279.7s  avg_len=74
+  game  63/100  id=8745   plies=100   winner=P1     241.3s  avg_len=74
+  game  64/100  id=8746   plies=48    winner=P2     160.2s  avg_len=74
+  game  65/100  id=8747   plies=100   winner=P1     235.8s  avg_len=74
+  game  66/100  id=8748   plies=100   winner=P2     481.1s  avg_len=75 [AB]
+  game  67/100  id=8749   plies=38    winner=P2     148.5s  avg_len=74
+  game  68/100  id=8750   plies=100   winner=P2     175.0s  avg_len=74
+  game  69/100  id=8751   plies=42    winner=P2     145.2s  avg_len=74
+  game  70/100  id=8752   plies=84    winner=P2     180.7s  avg_len=74
+  game  71/100  id=8753   plies=32    winner=P2     116.7s  avg_len=73
+  game  72/100  id=8754   plies=100   winner=P1     299.7s  avg_len=74
+  game  73/100  id=8755   plies=39    winner=P1     224.2s  avg_len=73 [AB]
+  game  74/100  id=8756   plies=100   winner=P1     250.1s  avg_len=74
+  game  75/100  id=8757   plies=53    winner=P1     359.3s  avg_len=73 [AB]
+  game  76/100  id=8758   plies=100   winner=P2     251.4s  avg_len=74
+  game  77/100  id=8759   plies=100   winner=P1     225.4s  avg_len=74
+  game  78/100  id=8760   plies=100   winner=P2     677.6s  avg_len=74 [AB]
+  game  79/100  id=8761   plies=26    winner=P2     125.1s  avg_len=74
+  game  80/100  id=8762   plies=35    winner=P1     202.1s  avg_len=73 [AB]
+  game  81/100  id=8763   plies=100   winner=draw   290.0s  avg_len=74
+  game  82/100  id=8764   plies=49    winner=P1     177.5s  avg_len=73
+  game  83/100  id=8765   plies=43    winner=P1     193.2s  avg_len=73
+  game  84/100  id=8766   plies=42    winner=P2     180.5s  avg_len=73
+  game  85/100  id=8767   plies=49    winner=P1     250.6s  avg_len=72 [AB]
+  game  86/100  id=8768   plies=38    winner=P2     126.0s  avg_len=72
+  game  87/100  id=8769   plies=23    winner=P1     105.3s  avg_len=71
+  game  88/100  id=8770   plies=80    winner=P2     231.8s  avg_len=72
+  game  89/100  id=8771   plies=51    winner=P1     176.6s  avg_len=71
+  game  90/100  id=8772   plies=43    winner=P1     213.0s  avg_len=71
+  game  91/100  id=8773   plies=33    winner=P1     104.0s  avg_len=71
+  game  92/100  id=8774   plies=100   winner=draw   285.8s  avg_len=71
+  game  93/100  id=8775   plies=52    winner=P2     157.9s  avg_len=71 [AB]
+  game  94/100  id=8776   plies=46    winner=P2     182.4s  avg_len=70
+  game  95/100  id=8777   plies=71    winner=P1     247.2s  avg_len=70
+  game  96/100  id=8778   plies=44    winner=P2     227.8s  avg_len=70 [AB]
+  game  97/100  id=8779   plies=100   winner=P2     222.2s  avg_len=70
+  game  98/100  id=8780   plies=100   winner=P1     141.1s  avg_len=71
+  game  99/100  id=8781   plies=100   winner=P1     299.3s  avg_len=71
+  game 100/100  id=8782   plies=100   winner=P2     231.2s  avg_len=71
+  P1 wins: 42  P2 wins: 53  draws: 5
+  DB total: 8782 games, 450,183 positions
+
+[2/3] Training
+  285,757 positions from 5000 game(s) (4645 decisive, 355 draws)
+    epoch 1/2  loss=1.6424 (p=1.5922 v=0.1674)  val=1.7342 (p=1.4813 v=0.2529)  [best]
+Device:            mps
+Workers:           8
+Simulations/move:  1000
+Games/iteration:   100
+Training epochs:   2
+Eval games:        30
+Training window:   5000 games
+Max game length:   100
+Opening random:    8
+Draw penalty:      0.5
+
+Resuming from checkpoints/best.pt
+  meta: {'iteration': 26, 'best_iteration': 15, 'train_loss': 1.5321630180183077, 'policy_loss': 1.4295328057402739, 'value_loss': 0.10263021247071914, 'best_val_loss': 1.7408215022483824}
+
+============================================================
+  Iteration 1/12  (global 27)
+============================================================
+
+[1/3] Self-play
+  (parallel self-play on 8 CPU workers)
+  game   1/100  id=8783   plies=23    winner=P1     114.5s  avg_len=23
+  game   2/100  id=8784   plies=40    winner=P2     117.0s  avg_len=32
+  game   3/100  id=8785   plies=28    winner=P2     119.9s  avg_len=30
+  game   4/100  id=8786   plies=40    winner=P2     148.7s  avg_len=33
+  game   5/100  id=8787   plies=42    winner=P2     160.8s  avg_len=35 [AB]
+  game   6/100  id=8788   plies=39    winner=P1     178.9s  avg_len=35
+  game   7/100  id=8789   plies=100   winner=P1     213.5s  avg_len=45
+    epoch 2/2  loss=1.4718 (p=1.4369 v=0.1164)  val=1.7514 (p=1.4950 v=0.2563)
+
+[3/3] Evaluation
+    (parallel evaluation on 8 CPU workers)
+  game   8/100  id=8790   plies=70    winner=P2     169.2s  avg_len=48
+  game   9/100  id=8791   plies=100   winner=P2     223.8s  avg_len=54
+  game  10/100  id=8792   plies=38    winner=P2     187.6s  avg_len=52 [AB]
+  game  11/100  id=8793   plies=32    winner=P2     137.1s  avg_len=50
+  game  12/100  id=8794   plies=49    winner=P1     195.6s  avg_len=50
+  game  13/100  id=8795   plies=100   winner=P2     410.1s  avg_len=54 [AB]
+    eval game 1/30  (idx 0)  new=P1  moves=20  L  (0% W0/L1/D0)
+  game  14/100  id=8796   plies=34    winner=P2     132.7s  avg_len=52
+    eval game 2/30  (idx 5)  new=P2  moves=38  W  (50% W1/L1/D0)
+  game  15/100  id=8797   plies=51    winner=P1     213.8s  avg_len=52
+  game  16/100  id=8798   plies=100   winner=draw   422.8s  avg_len=55
+    eval game 3/30  (idx 3)  new=P2  moves=46  W  (67% W2/L1/D0)
+  game  17/100  id=8799   plies=54    winner=P2     286.3s  avg_len=55 [AB]
+  game  18/100  id=8800   plies=100   winner=P2     522.4s  avg_len=58 [AB]
+  game  19/100  id=8801   plies=28    winner=P2     117.8s  avg_len=56
+  game  20/100  id=8802   plies=100   winner=P1     266.1s  avg_len=58
+  game  21/100  id=8803   plies=100   winner=draw   329.0s  avg_len=60
+    eval game 4/30  (idx 9)  new=P2  moves=29  L  (50% W2/L2/D0)
+  game  22/100  id=8804   plies=100   winner=draw   383.4s  avg_len=62
+    eval game 5/30  (idx 8)  new=P1  moves=38  L  (40% W2/L3/D0)
+  game  23/100  id=8805   plies=29    winner=P1     111.3s  avg_len=61
+  game  24/100  id=8806   plies=100   winner=P1     261.2s  avg_len=62
+  game  25/100  id=8807   plies=67    winner=P1     249.7s  avg_len=63
+  game  26/100  id=8808   plies=33    winner=P1     157.2s  avg_len=61
+  game  27/100  id=8809   plies=100   winner=P1     198.6s  avg_len=63
+    eval game 6/30  (idx 10)  new=P1  moves=41  W  (50% W3/L3/D0)
+  game  28/100  id=8810   plies=100   winner=P1     210.6s  avg_len=64
+  game  29/100  id=8811   plies=52    winner=P2     153.6s  avg_len=64
+  game  30/100  id=8812   plies=23    winner=P1     173.4s  avg_len=62 [AB]
+    eval game 7/30  (idx 2)  new=P1  moves=100  W  (57% W4/L3/D0)
+  game  31/100  id=8813   plies=67    winner=P1     337.0s  avg_len=63 [AB]
+  game  32/100  id=8814   plies=39    winner=P1     206.5s  avg_len=62
+  game  33/100  id=8815   plies=44    winner=P2     208.9s  avg_len=61
+  game  34/100  id=8816   plies=35    winner=P1     166.2s  avg_len=60 [AB]
+    eval game 8/30  (idx 1)  new=P2  moves=100  L  (50% W4/L4/D0)
+  game  35/100  id=8817   plies=38    winner=P2     156.3s  avg_len=60
+  game  36/100  id=8818   plies=38    winner=P2     177.6s  avg_len=59
+    eval game 9/30  (idx 6)  new=P1  moves=100  L  (44% W4/L5/D0)
+  game  37/100  id=8819   plies=39    winner=P1     164.1s  avg_len=59
+  game  38/100  id=8820   plies=42    winner=P2     219.0s  avg_len=58
+  game  39/100  id=8821   plies=31    winner=P1     148.3s  avg_len=58
+  game  40/100  id=8822   plies=41    winner=P1     321.1s  avg_len=57 [AB]
+    eval game 10/30  (idx 12)  new=P1  moves=100  L  (40% W4/L6/D0)
+  game  41/100  id=8823   plies=100   winner=P2     188.4s  avg_len=58
+    eval game 11/30  (idx 15)  new=P2  moves=38  W  (45% W5/L6/D0)
+  game  42/100  id=8824   plies=28    winner=P2     106.9s  avg_len=57
+  game  43/100  id=8825   plies=32    winner=P2     142.8s  avg_len=57
+  game  44/100  id=8826   plies=100   winner=P2     493.7s  avg_len=58
+  game  45/100  id=8827   plies=100   winner=P2     396.9s  avg_len=59
+    eval game 12/30  (idx 7)  new=P2  moves=100  D  (46% W5/L6/D1)
+    eval game 13/30  (idx 14)  new=P1  moves=100  W  (50% W6/L6/D1)
+  game  46/100  id=8828   plies=38    winner=P2     99.5s  avg_len=58
+  game  47/100  id=8829   plies=39    winner=P1     183.1s  avg_len=58
+    eval game 14/30  (idx 4)  new=P1  moves=100  L  (46% W6/L7/D1)
+    eval game 15/30  (idx 16)  new=P1  moves=100  D  (47% W6/L7/D2)
+  game  48/100  id=8830   plies=100   winner=P1     448.8s  avg_len=59
+    eval game 16/30  (idx 13)  new=P2  moves=100  L  (44% W6/L8/D2)
+  game  49/100  id=8831   plies=32    winner=P2     146.2s  avg_len=58
+  game  50/100  id=8832   plies=34    winner=P2     258.0s  avg_len=58 [AB]
+    eval game 17/30  (idx 19)  new=P2  moves=29  L  (41% W6/L9/D2)
+  game  51/100  id=8833   plies=100   winner=P2     135.1s  avg_len=59
+    eval game 18/30  (idx 20)  new=P1  moves=35  W  (44% W7/L9/D2)
+  game  52/100  id=8834   plies=100   winner=draw   214.9s  avg_len=59
+  game  53/100  id=8835   plies=100   winner=P1     262.2s  avg_len=60
+  game  54/100  id=8836   plies=44    winner=P2     224.1s  avg_len=60 [AB]
+  game  55/100  id=8837   plies=100   winner=P1     396.9s  avg_len=61
+  game  56/100  id=8838   plies=100   winner=draw   121.8s  avg_len=61
+    eval game 19/30  (idx 18)  new=P1  moves=100  W  (47% W8/L9/D2)
+    eval game 20/30  (idx 23)  new=P2  moves=46  W  (50% W9/L9/D2)
+Device:            mps
+Workers:           8
+Simulations/move:  1000
+Games/iteration:   100
+Training epochs:   2
+Eval games:        30
+Training window:   5000 games
+Max game length:   100
+Opening random:    8
+Draw penalty:      0.5
+
+Resuming from checkpoints/best.pt
+  meta: {'iteration': 26, 'best_iteration': 15, 'train_loss': 1.5321630180183077, 'policy_loss': 1.4295328057402739, 'value_loss': 0.10263021247071914, 'best_val_loss': 1.7408215022483824}
+
+============================================================
+  Iteration 1/12  (global 27)
+============================================================
+
+[1/3] Self-play
+  (parallel self-play on 8 CPU workers)
+  game  57/100  id=8839   plies=36    winner=P2     112.5s  avg_len=61
+    eval game 21/30  (idx 17)  new=P2  moves=100  L  (48% W9/L10/D2)
+  game  58/100  id=8840   plies=43    winner=P1     212.3s  avg_len=61
+  game  59/100  id=8841   plies=63    winner=P1     204.8s  avg_len=61
+    eval game 22/30  (idx 24)  new=P1  moves=49  W  (50% W10/L10/D2)
+  game  60/100  id=8842   plies=90    winner=P2     333.0s  avg_len=61
+    eval game 23/30  (idx 11)  new=P2  moves=100  L  (48% W10/L11/D2)
+  game   1/100  id=8843   plies=37    winner=P1     191.1s  avg_len=37
+  game  61/100  id=8844   plies=42    winner=P2     349.5s  avg_len=61 [AB]
+  game   2/100  id=8845   plies=33    winner=P1     200.4s  avg_len=35
+  game  62/100  id=8846   plies=36    winner=P2     280.4s  avg_len=60 [AB]
+    eval game 24/30  (idx 27)  new=P2  moves=25  L  (46% W10/L12/D2)
