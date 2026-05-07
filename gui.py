@@ -148,6 +148,7 @@ class QuoridorGUI:
     # Start menu / game lifecycle
     # -------------------------------------------------------------------
     def _show_start_menu(self) -> None:
+        print("[GUI] _show_start_menu (waiting for side selection)", flush=True)
         if self.ai_busy:
             return
         dlg = tk.Toplevel(self.root)
@@ -201,6 +202,8 @@ class QuoridorGUI:
         dlg.focus_set()
 
     def _start_game(self, human_player: int) -> None:
+        print(f"[GUI] _start_game: human=P{human_player+1}, ai_engine={self.ai_engine}, "
+              f"nn_sims={self.nn_simulations}", flush=True)
         # If an earlier game is still in progress, save it as aborted
         # (winner=None) so we don't lose the moves played so far.
         self._finalize_recorder(winner=None)
@@ -211,15 +214,28 @@ class QuoridorGUI:
         self.preview = None
         self.msg_var.set("")
 
-        p1_source = "human" if human_player == 0 else "alphabeta"
-        p2_source = "human" if human_player == 1 else "alphabeta"
+        ai_source = "neural_nn" if self.ai_engine == "neural" else "alphabeta"
+        p1_source = "human" if human_player == 0 else ai_source
+        p2_source = "human" if human_player == 1 else ai_source
+        if self.ai_engine == "neural":
+            mv = f"gui-nn-{self.nn_simulations}sims"
+            notes = f"gui_human_vs_nn  ckpt={self.nn_ckpt_path}"
+        else:
+            mv = f"gui-ab-d{self.ai_depth}-t{self.ai_time}s"
+            notes = "gui_human_vs_alphabeta"
+        # Use the project's active DB (quoridor_v3.db), not the default
+        # (quoridor.db).  GameRecorder defaults to GameDB() which uses
+        # DEFAULT_DB_PATH=data/quoridor.db — wrong for this project.
+        from quoridor.database import GameDB
+        active_db = GameDB("data/quoridor_v3.db")
         self.recorder = GameRecorder(
             p1_source=p1_source,
             p2_source=p2_source,
             p1_time_limit=None if human_player == 0 else self.ai_time,
             p2_time_limit=None if human_player == 1 else self.ai_time,
-            model_version="alphabeta-v2",
-            notes="gui",
+            model_version=mv,
+            notes=notes,
+            db=active_db,
         )
         self.recorder.start()
 
@@ -479,6 +495,9 @@ class QuoridorGUI:
     def _apply_move(self, move: Move) -> None:
         if self.recorder is not None:
             self.recorder.record(move)
+            print(f"[GUI] move {len(self.recorder.moves):>2}: {move}  "
+                  f"(turn was P{(1 - self.board.turn) + 1 if False else self.board.turn + 1})",
+                  flush=True)
         self.board = self.board.apply(move)
         self.preview = None
         self._render()
@@ -569,7 +588,23 @@ class QuoridorGUI:
 # =======================================================================
 def main() -> None:
     root = tk.Tk()
-    QuoridorGUI(root)
+    gui = QuoridorGUI(root)
+    # Force window to front (macOS tk often launches behind other apps).
+    root.lift()
+    root.attributes("-topmost", True)
+    root.after(500, lambda: root.attributes("-topmost", False))
+    root.focus_force()
+
+    # On window close, finalize the in-progress recorder so partial games
+    # get saved (winner=None) instead of being lost.
+    def _on_close():
+        try:
+            gui._finalize_recorder(winner=None)
+        except Exception as e:
+            print(f"[GUI] error finalizing recorder on close: {e}")
+        root.destroy()
+    root.protocol("WM_DELETE_WINDOW", _on_close)
+
     root.mainloop()
 
 

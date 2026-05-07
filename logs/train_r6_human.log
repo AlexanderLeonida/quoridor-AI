@@ -1,0 +1,22 @@
+Loading training set from data/human_training_set.npz...
+  1200 human-derived examples (real weights: 300, permuted: 900)
+
+Sampling 1800 rehearsal examples from data/quoridor_v3.db...
+  got 1800 rehearsal triples
+
+Final training set: 3000 examples (1200 human × weight ~1.5, 1800 rehearsal × weight 1.0)
+
+Device: mps
+Loaded /tmp/r6_seed.pt  meta={'iteration': 27, 'best_iteration': 15, 'deep_distilled_from': 'ab', 'deep_distill_positions': 11428, 'deep_distill_val_loss': 1.0424676314257282, 'rehearsal_frac': 0.3, 'reg_lambda': 0.5}
+  KL regularisation enabled (λ=1.0)
+
+  epoch 1/6  loss=1.5645 (p=1.2868 v=0.1479 kl=0.2333)  (2s)  val=1.3664 (p=1.2622 v=0.1042) [best]
+  epoch 2/6  loss=1.2103 (p=0.9237 v=0.0467 kl=0.2726)  (2s)  val=1.4019 (p=1.3013 v=0.1006)
+  epoch 3/6  loss=1.1119 (p=0.8270 v=0.0346 kl=0.2745)  (2s)  val=1.3499 (p=1.2594 v=0.0904) [best]
+  epoch 4/6  loss=1.0544 (p=0.7747 v=0.0313 kl=0.2703)  (2s)  val=1.3368 (p=1.2491 v=0.0876) [best]
+  epoch 5/6  loss=1.0232 (p=0.7486 v=0.0282 kl=0.2662)  (2s)  val=1.3291 (p=1.2397 v=0.0894) [best]
+  epoch 6/6  loss=1.0071 (p=0.7379 v=0.0276 kl=0.2609)  (2s)  val=1.3298 (p=1.2417 v=0.0881)
+
+Restored best-val checkpoint (val=1.3291)
+
+Saved checkpoints/best_r6_human_v3.pt

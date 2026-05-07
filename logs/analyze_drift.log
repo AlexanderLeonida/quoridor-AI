@@ -1,0 +1,146 @@
+Found 4 human-vs-NN games
+
+Game 137: bot=P2
+ply  mover  move      bot_path  progress  note                
+    1    BOT  M74              8        +1  forward +1          
+    3    BOT  M64              7        +1  forward +1          
+    5    BOT  M54              6        +1  forward +1          
+    7    BOT  H34              6    (wall)  
+    9    BOT  M55              7        +0  lateral (no progress)
+   11    BOT  M45              6        +1  forward +1          
+   13    BOT  M44              6        +0  lateral (no progress)
+   15    BOT  H41              5    (wall)  
+   17    BOT  M43              5        +0  lateral (no progress)
+   19    BOT  H65              6    (wall)  
+   21    BOT  M42              6        +0  lateral (no progress)
+   23    BOT  H50              5    (wall)  
+   25    BOT  M41              5        +0  lateral (no progress)
+   27    BOT  M40             13        +0  lateral (no progress)
+   29    BOT  H52             14    (wall)  
+   31    BOT  V44             14    (wall)  
+   33    BOT  H63             14    (wall)  
+   35    BOT  H77             14    (wall)  
+   37    BOT  H75             14    (wall)  
+   39    BOT  H61             14    (wall)  
+   41    BOT  M41             14        +0  lateral (no progress)
+   43    BOT  M42             15        +0  lateral (no progress)
+   45    BOT  M43             16        +0  lateral (no progress)
+
+  Bot pawn moves: 13 total
+    forward: 4  lateral: 9  backward: 0
+    longest drift streak (no forward progress): 8 consecutive bot pawn moves, starting around ply 13
+
+Game 138: bot=P2
+ply  mover  move      bot_path  progress  note                
+    1    BOT  M74              8        +1  forward +1          
+    3    BOT  M64              7        +1  forward +1          
+    5    BOT  M54              6        +1  forward +1          
+    7    BOT  M53              6        +0  lateral (no progress)
+    9    BOT  M43              5        +1  forward +1          
+   11    BOT  H42              4    (wall)  
+   13    BOT  H40              4    (wall)  
+   15    BOT  H27              4    (wall)  
+   17    BOT  H63              4    (wall)  
+   19    BOT  H65              4    (wall)  
+   21    BOT  H77              4    (wall)  
+   23    BOT  H75              4    (wall)  
+   25    BOT  H52              4    (wall)  
+   27    BOT  M42              4        +0  lateral (no progress)
+   29    BOT  M41              5        +0  lateral (no progress)
+   31    BOT  M42              7        +0  lateral (no progress)
+   33    BOT  V66              6    (wall)  
+   35    BOT  M43              6        +0  lateral (no progress)
+   37    BOT  M42              5        +0  lateral (no progress)
+   39    BOT  M43              6        +0  lateral (no progress)
+   41    BOT  M44              5        +0  lateral (no progress)
+   43    BOT  H67              6    (wall)  
+   45    BOT  M43              6        +0  lateral (no progress)
+   47    BOT  M42              7        +0  lateral (no progress)
+   49    BOT  M43              8        +0  lateral (no progress)
+   51    BOT  M42              7        +0  lateral (no progress)
+   53    BOT  M43              8        +0  lateral (no progress)
+
+  Bot pawn moves: 17 total
+    forward: 4  lateral: 13  backward: 0
+    longest drift streak (no forward progress): 12 consecutive bot pawn moves, starting around ply 27
+
+Game 139: bot=P2
+ply  mover  move      bot_path  progress  note                
+    1    BOT  M74              8        +1  forward +1          
+    3    BOT  M64              7        +1  forward +1          
+    5    BOT  M54              6        +1  forward +1          
+    7    BOT  M34              5        +2  forward +2          
+    9    BOT  M33              4        +0  lateral (no progress)
+   11    BOT  H34              5    (wall)  
+   13    BOT  H53              5    (wall)  
+   15    BOT  H55              5    (wall)  
+   17    BOT  M32              5        +0  lateral (no progress)
+   19    BOT  M31              4        +0  lateral (no progress)
+   21    BOT  V12              8    (wall)  
+   23    BOT  H51              8    (wall)  
+   25    BOT  H45              8    (wall)  
+   27    BOT  V44              8    (wall)  
+   29    BOT  M30              8        +0  lateral (no progress)
+   31    BOT  H70              9    (wall)  
+   33    BOT  M40              9        -1  BACKWARD -1         
+   35    BOT  M30             10        +1  forward +1          
+   37    BOT  M31              9        +0  lateral (no progress)
+   39    BOT  H42              8    (wall)  
+   41    BOT  M32              8        +0  lateral (no progress)
+   43    BOT  M31              7        +0  lateral (no progress)
+   45    BOT  M32              8        +0  lateral (no progress)
+   47    BOT  M31              7        +0  lateral (no progress)
+   49    BOT  M30              8        +0  lateral (no progress)
+   51    BOT  H37              9    (wall)  
+   53    BOT  M31              9        +0  lateral (no progress)
+   55    BOT  M32              8        +0  lateral (no progress)
+   57    BOT  M42              7        -1  BACKWARD -1         
+   59    BOT  M43              8        +0  lateral (no progress)
+   61    BOT  M44              7        +0  lateral (no progress)
+   63    BOT  M43              8        +0  lateral (no progress)
+
+  Bot pawn moves: 22 total
+    forward: 5  lateral: 15  backward: 2
+    longest drift streak (no forward progress): 12 consecutive bot pawn moves, starting around ply 37
+
+Game 140: bot=P2
+ply  mover  move      bot_path  progress  note                
+    1    BOT  M74              8        +1  forward +1          
+    3    BOT  M64              7        +1  forward +1          
+    5    BOT  M54              6        +1  forward +1          
+    7    BOT  H34              6    (wall)  
+    9    BOT  M55              7        +0  lateral (no progress)
+   11    BOT  M45              6        +1  forward +1          
+   13    BOT  H41              5    (wall)  
+   15    BOT  V44              5    (wall)  
+   17    BOT  M46              7        +0  lateral (no progress)
+   19    BOT  M56             10        -1  BACKWARD -1         
+   21    BOT  V22             15    (wall)  
+   23    BOT  M46             15        +1  forward +1          
+   25    BOT  M56             16        -1  BACKWARD -1         
+   27    BOT  M66             15        -1  BACKWARD -1         
+   29    BOT  H70             14    (wall)  
+   31    BOT  M56             14        +1  forward +1          
+   33    BOT  V61             15    (wall)  
+   35    BOT  M46             17        +1  forward +1          
+   37    BOT  M56             18        -1  BACKWARD -1         
+   39    BOT  M57             17        +0  lateral (no progress)
+   41    BOT  H62             18    (wall)  
+   43    BOT  M56             18        +0  lateral (no progress)
+   45    BOT  H64             17    (wall)  
+   47    BOT  M66             17        -1  BACKWARD -1         
+   49    BOT  H66             16    (wall)  
+   51    BOT  M65             16        +0  lateral (no progress)
+   53    BOT  H77             15    (wall)  
+   55    BOT  M64             15        +0  lateral (no progress)
+   57    BOT  M54             14        +1  forward +1          
+
+  Bot pawn moves: 19 total
+    forward: 8  lateral: 6  backward: 5
+    longest drift streak (no forward progress): 6 consecutive bot pawn moves, starting around ply 37
+
+=================================================================
+AGGREGATE across all 4 games:
+  Forward moves:    21  (  30%)
+  Lateral moves:    43  (  61%)
+  Backward moves:    7  (  10%)

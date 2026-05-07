@@ -1,0 +1,28 @@
+
+Replayed game 139 to ply 41
+  bot path=10 P0,  path=8 P1
+  to_play=P2
+  walls left: P1=6, P2=1
+  pawns: P1=(4, 3), P2=(3, 1)
+
+  NN value (current player's POV): +0.307
+  Policy entropy: 1.305 nats
+  Max policy prob: 0.713  (top-1 confidence)
+
+  Top-15 moves from raw policy:
+  rank  move               prob   progress  note      
+     1  pawn(3,2)      0.713         +0  lateral
+     2  pawn(3,0)      0.138         +0  lateral
+     3  pawn(4,1)      0.031         -1  BACKWARD
+     4  wallH(6,3)    0.018     (wall)  
+     5  wallH(6,2)    0.014     (wall)  
+     6  wallH(2,7)    0.006     (wall)  
+     7  wallH(7,2)    0.005     (wall)  
+     8  wallH(7,5)    0.004     (wall)  
+     9  wallH(7,7)    0.004     (wall)  
+    10  wallH(3,0)    0.004     (wall)  
+    11  wallH(3,7)    0.004     (wall)  
+    12  wallH(4,0)    0.003     (wall)  
+    13  wallH(7,4)    0.003     (wall)  
+    14  wallV(4,3)    0.003     (wall)  
+    15  wallH(6,6)    0.003     (wall)  

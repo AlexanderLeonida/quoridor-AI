@@ -1,0 +1,92 @@
+Found 4 human games (vs NN only)
+
+--- Game 140: HUMAN won (59 plies, version=gui-nn-800sims) ---
+
+=================================================================
+Game 140: 59 moves, bot=P2, human=P1
+=================================================================
+  ply 17: BOT PLAYED PAWN (M46) but had a +6-delay wall available (human path 6, bot path 7)
+  ply 19: BOT PLAYED PAWN (M56) but had a +6-delay wall available (human path 6, bot path 10)
+  ply 21: bot played wall delay=0; best wall would delay=4 (human path 6->10, bot inc 0)
+  ply 23: BOT PLAYED PAWN (M46) but had a +4-delay wall available (human path 5, bot path 15)
+  ply 25: BOT PLAYED PAWN (M56) but had a +2-delay wall available (human path 4, bot path 16)
+  ply 27: BOT PLAYED PAWN (M66) but had a +2-delay wall available (human path 3, bot path 15)
+  ply 35: BOT PLAYED PAWN (M46) but had a +2-delay wall available (human path 5, bot path 17)
+  ply 37: BOT PLAYED PAWN (M56) but had a +2-delay wall available (human path 4, bot path 18)
+  ply 39: BOT PLAYED PAWN (M57) but had a +2-delay wall available (human path 3, bot path 17)
+  ply 43: BOT PLAYED PAWN (M56) but had a +2-delay wall available (human path 3, bot path 18)
+  ply 51: BOT PLAYED PAWN (M65) but had a +2-delay wall available (human path 2, bot path 16)
+
+  Summary: bot played 10 walls, 6 were useful (≥2 delay)
+  Missed-wall positions (where bot rushed instead of walling): 10
+
+--- Game 139: HUMAN won (65 plies, version=gui-nn-800sims) ---
+
+=================================================================
+Game 139: 65 moves, bot=P2, human=P1
+=================================================================
+  ply 19: BOT PLAYED PAWN (M31) but had a +3-delay wall available (human path 4, bot path 4)
+  ply 21: bot played wall delay=0; best wall would delay=3 (human path 4->7, bot inc 0)
+  ply 25: bot played wall delay=0; best wall would delay=4 (human path 4->8, bot inc 0)
+  ply 27: bot played wall delay=0; best wall would delay=5 (human path 4->9, bot inc 0)
+  ply 29: BOT PLAYED PAWN (M30) but had a +11-delay wall available (human path 3, bot path 8)
+  ply 39: bot played wall delay=0; best wall would delay=2 (human path 11->13, bot inc 0)
+  ply 45: BOT PLAYED PAWN (M32) but had a +2-delay wall available (human path 8, bot path 8)
+  ply 47: BOT PLAYED PAWN (M31) but had a +2-delay wall available (human path 7, bot path 7)
+  ply 49: BOT PLAYED PAWN (M30) but had a +2-delay wall available (human path 6, bot path 8)
+
+  Summary: bot played 10 walls, 4 were useful (≥2 delay)
+  Missed-wall positions (where bot rushed instead of walling): 5
+
+--- Game 138: HUMAN won (55 plies, version=gui-nn-800sims) ---
+
+=================================================================
+Game 138: 55 moves, bot=P2, human=P1
+=================================================================
+  ply 15: bot played wall delay=0; best wall would delay=4 (human path 8->12, bot inc 0)
+  ply 17: bot played wall delay=0; best wall would delay=4 (human path 6->10, bot inc 0)
+  ply 19: bot played wall delay=1; best wall would delay=4 (human path 5->9, bot inc 0)
+  ply 21: bot played wall delay=1; best wall would delay=3 (human path 5->8, bot inc 0)
+  ply 25: bot played wall delay=0; best wall would delay=2 (human path 6->8, bot inc 0)
+  ply 27: BOT PLAYED PAWN (M42) but had a +4-delay wall available (human path 5, bot path 4)
+  ply 29: BOT PLAYED PAWN (M41) but had a +4-delay wall available (human path 5, bot path 5)
+  ply 31: BOT PLAYED PAWN (M42) but had a +4-delay wall available (human path 5, bot path 7)
+  ply 39: BOT PLAYED PAWN (M43) but had a +2-delay wall available (human path 7, bot path 6)
+  ply 41: BOT PLAYED PAWN (M44) but had a +3-delay wall available (human path 6, bot path 5)
+  ply 43: bot played wall delay=0; best wall would delay=3 (human path 6->9, bot inc 0)
+
+  Summary: bot played 10 walls, 3 were useful (≥2 delay)
+  Missed-wall positions (where bot rushed instead of walling): 5
+
+--- Game 137: HUMAN won (47 plies, version=gui-nn-800sims) ---
+
+=================================================================
+Game 137: 47 moves, bot=P2, human=P1
+=================================================================
+  ply 17: BOT PLAYED PAWN (M43) but had a +3-delay wall available (human path 5, bot path 5)
+  ply 19: bot played wall delay=0; best wall would delay=3 (human path 5->8, bot inc 0)
+  ply 21: BOT PLAYED PAWN (M42) but had a +2-delay wall available (human path 4, bot path 6)
+  ply 25: BOT PLAYED PAWN (M41) but had a +8-delay wall available (human path 4, bot path 5)
+  ply 27: BOT PLAYED PAWN (M40) but had a +8-delay wall available (human path 4, bot path 13)
+  ply 31: bot played wall delay=0; best wall would delay=10 (human path 4->14, bot inc 0)
+  ply 37: bot played wall delay=0; best wall would delay=4 (human path 3->7, bot inc 0)
+
+  Summary: bot played 10 walls, 5 were useful (≥2 delay)
+  Missed-wall positions (where bot rushed instead of walling): 4
+
+=================================================================
+TOTAL MISSED-WALL POSITIONS across 4 games: 24
+=================================================================
+These are positions where the bot rushed forward but should have placed a defensive wall.  They are training targets.
+
+Top missed-wall positions by delay (bot was tied/losing race):
+  game 139 ply 29: wall would delay human by 11 (human dist=3, bot dist=8)
+  game 137 ply 25: wall would delay human by 8 (human dist=4, bot dist=5)
+  game 137 ply 27: wall would delay human by 8 (human dist=4, bot dist=13)
+  game 140 ply 17: wall would delay human by 6 (human dist=6, bot dist=7)
+  game 140 ply 19: wall would delay human by 6 (human dist=6, bot dist=10)
+  game 140 ply 23: wall would delay human by 4 (human dist=5, bot dist=15)
+  game 138 ply 27: wall would delay human by 4 (human dist=5, bot dist=4)
+  game 138 ply 29: wall would delay human by 4 (human dist=5, bot dist=5)
+  game 138 ply 31: wall would delay human by 4 (human dist=5, bot dist=7)
+  game 139 ply 19: wall would delay human by 3 (human dist=4, bot dist=4)

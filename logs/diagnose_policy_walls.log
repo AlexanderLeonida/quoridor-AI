@@ -1,0 +1,43 @@
+Loaded checkpoints/best.pt  meta={'iteration': 27, 'best_iteration': 15, 'train_loss': 1.4871687482762912, 'policy_loss': 1.4518948153583144, 'value_loss': 0.117579769928912, 'best_val_loss': 1.7745642708492484}
+
+============================================================
+Rusher = P1  (bot = P2)
+============================================================
+Position: rusher path=3, bot path=3, turn=P2 (bot)
+
+NN value estimate (bot POV): +0.079
+Top-10 raw policy moves:
+   1. pawn(2,4)       p=0.974
+   2. pawn(3,5)       p=0.006
+   3. wallH(5,4)      p=0.004  delay=1 [useless]
+   4. wallH(5,3)      p=0.003  delay=1 [useless]
+   5. pawn(3,3)       p=0.002
+   6. wallH(7,4)      p=0.002  delay=1 [useless]
+   7. wallH(6,4)      p=0.002  delay=1 [useless]
+   8. wallH(6,3)      p=0.001  delay=1 [useless]
+   9. pawn(4,4)       p=0.001
+  10. wallH(7,3)      p=0.000  delay=1 [useless]
+
+  Walls in top-10: 6
+  Best wall delay in top-10: 1 squares
+
+============================================================
+Rusher = P2  (bot = P1)
+============================================================
+Position: rusher path=3, bot path=4, turn=P1 (bot)
+
+NN value estimate (bot POV): -0.225
+Top-10 raw policy moves:
+   1. pawn(5,4)       p=0.862
+   2. pawn(4,5)       p=0.058
+   3. pawn(4,3)       p=0.026
+   4. wallH(2,3)      p=0.010  delay=1 [useless]
+   5. wallH(2,4)      p=0.009  delay=1 [useless]
+   6. wallH(0,4)      p=0.006  delay=1 [useless]
+   7. wallH(1,3)      p=0.005  delay=1 [useless]
+   8. wallH(1,4)      p=0.005  delay=1 [useless]
+   9. wallH(0,3)      p=0.001  delay=1 [useless]
+  10. wallH(3,4)      p=0.001  delay=0 [useless]
+
+  Walls in top-10: 7
+  Best wall delay in top-10: 1 squares

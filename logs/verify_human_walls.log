@@ -1,0 +1,35 @@
+Loading before: checkpoints/best.pt
+Loading after:  checkpoints/best_human_walls.pt
+
+  Position-by-position oracle-wall ranking (lower is better)
+  pos  oracle_delay   before_rank   after_rank    before_p     after_p
+    1             3            88            5      0.0006      0.0473
+    2             2             5            1      0.0661      0.6247
+    3             8             4            1      0.0640      0.8619
+    4             8            11            1      0.0221      0.7185
+    5             4            71            3      0.0009      0.1039
+    6             4            59            4      0.0009      0.0985
+    7             4            54            4      0.0008      0.0798
+    8             2            23            2      0.0040      0.2334
+    9             3             5            1      0.0067      0.5016
+   10             3             1            1      0.3398      0.8985
+   11            11            20            1      0.0033      0.5090
+   12             2            38            1      0.0007      0.3042
+   13             2            13            1      0.0094      0.6005
+   14             2             7            1      0.0125      0.8242
+   15             6            11            1      0.0112      0.7246
+   16             6             8            1      0.0202      0.7194
+   17             4            71            4      0.0009      0.0615
+   18             2            42            1      0.0035      0.4315
+   19             2            34            1      0.0030      0.5557
+   20             2            11            2      0.0030      0.1899
+   21             2             9            1      0.0125      0.6857
+   22             2             6            1      0.0456      0.7811
+   23             2            11            1      0.0052      0.2372
+   24             2             3            1      0.0455      0.8564
+
+  Summary across 24 mined positions:
+  metric                    before       after
+  oracle in top-1       1/24 (  4%)  17/24 ( 71%)
+  oracle in top-3       2/24 (  8%)  20/24 ( 83%)
+  oracle in top-10      9/24 ( 38%)  24/24 (100%)

@@ -689,12 +689,185 @@ L   = L_p + value_weight · L_v
 
 This is what `train_on_recent_games` actually computes (`selfplay.py:868–890`).  The value head therefore sees a graded, board-geometry-aware target on every position rather than the same ±1 stamped across all 80 plies of a long win.
 
+## 44. Post-r5 iterative training failed gating; strategic shift to deeper distill + widen + human games
+
+After r5, three iterative-training attempts at 10×128 (12 iterations × 100 games × 1000 sims each) all stalled at the post-distillation ceiling pattern from §36.  Across attempts the trajectory was:
+
+| Attempt | epochs | filter | value-weight | Iter 1 score | Iter 2 score |
+|---|---|---|---|---|---|
+| #1 (no fix) | 3 | no | 1.0 | 43.3% | 33% (partial) |
+| #2 (added §23 fix) | 2 | yes | 1.0 | 35.0% | **51.7%** (just under 52% gate) |
+| #3 (added value-weight fix) | 2 | yes | 0.3 | ~44% (partial) | n/a |
+
+The §23 version filter + 2-epoch + low value-weight stack produced the best trajectory (35% → 51.7% across iters 1→2), but iter 2 missed the gate by a single game and iter 3 began regressing.  No promotion ever occurred; `best.pt` stayed at r5 weights throughout.
+
+**Honest reading of the gap to human strength.** All Elo numbers in this project are anchored at `warmstart=1000` (a randomly-initialised 10×128).  r5 at calibrated 1386 means the net is ~Elo-386 better than random, ≈89% win rate vs random — genuinely weak in absolute terms despite the +893 cumulative gain since pre-distill v11.  The internal ladder (gating, tournaments, Elo) has no human reference point built into it, so a net that beats every prior internal version can still be brittle against adversarial human play.  Three structural ceilings explain the gap:
+1. **Teacher strength is bounded.**  Depth-8 AB on Quoridor's ~150 branching factor sees ~4 ply ahead.  Humans plan 10–15 plies on long-range wall setups.  The net is learning a depth-8 player.
+2. **Architecture is small.**  10×128 ≈ 4M params on 8.8k games.  AlphaZero chess used 20×256 (~40M params) on 5M games.  10×128 may simply lack capacity to encode subtle long-range wall interactions — and the iterative gating failures look exactly like capacity-bound symptoms (val improves, h2h doesn't).
+3. **Training distribution is narrow.**  Self-play converges on a thin band of positions; adversarial human openings (mirror-disrupt, baiting, deliberate sub-optimal walls to provoke overreaction) are out-of-distribution.  The aux-value `tanh(path_diff/6)` blend actively teaches "shorter path = better" — exactly the heuristic a human exploits with a clever wall trap that delays the net's path by 2 with no visible cost.
+
+**Plan from here, in order of expected payoff:**
+1. **Round 6 deep distill**: depth-10 AB, 8000 positions (vs r5's depth-8/4000).  §38's stop rule is "two consecutive rounds <100 Elo" — we have only one (+61), so the AB ceiling isn't formally declared yet.  Backup at `pre_r6_backup.pt`.
+2. **If r6 also <100 Elo**, that's the §38 two-round trigger → run `widen_distill.py` to 14×192 with current best.pt as net-teacher + fresh depth-8 AB co-teacher.  Architecture-bound, not data-bound.
+3. **Human games as supervision**.  Record 50–100 of Alex's wins against the bot, save into the DB tagged `human-win`, weight 5–10× during training.  Direct teaching of out-of-distribution lines the net never sees in self-play — strictly higher signal per position than another iterative round.
+4. **Inference-time sims at GUI play**.  Increase from 200–400 to 2000–4000 for a real test of the net's ceiling against humans; the policy net is much weaker than the (policy + 4000 MCTS sims) composite.
+
+**Iterative self-play is paused** until r6 completes.  Iteration is the polish step in this codebase, not the lift step.
+
+## 45. Diagnosed: the NN is a racer, not a defender (rusher diagnostic)
+
+Built `diagnose_rusher.py` — pits the NN against a deterministic forward-rusher (always picks the pawn move that minimises its shortest-path distance, never places walls).  Tracks not just win-rate but **wall quality**: how much each bot wall actually delays the rusher's shortest path.
+
+Round-5 best.pt at 800 sims (GUI default) vs pure rusher, 12 games:
+| Engine | Win rate | Walls placed | % useful (delay ≥2) | Avg delay/wall |
+|---|---|---|---|---|
+| NN (best.pt, r5 distill) | **100%** | 6 (0.5/game) | **0%** | 1.0 |
+| Easy AB (depth-3, 2s) | 100% | 33 (5.5/game) | **82%** | 1.9 |
+
+Both win against pure rush, but **the NN wins by racing and pawn-jumping** at the meeting point — not by placing walls.  The few walls it does place are useless (1-square detours the rusher just sidesteps).  Even depth-3 alpha-beta places 9× more walls per game and uses them effectively.
+
+**This explains the user's experience exactly.**  When the user plays Neural Net mode and attacks (places defensive walls of their own to slow the bot's race), the bot has no meaningful defensive response.  The user said "when I attacked, it didn't know how to properly, meaningfully defend itself" — that is the diagnostic showing the NN's wall play is broken at the policy level.
+
+Two contributing causes baked into the training stack:
+1. **Aux-value blend `tanh(path_diff/6)` (§27)**.  Trains the value head to score positions by "shorter path = better."  When MCTS considers a defensive wall, the value head says "I'm farther from goal → bad" and the visit count flows to pawn-forward instead.  α=0.4 in `run.sh` means 40% of the value signal is path-counting.
+2. **Depth-8 AB distillation horizon**.  Depth-8 AB sees ~4 ply ahead.  Effective defensive walls often pay off 8–15 ply later — outside AB's horizon.  So even when the policy targets from AB are correct on tactics, they can't teach long-range wall strategy.
+
+**Implications for r6 (currently running):**
+- r6 distills depth-10 AB targets, which place walls more aggressively than depth-8.  This should improve the **policy** side of wall placement.
+- r6 uses a *zero* value target for AB teacher (`distill_deep.py:108`), so the value head won't be updated by r6 — the path-counting bias from aux-value-blend remains.
+- After r6 finishes, re-running this diagnostic will show whether wall-placement actually improved.  If yes, the depth axis was the bottleneck.  If still 0% useful walls, the issue is the value head and we need to retrain with `--aux-value-weight 0`.
+
+**Caveat — `diagnose_oracle_wall.py` reveals that on the open-board positions the rusher diagnostic creates, the OBJECTIVELY best defensive wall only achieves a 1-square delay anyway** (no wall placement geometry exists that does better when both pawns are walking straight at each other on an empty board).  So the NN's "useless wall" outputs aren't necessarily wrong on those specific positions — there is no good wall available.
+
+The user's actual losses must come from positions later in real games where pre-existing walls create geometries that *do* allow 2+-square delays.  My synthesised forward-rush positions don't replicate those.  To pin down the actual failure mode we need either (a) the move history of a real game where the user beat the bot, or (b) a more realistic opponent simulator that includes mid-game walls.  Until then, r6 is still the right step (better policy quality on wall placement broadly), but the *true* defensive failure may live in positions we haven't yet created.
+
+**Possible next steps post-r6, depending on what the diagnostic shows:**
+- If r6 still walls poorly: retrain value head with α=0 or α=0.1, reusing r6's policy weights.
+- Generate **adversarial training positions** — positions where the opponent is 2-4 plies from goal, force the net to defend.  Mine these from the DB or synthesize.  Mix into the next distill round at high weight.
+- If wall quality is still low at higher capacity, run `widen_distill.py` to 14×192 — more capacity to encode long-range wall patterns.
+
+## 46. Direct evidence: NN's failure mode is "rushes when defensive walls exist" (gui game analysis)
+
+After §45's diagnostic was inconclusive (synthetic positions had no good defensive walls available), we instrumented `gui.py` to record human-vs-NN games and Alex played 4 games against `best.pt` at 800 sims, **winning all 4** (47, 55, 59, 65 plies).
+
+Two bugs found in the gameplay-recording pipeline along the way:
+1. `GameRecorder.__init__` defaults `db=GameDB()` which uses `DEFAULT_DB_PATH=data/quoridor.db` — but the active DB for the project is `data/quoridor_v3.db`.  Games saved to wrong file; appeared as "not saved."  Eventually located them in `data/quoridor.db`, IDs 137-140.
+2. `gui.py` close-handler did not call `_finalize_recorder` — closing the window mid-game lost all moves.  Fixed by hooking `WM_DELETE_WINDOW`.
+
+`analyze_human_wins.py` then computed, for each ply where the bot was on turn, the **objectively best wall** in that position (highest opponent shortest-path increase with low self-cost) and compared against what the bot actually played.  Across the 4 games:
+
+| Game | Plies | Bot walls played | Useful (≥2 delay) | Useless (≤1 delay) | Missed-wall positions* |
+|---|---|---|---|---|---|
+| 137 | 47 | 10 | 5 | 5 | 4 |
+| 138 | 55 | 10 | 3 | 7 | 5 |
+| 139 | 65 | 10 | 4 | 6 | 5 |
+| 140 | 59 | 10 | 6 | 4 | 10 |
+| **Total** | **226** | **40** | **18 (45%)** | **22 (55%)** | **24** |
+
+\* "Missed-wall position" = bot played a pawn move when an unconstrained search found a wall with delay ≥2 and cost ≤1 to the bot's own path, *and* the bot was tied or losing the race (`d_human ≤ d_bot + 1`).
+
+The single worst failure: **game 139 ply 29** — Alex 3 plies from winning, bot 8 plies away, a wall with **+11 delay** available; bot played pawn-forward.  Other +8, +6, +4 missed walls scattered through every game.
+
+**This confirms §44/§45 diagnosis:**
+- The bot DOES place walls (10/game) — so move-generation isn't broken.
+- ~55% of placed walls are wasted (1-square detours Alex sidesteps trivially).
+- Worse, ~24 positions across 4 games had clearly-better walls available but the bot chose pawn-forward.  Aux-value blend (§27) is the prime suspect: it scores positions by `tanh(path_diff/6)`, which strictly *penalises* spending a turn on a wall that doesn't advance the bot's pawn.
+
+**Concrete training targets created.**  The 24 missed-wall positions are now available as `(state, oracle_wall_action, value=+1 from-bot-POV)` triples — direct supervision on the bot's actual losing positions.  This is the human-games-as-adversarial-supervision lever from §44 step 3, materialised.  Plan for §47: build a targeted distillation that mixes these positions into r6's training data at high weight (10×) so the policy learns these exact wall responses.
+
+Long-term fixes still indicated:
+- **Disable or sharply reduce aux-value-weight (α=0.1 instead of 0.4)** in the next training pass — its path-counting bias is teaching the value head to devalue defensive walls.
+- **Generate synthetic adversarial positions** (positions with existing walls + opponent advanced) at scale.  The 24 positions Alex's games produced are gold but a tiny dataset; depth-N AB on synthesised positions could 10×-100× the training set.
+
+## 47. Targeted training on 24 missed-wall positions: memorised, didn't generalise (rolled back)
+
+After §46 mined 24 (state, oracle_wall_action) pairs from Alex's wins, `train_human_walls.py` distilled them at weight 10× into best.pt with 24 rehearsal triples + KL-anchor (λ=0.5) for 8 epochs.  Loss dropped 4.65 → 2.93.  `verify_human_walls.py` confirmed the policy shifted dramatically on those exact 24 positions:
+
+| Metric | Before | After |
+|---|---|---|
+| Oracle wall in top-1 | 4% | **71%** |
+| Oracle wall in top-3 | 8% | **83%** |
+| Oracle wall in top-10 | 38% | **100%** |
+
+Sanity check: new model still beats forward-rusher 6-0.  Racing skill preserved.
+
+**Then Alex played one game vs the new net — and won in 37 plies (vs 47-65 plies for the old net).**  The bot lost FASTER with the new weights.  Analysis of the new game (`analyze_human_wins.py` on game 9083):
+
+| Game | Plies | Useful walls | Useless walls | % useful |
+|---|---|---|---|---|
+| Old net (avg of 137-140) | 56.5 | 4.5/10 | 5.5/10 | 45% |
+| New (human-walls) net (game 9083) | 37 | 1/10 | 9/10 | **10%** |
+
+**The targeted training memorised the 24 positions and damaged general policy on everything else.**  The model now knows the exact 24 boards perfectly but on slightly-different positions confidently picks bad walls.  Classic overfitting to a tiny dataset.  Reverted best.pt to round-5 distill.
+
+**Lessons:**
+- 24 positions is **far too few** to teach a generalisable concept.  Need 100+ at minimum.
+- The "oracle wall = best by path delay" heuristic is a *useful* target signal but not a *complete* policy — it tells you which wall to consider, not whether a pawn move beats the best wall.  We need ground truth from deeper search (depth-N AB on each position).
+- KL regularisation toward the reference net (λ=0.5) wasn't strong enough to prevent damage.  When training data is so small, stronger regularisation or far more rehearsal data is needed.
+
+**Revised plan (the human-games signal is still real, just under-leveraged):**
+1. **Resume r6** (depth-10 AB, 8000 positions) — this is the general-improvement step the codebase already has.
+2. **Synthesise more adversarial positions**.  Take each of Alex's 24 mined positions and apply small permutations (different opponent pawn rows, different existing walls) to multiply the dataset by 10×-50× without needing more human games.
+3. **Verify each synthesised target with depth-12 AB**.  Skip positions where AB disagrees that a wall is best — those are noise.
+4. **Retrain with much higher rehearsal-frac (0.8–0.9) and stronger KL anchor (λ=1.0–2.0)** so the new positions don't dominate the rest of policy space.
+5. **Disable aux-value-weight** during this targeted retraining (`--value-weight 0.1`).
+
+Until that's coded, r6 is still the best ongoing investment.  Resuming.
+
+## 48. Targeted training v2 with 1200 verified positions: real but modest improvement
+
+After §47's overfit, scaled the dataset 50× via `build_human_training_set.py`:
+- 12 valid human-vs-NN games (4 prior + 8 fresh from Alex's session, all wins for Alex)
+- Mined 300 real bot-turn positions where bot was tied/losing race
+- 3 permutations per real position (opponent pawn ±1, wall toggles)
+- depth-8 AB run on each → ground-truth target (one-hot policy)
+- 64% of AB targets were walls, 36% pawn moves — healthy mix
+- Total: **1200 verified training samples**
+
+`train_from_npz.py` distilled this into `best.pt` with 1800 rehearsal samples (60% rehearsal mix), KL anchor λ=1.0, value-weight 0.3 (protect distilled value head), 6 epochs.  Val loss 1.78 → **1.59 (best of any model)**.
+
+3-game test (Alex vs new model):
+
+| Metric | Original best.pt (4-game baseline) | best_human_v2 (3 games) |
+|---|---|---|
+| Win margin (avg, squares) | ~16 | **11** ↓ |
+| Useful walls / game | ~4.5 | 5.3 ↑ |
+| Useless walls / game | ~5.5 | 4.7 ↓ |
+| Bot wall-quality % | ~45% | **53%** ↑ |
+| Missed-wall positions | ~6 | 6 same |
+| Forward-move % | 30% | 30% same |
+
+**Real improvement on every metric or same; nothing got worse.**  But the gain is modest: bot still loses, and game 9098 had a 14-square margin (close to original).  Variance is high across 3 games — direction is right, magnitude is small.
+
+The 50× dataset scale was decisive in preventing the §47 overfit.  Two key levers worked:
+1. **rehearsal-frac 0.6** — kept 60% of training data as standard self-play, so policy on common positions wasn't damaged
+2. **reg-lambda 1.0** (vs §47's 0.5) — stronger KL anchor toward pre-training reference, prevented the value head from drifting
+
+Lesson: **synthetic permutations of real human-derived positions work**, when scaled enough.  300 real positions → 1200 verified samples → measurable real-world improvement, even on positions Alex hasn't played.
+
+**Plan continued:**
+- Restart r6 (depth-10 AB distill, was killed for GUI session) — independent improvement axis.
+- After r6, layer the same human-walls training on top → both signals combined.
+- Each new Alex game adds ~25 real positions → ~100 more synth samples → richer next-round training.
+
+## 49. barricade.gg/computer investigation: server-side WebSocket bot, rate-limited
+
+Alex asked whether we could distill from barricade.gg/computer (a Quoridor site whose bot beats him).  Investigated by downloading all of the site's Next.js JS chunks (`/tmp/barricade_js/`) and grepping.  Findings:
+
+- The bot is **server-side via WebSocket**.  Chunk `4c87d55d2491b387.js` contains `[AI][WS]` log strings: `"No move returned from server"`, `"Unexpected move format"`, `"Error fetching AI move"`, etc.  Move format is `{row, col, orientation}` for walls, plus pawn destinations.
+- **Rate-limited.**  The chunk explicitly handles `"rate_limited"` errors and falls back to a "computer_move_failed" telemetry event.  Distilling would need ~1000s of queries — well past whatever ad-hoc rate limits they have, and definitely abusive even if technically possible.
+- Three difficulty levels: easy / medium / hard.  Server picks based on a query parameter.
+
+**Conclusion: automated distillation from barricade.gg is not viable** — rate limits, ToS, and being a black-box (only chosen move, no policy/value distribution) all push against it.  Manual play is fine: each game Alex plays there can be transcribed into our training set as one more "strong-bot game," labelled `barricade-{difficulty}` and weighted high.  But that's slow (10-20 games/hour at most) so it's a *nice-to-have* not a *cornerstone*.
+
+**Decision:** stay on the current path — r6 (depth-10 AB distillation) → targeted training on top → iterate.  No automated barricade.gg integration.
+
 ## Current state
 
 - Net: 10 blocks × 128 filters, distilled from v74 (6×64 peak).
-- `best.pt` is now **round-5 deep-distilled** (depth-8 AB, 4000 positions, val loss 1.092 — best ever).  Backup chain on disk: `pre_r5_backup.pt` (= r3 weights), `best_ab_distilled_r{1,2,3,4_d10,5}.pt`.
+- `best.pt` is **round-5 deep-distilled** (depth-8 AB, 4000 positions, val loss 1.092).  Backup chain on disk: `pre_r5_backup.pt` (= r3 weights), `pre_r6_backup.pt` (= r5 weights, taken before launching r6), `best_ab_distilled_r{1,2,3,4_d10,5}.pt`.
 - Distillation chain so far: pre-distill v11 → r1 (+366) → r2 (+267) → r3 (+199) → r4 d10 *(rejected)* → r5 (+61 over r3).  Cumulative ~ +893 Elo over pre-distill v11 across four successful rounds.
-- Tournament-calibrated Elos from the r5 bench (warmstart=1000 anchor): r5=1386, r3=1325, iter_0034=1030, warmstart=1000.
-- The AB-distillation ceiling has *not yet been hit*; r5 still gained +61 Elo at depth-8.  Plan continues: distill→iterate→distill until two consecutive rounds yield <100 Elo gain (§38).
+- Tournament-calibrated Elos from the r5 bench (warmstart=1000 anchor): r5=1386, r3=1325, iter_0034=1030, warmstart=1000.  **Calibrated against random play** — absolute strength vs humans is much weaker than the Elo number suggests (§44).
+- Three iterative-training attempts post-r5 all failed gating.  Iteration is paused per §44.
+- **Now running**: round 6 deep distill at depth-10, 8000 positions (§44 step 1).  If <100 Elo gain → §38 two-round trigger → widen architecture next.
 - Tournament.py per-game label bug fixed (§42).  Future live monitoring will show correct W/L tags.
-- Net should now be substantially harder for a human to beat than r3 — r5 has lower val loss, decisive anchor wins, and a +61 Elo lead.  Worth re-testing manually when convenient.

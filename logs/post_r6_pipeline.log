@@ -1,0 +1,88 @@
+=== post-r6 pipeline starting at 2026-05-06T04:49:17Z ===
+Waiting for checkpoints/best_ab_distilled_r6.pt ...
+checkpoints/best_ab_distilled_r6.pt detected at 2026-05-06T05:40:18Z
+-rw-r--r--@ 1 aleon1  staff  17632317 May  5 22:40 checkpoints/best_ab_distilled_r6.pt
+Backup: pre_r6_bench_backup.pt = current best.pt
+
+=== Bench r6 vs current best.pt (8 games, 200 sims) ===
+Players (2 after dedup): ['r6_d10', 'current_best']
+Total games: 8  (8 per pair × 1 pairs)
+  [1/8]  r6_d10 (P1) vs current_best (P2)  100p                        r6_d10 W  [88s elapsed, eta 613s]
+  [2/8]  current_best (P1) vs r6_d10 (P2)  100p                  current_best W  [101s elapsed, eta 303s]
+  [3/8]  current_best (P1) vs r6_d10 (P2)  100p                  current_best W  [108s elapsed, eta 180s]
+  [4/8]  r6_d10 (P1) vs current_best (P2)  100p                        r6_d10 W  [113s elapsed, eta 113s]
+  [5/8]  r6_d10 (P1) vs current_best (P2)  100p                  current_best W  [116s elapsed, eta 69s]
+  [6/8]  current_best (P1) vs r6_d10 (P2)  100p                  current_best W  [122s elapsed, eta 41s]
+  [7/8]  current_best (P1) vs r6_d10 (P2)  100p                  current_best W  [175s elapsed, eta 25s]
+  [8/8]  r6_d10 (P1) vs current_best (P2)  100p                        r6_d10 W  [188s elapsed, eta 0s]
+
+Match summary (row beats column, score %):
+                            r6_d10   current_best
+r6_d10                            -            n/a
+current_best            62% (5-3-0)              -
+
+Elo ratings (anchored at 1000 for 'current_best', 95% CI from 200 bootstrap resamples):
+   1. current_best               1000.0   [ 1000.0,  1000.0]
+   2. r6_d10                      911.3   [ -752.6,  1190.8]
+
+Saved checkpoints/_tourney_r6_vs_human_v2.json
+
+Bench result: r6=911.2605001534582 current=1000.0
+Promote r6? no
+Keeping current best.pt (human_v2)
+
+=== Targeted training on top of best.pt (base=human_v2) ===
+Backup: checkpoints/pre_targeted_human_v2_backup.pt
+Loading training set from data/human_training_set.npz...
+  1200 human-derived examples (real weights: 300, permuted: 900)
+
+Sampling 1800 rehearsal examples from data/quoridor_v3.db...
+  got 1800 rehearsal triples
+
+Final training set: 3000 examples (1200 human × weight ~1.5, 1800 rehearsal × weight 1.0)
+
+Device: mps
+Loaded checkpoints/best.pt  meta={'iteration': 27, 'best_iteration': 15, 'human_v2_trained': True, 'n_human_examples': 1200, 'rehearsal_frac': 0.6, 'reg_lambda': 1.0, 'value_weight': 0.3, 'best_val_loss': 1.5856308191021284}
+  KL regularisation enabled (λ=1.0)
+
+  epoch 1/6  loss=0.9641 (p=0.8380 v=0.0401 kl=0.1141)  (2s)  val=0.9161 (p=0.8652 v=0.0509) [best]
+  epoch 2/6  loss=0.7916 (p=0.6445 v=0.0336 kl=0.1371)  (2s)  val=0.9248 (p=0.8724 v=0.0525)
+  epoch 3/6  loss=0.7274 (p=0.5952 v=0.0305 kl=0.1231)  (2s)  val=0.9102 (p=0.8592 v=0.0510) [best]
+  epoch 4/6  loss=0.6839 (p=0.5498 v=0.0268 kl=0.1260)  (2s)  val=0.9026 (p=0.8466 v=0.0560) [best]
+  epoch 5/6  loss=0.6621 (p=0.5347 v=0.0256 kl=0.1196)  (2s)  val=0.9034 (p=0.8459 v=0.0575)
+  epoch 6/6  loss=0.6506 (p=0.5255 v=0.0242 kl=0.1178)  (2s)  val=0.9026 (p=0.8446 v=0.0580) [best]
+
+Restored best-val checkpoint (val=0.9026)
+
+Saved checkpoints/best_human_v2_human_v3.pt
+
+=== Bench targeted-trained vs pre-targeted (8 games, 200 sims) ===
+Players (2 after dedup): ['targeted', 'pre_targeted']
+Total games: 8  (8 per pair × 1 pairs)
+  [1/8]  targeted (P1) vs pre_targeted (P2)   26p                  pre_targeted W  [12s elapsed, eta 87s]
+  [2/8]  pre_targeted (P1) vs targeted (P2)   31p                  pre_targeted W  [23s elapsed, eta 70s]
+  [3/8]  targeted (P1) vs pre_targeted (P2)  100p                               D  [59s elapsed, eta 98s]
+  [4/8]  targeted (P1) vs pre_targeted (P2)  100p                               D  [63s elapsed, eta 63s]
+  [5/8]  pre_targeted (P1) vs targeted (P2)  100p                  pre_targeted W  [80s elapsed, eta 48s]
+  [6/8]  pre_targeted (P1) vs targeted (P2)  100p                  pre_targeted W  [87s elapsed, eta 29s]
+  [7/8]  pre_targeted (P1) vs targeted (P2)  100p                  pre_targeted W  [93s elapsed, eta 13s]
+  [8/8]  targeted (P1) vs pre_targeted (P2)  100p                  pre_targeted W  [112s elapsed, eta 0s]
+
+Match summary (row beats column, score %):
+                          targeted   pre_targeted
+targeted                          -            n/a
+pre_targeted            88% (6-0-2)              -
+
+Elo ratings (anchored at 1000 for 'pre_targeted', 95% CI from 200 bootstrap resamples):
+   1. pre_targeted               1000.0   [ 1000.0,  1000.0]
+   2. targeted                    662.0   [ -752.6,   863.0]
+
+Saved checkpoints/_tourney_human_v2_targeted.json
+
+Bench result: targeted=661.9607839942972 pre=1000.0
+Promote targeted? no
+Keeping pre-targeted as best.pt
+
+=== post-r6 pipeline finished at 2026-05-06T05:45:33Z ===
+Final best.pt:
+  meta: {'iteration': 27, 'best_iteration': 15, 'human_v2_trained': True, 'n_human_examples': 1200, 'rehearsal_frac': 0.6, 'reg_lambda': 1.0, 'value_weight': 0.3, 'best_val_loss': 1.5856308191021284}

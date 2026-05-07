@@ -3112,3 +3112,357 @@ Resuming from checkpoints/best.pt
   game   2/100  id=8845   plies=33    winner=P1     200.4s  avg_len=35
   game  62/100  id=8846   plies=36    winner=P2     280.4s  avg_len=60 [AB]
     eval game 24/30  (idx 27)  new=P2  moves=25  L  (46% W10/L12/D2)
+  game   3/100  id=8847   plies=38    winner=P2     253.5s  avg_len=36
+  game   4/100  id=8848   plies=100   winner=P2     306.5s  avg_len=52
+  game   5/100  id=8849   plies=38    winner=P2     327.0s  avg_len=49 [AB]
+  game  63/100  id=8850   plies=100   winner=P2     384.9s  avg_len=61
+    eval game 25/30  (idx 28)  new=P1  moves=39  W  (48% W11/L12/D2)
+    eval game 26/30  (idx 21)  new=P2  moves=100  L  (46% W11/L13/D2)
+  game  64/100  id=8851   plies=100   winner=P1     285.2s  avg_len=62
+  game   6/100  id=8852   plies=100   winner=P2     373.6s  avg_len=58
+  game   7/100  id=8853   plies=100   winner=P1     379.9s  avg_len=64
+  game  65/100  id=8854   plies=100   winner=P2     370.5s  avg_len=62
+  game  66/100  id=8855   plies=54    winner=P2     304.5s  avg_len=62
+  game  67/100  id=8856   plies=35    winner=P1     238.4s  avg_len=62
+    eval game 27/30  (idx 25)  new=P2  moves=100  L  (44% W11/L14/D2)
+  game  68/100  id=8857   plies=100   winner=P2     274.9s  avg_len=62
+  game  69/100  id=8858   plies=100   winner=P1     313.3s  avg_len=63
+  game   8/100  id=8859   plies=100   winner=draw   315.0s  avg_len=68
+  game   9/100  id=8860   plies=36    winner=P2     347.2s  avg_len=65 [AB]
+  game  10/100  id=8861   plies=100   winner=P1     296.5s  avg_len=68
+  game  11/100  id=8862   plies=44    winner=P2     305.8s  avg_len=66
+  game  12/100  id=8863   plies=52    winner=P2     321.3s  avg_len=65 [AB]
+  game  70/100  id=8864   plies=31    winner=P1     185.4s  avg_len=62
+    eval game 28/30  (idx 29)  new=P2  moves=100  W  (46% W12/L14/D2)
+  game  13/100  id=8865   plies=100   winner=P2     327.5s  avg_len=68
+  game  71/100  id=8866   plies=100   winner=P2     317.6s  avg_len=63
+  game  72/100  id=8867   plies=66    winner=P2     395.3s  avg_len=63
+  game  73/100  id=8868   plies=100   winner=P2     1277.8s  avg_len=63 [AB]
+  game  14/100  id=8869   plies=31    winner=P1     218.7s  avg_len=65
+  game  74/100  id=8870   plies=100   winner=P2     386.7s  avg_len=64
+  game  75/100  id=8871   plies=69    winner=P1     350.5s  avg_len=64
+  game  76/100  id=8872   plies=55    winner=P1     443.7s  avg_len=64 [AB]
+  game  77/100  id=8873   plies=45    winner=P1     373.7s  avg_len=64 [AB]
+  game  15/100  id=8874   plies=62    winner=P2     351.2s  avg_len=65
+    eval game 29/30  (idx 22)  new=P1  moves=100  L  (45% W12/L15/D2)
+  game  16/100  id=8875   plies=100   winner=P2     315.9s  avg_len=67
+  game  78/100  id=8876   plies=37    winner=P1     262.6s  avg_len=63
+  game  17/100  id=8877   plies=100   winner=P2     945.8s  avg_len=69 [AB]
+  game  79/100  id=8878   plies=32    winner=P2     260.6s  avg_len=63
+  game  18/100  id=8879   plies=100   winner=P1     154.4s  avg_len=71
+  game  19/100  id=8880   plies=52    winner=P2     263.9s  avg_len=70
+  game  80/100  id=8881   plies=36    winner=P2     246.1s  avg_len=63
+  game  20/100  id=8882   plies=100   winner=draw   671.8s  avg_len=71
+  game  21/100  id=8883   plies=76    winner=P2     508.5s  avg_len=71 [AB]
+  game  81/100  id=8884   plies=100   winner=P2     313.9s  avg_len=63
+  game  22/100  id=8885   plies=100   winner=P2     387.9s  avg_len=73
+  game  82/100  id=8886   plies=40    winner=P2     249.9s  avg_len=63
+  game  83/100  id=8887   plies=100   winner=P2     370.8s  avg_len=63
+  game  84/100  id=8888   plies=39    winner=P1     352.8s  avg_len=63 [AB]
+  game  85/100  id=8889   plies=46    winner=P2     195.9s  avg_len=63
+  game  23/100  id=8890   plies=46    winner=P2     292.5s  avg_len=72
+  game  24/100  id=8891   plies=100   winner=draw   314.9s  avg_len=73
+  game  86/100  id=8892   plies=100   winner=P1     350.0s  avg_len=63
+  game  87/100  id=8893   plies=29    winner=P1     162.1s  avg_len=63
+    eval game 30/30  (idx 26)  new=P1  moves=100  L  (43% W12/L16/D2)
+  New net score: 43.3%  (W12/L16/D2)  95% CI: [27.4%, 60.8%]
+  Elo: selfplay-v27=1001  selfplay-v15=1041
+  --- Keeping previous network.
+  Saved checkpoints/iter_0027.pt
+
+  Elo ratings (top 10):
+   1. selfplay-v34               1094.1
+   2. init                       1046.7
+   3. selfplay-v15               1041.2
+   4. selfplay-v74               1032.7
+   5. selfplay-v19               1021.7
+   6. selfplay-v48               1014.7
+   7. selfplay-v71               1011.3
+   8. selfplay-v57               1009.5
+   9. selfplay-v28               1009.3
+  10. selfplay-v65               1007.4
+
+============================================================
+  Iteration 2/12  (global 28)
+============================================================
+
+[1/3] Self-play
+  (parallel self-play on 8 CPU workers)
+  game  25/100  id=8894   plies=25    winner=P1     306.3s  avg_len=71 [AB]
+  game  88/100  id=8895   plies=100   winner=P1     299.6s  avg_len=63
+  game  26/100  id=8896   plies=100   winner=draw   691.1s  avg_len=72
+  game  27/100  id=8897   plies=42    winner=P2     293.2s  avg_len=71
+  game  28/100  id=8898   plies=51    winner=P1     317.6s  avg_len=70
+  game  89/100  id=8899   plies=57    winner=P1     675.9s  avg_len=63 [AB]
+  game  29/100  id=8900   plies=50    winner=P2     430.4s  avg_len=69
+  game  90/100  id=8901   plies=100   winner=P2     444.2s  avg_len=63
+  game  30/100  id=8902   plies=38    winner=P2     282.2s  avg_len=68
+  game  91/100  id=8903   plies=100   winner=P1     433.2s  avg_len=64
+  game  92/100  id=8904   plies=69    winner=P1     391.0s  avg_len=64
+  game  31/100  id=8905   plies=37    winner=P1     454.1s  avg_len=67 [AB]
+  game   1/100  id=8906   plies=35    winner=P1     254.4s  avg_len=35
+  game  93/100  id=8907   plies=32    winner=P2     322.7s  avg_len=64
+  game   2/100  id=8908   plies=100   winner=P2     326.7s  avg_len=68
+  game   3/100  id=8909   plies=51    winner=P1     354.5s  avg_len=62
+  game  32/100  id=8910   plies=43    winner=P1     329.1s  avg_len=67
+  game   4/100  id=8911   plies=33    winner=P1     362.7s  avg_len=55
+  game   5/100  id=8912   plies=37    winner=P1     372.2s  avg_len=51
+  game  94/100  id=8913   plies=100   winner=P2     391.9s  avg_len=64
+  game  95/100  id=8914   plies=38    winner=P2     411.9s  avg_len=64
+  game  33/100  id=8915   plies=100   winner=P1     516.0s  avg_len=68
+  game  34/100  id=8916   plies=44    winner=P2     440.5s  avg_len=67
+  game   6/100  id=8917   plies=100   winner=P2     487.2s  avg_len=59
+  game  96/100  id=8918   plies=51    winner=P1     299.4s  avg_len=64
+  game  97/100  id=8919   plies=44    winner=P2     466.4s  avg_len=63 [AB]
+  game  35/100  id=8920   plies=100   winner=draw   540.6s  avg_len=68
+  game  36/100  id=8921   plies=100   winner=P2     384.6s  avg_len=69
+  game  37/100  id=8922   plies=100   winner=P1     465.1s  avg_len=70
+  game  98/100  id=8923   plies=84    winner=P2     778.2s  avg_len=64 [AB]
+  game   7/100  id=8924   plies=52    winner=P2     300.4s  avg_len=58
+  game   8/100  id=8925   plies=40    winner=P2     394.2s  avg_len=56 [AB]
+  game  99/100  id=8926   plies=37    winner=P1     446.1s  avg_len=63
+  game   9/100  id=8927   plies=44    winner=P2     317.0s  avg_len=55 [AB]
+  game  38/100  id=8928   plies=30    winner=P2     244.6s  avg_len=69
+  game 100/100  id=8929   plies=100   winner=P1     491.9s  avg_len=64
+  P1 wins: 43  P2 wins: 52  draws: 5
+  DB total: 8929 games, 459,649 positions
+
+[2/3] Training
+  game  39/100  id=8930   plies=100   winner=P2     362.4s  avg_len=69
+  game  10/100  id=8931   plies=100   winner=P2     761.0s  avg_len=59 [AB]
+  game  11/100  id=8932   plies=100   winner=P1     404.0s  avg_len=63
+  284,999 positions from 5000 game(s) (4662 decisive, 338 draws)
+  game  40/100  id=8933   plies=36    winner=P2     240.8s  avg_len=69
+  game  12/100  id=8934   plies=60    winner=P2     816.3s  avg_len=63 [AB]
+  game  41/100  id=8935   plies=63    winner=P1     636.2s  avg_len=68 [AB]
+  game  42/100  id=8936   plies=100   winner=P1     846.3s  avg_len=69 [AB]
+  game  43/100  id=8937   plies=38    winner=P2     286.7s  avg_len=68
+  game  13/100  id=8938   plies=100   winner=P1     546.7s  avg_len=66
+  game  44/100  id=8939   plies=38    winner=P2     319.1s  avg_len=68
+  game  45/100  id=8940   plies=49    winner=P1     359.9s  avg_len=67
+    epoch 1/2  loss=1.6596 (p=1.6086 v=0.1700)  val=1.7746 (p=1.5085 v=0.2661)  [best]
+  game  14/100  id=8941   plies=100   winner=P2     421.1s  avg_len=68
+  game  15/100  id=8942   plies=31    winner=P1     325.1s  avg_len=66
+  game  16/100  id=8943   plies=77    winner=P1     599.5s  avg_len=66
+  game  17/100  id=8944   plies=36    winner=P2     466.4s  avg_len=64 [AB]
+  game  46/100  id=8945   plies=100   winner=P2     722.6s  avg_len=68
+  game  18/100  id=8946   plies=59    winner=P1     389.0s  avg_len=64
+  game  47/100  id=8947   plies=100   winner=P2     361.5s  avg_len=69
+  game  19/100  id=8948   plies=87    winner=P1     485.3s  avg_len=65
+  game  20/100  id=8949   plies=100   winner=P2     624.8s  avg_len=67
+  game  48/100  id=8950   plies=34    winner=P2     543.4s  avg_len=68 [AB]
+    epoch 2/2  loss=1.4872 (p=1.4519 v=0.1176)  val=1.7785 (p=1.5078 v=0.2707)
+
+[3/3] Evaluation
+    (parallel evaluation on 8 CPU workers)
+  game  49/100  id=8951   plies=100   winner=P2     579.8s  avg_len=69
+  game  21/100  id=8952   plies=100   winner=P1     515.7s  avg_len=69
+  game  22/100  id=8953   plies=37    winner=P1     371.1s  avg_len=67
+  game  50/100  id=8954   plies=42    winner=P2     549.1s  avg_len=68 [AB]
+  game  51/100  id=8955   plies=48    winner=P2     362.5s  avg_len=68
+  game  52/100  id=8956   plies=100   winner=P1     467.3s  avg_len=68
+  game  53/100  id=8957   plies=100   winner=P2     618.8s  avg_len=69
+  game  23/100  id=8958   plies=100   winner=draw   482.6s  avg_len=69
+  game  54/100  id=8959   plies=100   winner=P2     307.6s  avg_len=70
+  game  24/100  id=8960   plies=39    winner=P1     341.0s  avg_len=67
+  game  25/100  id=8961   plies=100   winner=P2     527.5s  avg_len=69
+  game  55/100  id=8962   plies=100   winner=P1     828.7s  avg_len=70
+  game  26/100  id=8963   plies=39    winner=P1     476.3s  avg_len=68 [AB]
+  game  56/100  id=8964   plies=42    winner=P2     483.0s  avg_len=70 [AB]
+  game  27/100  id=8965   plies=100   winner=P2     321.2s  avg_len=69
+  game  28/100  id=8966   plies=100   winner=P1     626.2s  avg_len=70
+  game  57/100  id=8967   plies=29    winner=P1     267.0s  avg_len=69
+  game  58/100  id=8968   plies=48    winner=P2     446.8s  avg_len=68
+  game  59/100  id=8969   plies=100   winner=P1     383.6s  avg_len=69
+  game  29/100  id=8970   plies=39    winner=P1     316.0s  avg_len=69
+  game  30/100  id=8971   plies=100   winner=P2     318.9s  avg_len=70
+  game  60/100  id=8972   plies=100   winner=P1     359.2s  avg_len=70
+    eval game 1/30  (idx 0)  new=P1  moves=55  W  (100% W1/L0/D0)
+  game  31/100  id=8973   plies=45    winner=P1     419.0s  avg_len=69
+  game  32/100  id=8974   plies=28    winner=P2     255.6s  avg_len=68
+  game  33/100  id=8975   plies=100   winner=P1     790.3s  avg_len=69
+  game  61/100  id=8976   plies=27    winner=P1     246.8s  avg_len=69
+  game  62/100  id=8977   plies=38    winner=P2     349.0s  avg_len=68
+  game  63/100  id=8978   plies=30    winner=P2     412.3s  avg_len=68 [AB]
+    eval game 2/30  (idx 3)  new=P2  moves=100  W  (100% W2/L0/D0)
+  game  64/100  id=8979   plies=59    winner=P1     320.6s  avg_len=68
+  game  65/100  id=8980   plies=100   winner=P2     594.4s  avg_len=68
+  game  34/100  id=8981   plies=100   winner=P2     432.7s  avg_len=70
+  game  35/100  id=8982   plies=55    winner=P1     770.7s  avg_len=69 [AB]
+  game  36/100  id=8983   plies=37    winner=P1     358.1s  avg_len=68
+  game  66/100  id=8984   plies=100   winner=P1     425.3s  avg_len=69
+  game  37/100  id=8985   plies=75    winner=P1     267.5s  avg_len=69
+  game  67/100  id=8986   plies=100   winner=P2     781.1s  avg_len=69 [AB]
+  game  38/100  id=8987   plies=61    winner=P1     640.6s  avg_len=68 [AB]
+    eval game 3/30  (idx 8)  new=P1  moves=29  W  (100% W3/L0/D0)
+  game  39/100  id=8988   plies=44    winner=P2     338.4s  avg_len=68
+  game  68/100  id=8989   plies=100   winner=P1     344.5s  avg_len=70
+  game  69/100  id=8990   plies=100   winner=P1     372.8s  avg_len=70
+  game  40/100  id=8991   plies=100   winner=P1     293.4s  avg_len=69
+  game  41/100  id=8992   plies=100   winner=P2     509.5s  avg_len=69
+  game  42/100  id=8993   plies=41    winner=P1     365.6s  avg_len=69
+  game  70/100  id=8994   plies=100   winner=P1     444.5s  avg_len=70
+  game  71/100  id=8995   plies=35    winner=P1     306.5s  avg_len=70
+    eval game 4/30  (idx 10)  new=P1  moves=33  W  (100% W4/L0/D0)
+  game  72/100  id=8996   plies=100   winner=P2     610.7s  avg_len=70
+  game  73/100  id=8997   plies=47    winner=P1     565.6s  avg_len=70 [AB]
+  game  74/100  id=8998   plies=100   winner=P2     450.9s  avg_len=70
+  game  43/100  id=8999   plies=100   winner=P1     544.8s  avg_len=69
+  game  75/100  id=9000   plies=100   winner=P1     353.9s  avg_len=71
+  game  44/100  id=9001   plies=100   winner=P2     475.5s  avg_len=70
+    eval game 5/30  (idx 7)  new=P2  moves=100  L  (80% W4/L1/D0)
+    eval game 6/30  (idx 6)  new=P1  moves=100  L  (67% W4/L2/D0)
+  game  76/100  id=9002   plies=100   winner=P1     940.1s  avg_len=71
+  game  45/100  id=9003   plies=44    winner=P2     509.1s  avg_len=69 [AB]
+    eval game 7/30  (idx 2)  new=P1  moves=100  L  (57% W4/L3/D0)
+    eval game 8/30  (idx 5)  new=P2  moves=100  D  (56% W4/L3/D1)
+  game  46/100  id=9004   plies=100   winner=P1     672.6s  avg_len=70
+  game  77/100  id=9005   plies=100   winner=P1     601.5s  avg_len=72 [AB]
+  game  47/100  id=9006   plies=46    winner=P2     442.2s  avg_len=70
+  game  78/100  id=9007   plies=95    winner=P1     456.0s  avg_len=72
+    eval game 9/30  (idx 1)  new=P2  moves=100  L  (50% W4/L4/D1)
+  game  48/100  id=9008   plies=100   winner=P2     552.9s  avg_len=70
+  game  79/100  id=9009   plies=32    winner=P2     330.4s  avg_len=71
+  game  49/100  id=9010   plies=100   winner=draw   215.7s  avg_len=71
+  game  50/100  id=9011   plies=40    winner=P2     344.2s  avg_len=70
+  game  80/100  id=9012   plies=49    winner=P1     493.0s  avg_len=71 [AB]
+    eval game 10/30  (idx 4)  new=P1  moves=100  L  (45% W4/L5/D1)
+  game  51/100  id=9013   plies=44    winner=P2     493.2s  avg_len=70 [AB]
+  game  81/100  id=9014   plies=100   winner=P2     509.8s  avg_len=71
+    eval game 11/30  (idx 13)  new=P2  moves=29  L  (41% W4/L6/D1)
+  game  52/100  id=9015   plies=100   winner=P2     839.4s  avg_len=70
+  game  53/100  id=9016   plies=30    winner=P2     269.4s  avg_len=70
+  game  82/100  id=9017   plies=37    winner=P1     556.1s  avg_len=71 [AB]
+  game  83/100  id=9018   plies=59    winner=P1     424.2s  avg_len=71
+  game  54/100  id=9019   plies=48    winner=P2     390.3s  avg_len=69
+  game  84/100  id=9020   plies=43    winner=P1     353.7s  avg_len=71
+  game  55/100  id=9021   plies=100   winner=P1     1625.9s  avg_len=70 [AB]
+  game  85/100  id=9022   plies=100   winner=P2     941.8s  avg_len=71
+    eval game 12/30  (idx 15)  new=P2  moves=35  L  (38% W4/L7/D1)
+  game  86/100  id=9023   plies=100   winner=P2     867.9s  avg_len=71
+    eval game 13/30  (idx 11)  new=P2  moves=100  W  (42% W5/L7/D1)
+  game  56/100  id=9024   plies=100   winner=P1     519.2s  avg_len=70
+  game  57/100  id=9025   plies=36    winner=P2     306.7s  avg_len=70
+  game  87/100  id=9026   plies=100   winner=draw   613.8s  avg_len=72
+  game  58/100  id=9027   plies=100   winner=P2     716.1s  avg_len=70
+  game  59/100  id=9028   plies=40    winner=P2     520.4s  avg_len=70 [AB]
+  game  88/100  id=9029   plies=59    winner=P1     365.2s  avg_len=71
+    eval game 14/30  (idx 9)  new=P2  moves=100  L  (39% W5/L8/D1)
+  game  89/100  id=9030   plies=89    winner=P1     741.7s  avg_len=72
+  game  60/100  id=9031   plies=69    winner=P1     451.6s  avg_len=70
+  game  61/100  id=9032   plies=48    winner=P2     898.2s  avg_len=69 [AB]
+  game  90/100  id=9033   plies=35    winner=P1     423.3s  avg_len=71
+  game  91/100  id=9034   plies=30    winner=P2     407.6s  avg_len=71 [AB]
+  game  92/100  id=9035   plies=100   winner=draw   773.7s  avg_len=71
+    eval game 15/30  (idx 20)  new=P1  moves=26  L  (37% W5/L9/D1)
+    eval game 16/30  (idx 14)  new=P1  moves=100  W  (41% W6/L9/D1)
+  game  62/100  id=9036   plies=46    winner=P2     523.9s  avg_len=69 [AB]
+  game  63/100  id=9037   plies=100   winner=P1     452.1s  avg_len=69
+  game  93/100  id=9038   plies=100   winner=draw   555.9s  avg_len=71
+  game  64/100  id=9039   plies=30    winner=P2     481.7s  avg_len=69
+  game  65/100  id=9040   plies=30    winner=P2     356.5s  avg_len=68
+  game  66/100  id=9041   plies=100   winner=P1     959.8s  avg_len=69
+    eval game 17/30  (idx 19)  new=P2  moves=40  W  (44% W7/L9/D1)
+  game  94/100  id=9042   plies=100   winner=P2     1013.0s  avg_len=72
+    eval game 18/30  (idx 22)  new=P1  moves=30  L  (42% W7/L10/D1)
+  game  95/100  id=9043   plies=36    winner=P2     628.2s  avg_len=71 [AB]
+  game  67/100  id=9044   plies=100   winner=P1     810.1s  avg_len=69
+  game  96/100  id=9045   plies=43    winner=P1     728.2s  avg_len=71
+  game  68/100  id=9046   plies=100   winner=P2     887.2s  avg_len=70
+  game  97/100  id=9047   plies=82    winner=P2     894.0s  avg_len=71
+  game  98/100  id=9048   plies=100   winner=P1     645.9s  avg_len=71
+  game  69/100  id=9049   plies=100   winner=P1     682.9s  avg_len=70
+    eval game 19/30  (idx 21)  new=P2  moves=40  W  (45% W8/L10/D1)
+  game  99/100  id=9050   plies=100   winner=P2     736.2s  avg_len=72
+  game  70/100  id=9051   plies=100   winner=P1     626.9s  avg_len=70
+  game  71/100  id=9052   plies=100   winner=P1     677.5s  avg_len=71
+  game 100/100  id=9053   plies=98    winner=P2     844.6s  avg_len=72
+  P1 wins: 41  P2 wins: 51  draws: 8
+  DB total: 9053 games, 468,780 positions
+
+[2/3] Training
+    eval game 20/30  (idx 17)  new=P2  moves=100  L  (42% W8/L11/D1)
+    eval game 21/30  (idx 24)  new=P1  moves=31  W  (45% W9/L11/D1)
+  284,850 positions from 5000 game(s) (4688 decisive, 312 draws)
+    eval game 22/30  (idx 12)  new=P1  moves=100  W  (48% W10/L11/D1)
+  game  72/100  id=9054   plies=100   winner=P2     806.0s  avg_len=71
+  game  73/100  id=9055   plies=43    winner=P1     1044.8s  avg_len=71 [AB]
+    epoch 1/2  loss=1.6663 (p=1.6151 v=0.1706)  val=1.7607 (p=1.4806 v=0.2801)  [best]
+  game  74/100  id=9056   plies=37    winner=P1     995.6s  avg_len=70 [AB]
+    eval game 23/30  (idx 26)  new=P1  moves=30  L  (46% W10/L12/D1)
+  game  75/100  id=9057   plies=100   winner=P2     1277.9s  avg_len=71
+    epoch 2/2  loss=1.4907 (p=1.4556 v=0.1170)  val=1.7709 (p=1.4900 v=0.2808)
+
+[3/3] Evaluation
+    (parallel evaluation on 8 CPU workers)
+  game  76/100  id=9058   plies=100   winner=P1     1648.0s  avg_len=71
+  game  77/100  id=9059   plies=100   winner=draw   1330.9s  avg_len=72
+    eval game 24/30  (idx 27)  new=P2  moves=35  L  (44% W10/L13/D1)
+  game  78/100  id=9060   plies=100   winner=P2     1253.9s  avg_len=72
+    eval game 25/30  (idx 16)  new=P1  moves=100  L  (42% W10/L14/D1)
+    eval game 26/30  (idx 25)  new=P2  moves=54  W  (44% W11/L14/D1)
+  game  79/100  id=9061   plies=100   winner=P1     1408.5s  avg_len=72
+  game  80/100  id=9062   plies=43    winner=P1     1068.2s  avg_len=72 [AB]
+  game  81/100  id=9063   plies=60    winner=P2     990.1s  avg_len=72
+    eval game 1/30  (idx 1)  new=P2  moves=29  L  (0% W0/L1/D0)
+    eval game 27/30  (idx 28)  new=P1  moves=49  W  (46% W12/L14/D1)
+    eval game 28/30  (idx 18)  new=P1  moves=100  L  (45% W12/L15/D1)
+  game  82/100  id=9064   plies=100   winner=P1     789.5s  avg_len=72
+    eval game 2/30  (idx 6)  new=P1  moves=35  W  (50% W1/L1/D0)
+  game  83/100  id=9065   plies=100   winner=P1     467.1s  avg_len=72
+    eval game 3/30  (idx 4)  new=P1  moves=39  W  (67% W2/L1/D0)
+  game  84/100  id=9066   plies=100   winner=P2     695.4s  avg_len=73
+  game  85/100  id=9067   plies=61    winner=P1     583.7s  avg_len=73 [AB]
+  game  86/100  id=9068   plies=100   winner=draw   587.5s  avg_len=73
+  game  87/100  id=9069   plies=57    winner=P1     535.2s  avg_len=73
+    eval game 4/30  (idx 7)  new=P2  moves=46  W  (75% W3/L1/D0)
+    eval game 5/30  (idx 3)  new=P2  moves=45  L  (60% W3/L2/D0)
+  game  88/100  id=9070   plies=100   winner=P1     549.8s  avg_len=73
+  game  89/100  id=9071   plies=32    winner=P2     269.6s  avg_len=73
+  game  90/100  id=9072   plies=100   winner=P2     462.9s  avg_len=73
+    eval game 6/30  (idx 9)  new=P2  moves=33  L  (50% W3/L3/D0)
+  game  91/100  id=9073   plies=100   winner=P2     389.8s  avg_len=73
+  game  92/100  id=9074   plies=31    winner=P1     245.5s  avg_len=73
+  game  93/100  id=9075   plies=100   winner=P1     811.3s  avg_len=73
+  game  94/100  id=9076   plies=35    winner=P1     330.7s  avg_len=73
+  game  95/100  id=9077   plies=71    winner=P1     430.6s  avg_len=73
+    eval game 7/30  (idx 0)  new=P1  moves=100  W  (57% W4/L3/D0)
+  game  96/100  id=9078   plies=38    winner=P2     639.1s  avg_len=72 [AB]
+  game  97/100  id=9079   plies=46    winner=P2     427.2s  avg_len=72
+  game  98/100  id=9080   plies=40    winner=P2     518.8s  avg_len=72 [AB]
+  game  99/100  id=9081   plies=86    winner=P2     844.7s  avg_len=72
+    eval game 8/30  (idx 11)  new=P2  moves=48  W  (62% W5/L3/D0)
+    eval game 29/30  (idx 23)  new=P2  moves=100  L  (43% W12/L16/D1)
+    eval game 9/30  (idx 10)  new=P1  moves=100  W  (67% W6/L3/D0)
+    eval game 10/30  (idx 5)  new=P2  moves=100  W  (70% W7/L3/D0)
+  game 100/100  id=9082   plies=100   winner=draw   704.1s  avg_len=72
+  P1 wins: 49  P2 wins: 46  draws: 5
+  DB total: 9082 games, 470,960 positions
+
+[2/3] Training
+    eval game 11/30  (idx 2)  new=P1  moves=100  L  (64% W7/L4/D0)
+  285,006 positions from 5000 game(s) (4689 decisive, 311 draws)
+    eval game 30/30  (idx 29)  new=P2  moves=100  L  (42% W12/L17/D1)
+  New net score: 41.7%  (W12/L17/D1)  95% CI: [26.0%, 59.3%]
+  Elo: selfplay-v27=1000  selfplay-v15=1042
+  --- Keeping previous network.
+  Saved checkpoints/iter_0027.pt
+
+  Elo ratings (top 10):
+   1. selfplay-v34               1094.1
+   2. init                       1046.7
+   3. selfplay-v15               1041.7
+   4. selfplay-v74               1032.7
+   5. selfplay-v19               1021.7
+   6. selfplay-v48               1014.7
+   7. selfplay-v71               1011.3
+   8. selfplay-v57               1009.5
+   9. selfplay-v28               1009.3
+  10. selfplay-v65               1007.4
+
+============================================================
+  Iteration 2/12  (global 28)
+============================================================
+
+[1/3] Self-play
+  (parallel self-play on 8 CPU workers)

@@ -1,0 +1,22 @@
+Loading training set from data/human_training_set.npz...
+  1200 human-derived examples (real weights: 300, permuted: 900)
+
+Sampling 1800 rehearsal examples from data/quoridor_v3.db...
+  got 1800 rehearsal triples
+
+Final training set: 3000 examples (1200 human × weight ~1.5, 1800 rehearsal × weight 1.0)
+
+Device: mps
+Loaded checkpoints/best.pt  meta={'iteration': 27, 'best_iteration': 15, 'train_loss': 1.4871687482762912, 'policy_loss': 1.4518948153583144, 'value_loss': 0.117579769928912, 'best_val_loss': 1.7745642708492484}
+  KL regularisation enabled (λ=1.0)
+
+  epoch 1/6  loss=2.3657 (p=2.0612 v=0.2415 kl=0.2320)  (2s)  val=1.7800 (p=1.6804 v=0.0996) [best]
+  epoch 2/6  loss=1.6202 (p=1.2571 v=0.0680 kl=0.3428)  (2s)  val=1.6899 (p=1.6213 v=0.0686) [best]
+  epoch 3/6  loss=1.4204 (p=1.0623 v=0.0452 kl=0.3445)  (2s)  val=1.6141 (p=1.5574 v=0.0567) [best]
+  epoch 4/6  loss=1.3211 (p=0.9639 v=0.0379 kl=0.3458)  (2s)  val=1.5917 (p=1.5322 v=0.0595) [best]
+  epoch 5/6  loss=1.2606 (p=0.9071 v=0.0346 kl=0.3431)  (2s)  val=1.5882 (p=1.5325 v=0.0557) [best]
+  epoch 6/6  loss=1.2365 (p=0.8876 v=0.0328 kl=0.3391)  (2s)  val=1.5856 (p=1.5304 v=0.0552) [best]
+
+Restored best-val checkpoint (val=1.5856)
+
+Saved checkpoints/best_human_v2.pt

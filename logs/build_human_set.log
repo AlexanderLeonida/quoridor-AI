@@ -1,0 +1,9 @@
+Mining real positions from data/quoridor_v3.db (excluding [9083])...
+  104 real bot-turn positions
+Generating 5 permutations per real position...
+  total positions to process: 624
+
+Running depth-8 alpha-beta on 624 positions (2 workers, ~2.0s each)...
+  20/624 done  (1.0/s, eta 623s)
+  40/624 done  (1.0/s, eta 594s)
+  60/624 done  (1.0/s, eta 570s)

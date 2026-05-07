@@ -1,0 +1,23 @@
+
+=== neural net (checkpoints/best_human_walls.pt) sims=800 (rush): 6 games vs rusher ===
+  game  1/6  rusher=P1  plies= 14  bot win      walls= 0  useful=0  useless=0  avg_delay=0.0
+  game  2/6  rusher=P2  plies= 19  bot win      walls= 2  useful=0  useless=2  avg_delay=1.0
+  game  3/6  rusher=P1  plies= 14  bot win      walls= 0  useful=0  useless=0  avg_delay=0.0
+  game  4/6  rusher=P2  plies= 19  bot win      walls= 2  useful=0  useless=2  avg_delay=1.0
+  game  5/6  rusher=P1  plies= 14  bot win      walls= 0  useful=0  useless=0  avg_delay=0.0
+  game  6/6  rusher=P2  plies= 19  bot win      walls= 2  useful=0  useless=2  avg_delay=1.0
+
+  neural net (checkpoints/best_human_walls.pt) sims=800 (rush): bot 6-0-0  (100% win-rate)  walls=6 (useful=0, useless=6)  avg_delay/wall=1.00  (82s, avg_plies=16)
+
+============================================================
+DIAGNOSTIC SUMMARY
+============================================================
+  neural net (checkpoints/best_human_walls.pt) sims=800 (rush)  bot  6- 0- 0  (100%)  walls=6 (0% useful)  avg_delay/wall=1.00  avg_plies=16
+
+Interpretation:
+  - bot win-rate < 50% → losing to a trivial 'walk-around-walls' strategy
+  - useful_walls % low → walls placed are easy to walk around (1-square detour)
+  - avg_delay/wall ~1.0 → walls are wasted (rusher just sidesteps)
+  - avg_delay/wall ≥ 3.0 → walls force real detours (good)
+  - if AB high useful% but NN low → NN policy is the bug (aux-value teaches path-counting)
+  - if both have low useful% → wall-pruning or eval is the bug

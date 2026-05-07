@@ -1,0 +1,23 @@
+
+=== alpha-beta depth=3 time=2.0s (rush): 6 games vs rusher ===
+  game  1/6  rusher=P1  plies= 34  bot win      walls=10  useful=9  useless=1  avg_delay=2.8
+  game  2/6  rusher=P2  plies= 15  bot win      walls= 1  useful=0  useless=1  avg_delay=1.0
+  game  3/6  rusher=P1  plies= 34  bot win      walls=10  useful=9  useless=1  avg_delay=2.8
+  game  4/6  rusher=P2  plies= 15  bot win      walls= 1  useful=0  useless=1  avg_delay=1.0
+  game  5/6  rusher=P1  plies= 34  bot win      walls=10  useful=9  useless=1  avg_delay=2.8
+  game  6/6  rusher=P2  plies= 15  bot win      walls= 1  useful=0  useless=1  avg_delay=1.0
+
+  alpha-beta depth=3 time=2.0s (rush): bot 6-0-0  (100% win-rate)  walls=33 (useful=27, useless=6)  avg_delay/wall=1.90  (47s, avg_plies=24)
+
+============================================================
+DIAGNOSTIC SUMMARY
+============================================================
+  alpha-beta depth=3 time=2.0s (rush)                      bot  6- 0- 0  (100%)  walls=33 (82% useful)  avg_delay/wall=1.90  avg_plies=24
+
+Interpretation:
+  - bot win-rate < 50% → losing to a trivial 'walk-around-walls' strategy
+  - useful_walls % low → walls placed are easy to walk around (1-square detour)
+  - avg_delay/wall ~1.0 → walls are wasted (rusher just sidesteps)
+  - avg_delay/wall ≥ 3.0 → walls force real detours (good)
+  - if AB high useful% but NN low → NN policy is the bug (aux-value teaches path-counting)
+  - if both have low useful% → wall-pruning or eval is the bug

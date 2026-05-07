@@ -1,0 +1,22 @@
+
+=== Mining missed-wall positions from data/quoridor.db ===
+  Found 4 human-vs-NN games in data/quoridor.db
+  Mined 24 missed-wall positions (min_delay=2).
+
+=== Sampling rehearsal data from data/quoridor_v3.db ===
+  24 rehearsal examples (target was 24)
+
+=== Training: 48 examples (24 human × weight 10.0, 24 rehearsal × weight 1.0) ===
+Device: mps
+Loaded checkpoints/best.pt  meta={'iteration': 27, 'best_iteration': 15, 'train_loss': 1.4871687482762912, 'policy_loss': 1.4518948153583144, 'value_loss': 0.117579769928912, 'best_val_loss': 1.7745642708492484}
+  KL regularisation enabled (λ=0.5)
+  epoch 1/8  loss=5.2873 (p=5.0829 v=0.5374 kl=0.0863)  val=4.6528 [best]
+  epoch 2/8  loss=3.9307 (p=3.7505 v=0.2120 kl=0.2333)  val=3.9903 [best]
+  epoch 3/8  loss=3.0706 (p=2.8293 v=0.0877 kl=0.4300)  val=3.5543 [best]
+  epoch 4/8  loss=2.4590 (p=2.1626 v=0.0451 kl=0.5657)  val=3.2553 [best]
+  epoch 5/8  loss=2.0369 (p=1.7052 v=0.0287 kl=0.6462)  val=3.0766 [best]
+  epoch 6/8  loss=1.7704 (p=1.4190 v=0.0215 kl=0.6898)  val=2.9804 [best]
+  epoch 7/8  loss=1.6228 (p=1.2623 v=0.0182 kl=0.7101)  val=2.9407 [best]
+  epoch 8/8  loss=1.5567 (p=1.1934 v=0.0169 kl=0.7163)  val=2.9293 [best]
+
+Saved checkpoints/best_human_walls.pt

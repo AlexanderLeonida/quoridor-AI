@@ -1,0 +1,33 @@
+Players (3 after dedup): ['r6_human', 'current_v2', 'r6_only']
+Total games: 18  (6 per pair × 3 pairs)
+  [1/18]  current_v2 (P1) vs r6_human (P2)  100p                      r6_human W  [65s elapsed, eta 1105s]
+  [2/18]  current_v2 (P1) vs r6_human (P2)  100p                    current_v2 W  [73s elapsed, eta 581s]
+  [3/18]  r6_human (P1) vs current_v2 (P2)  100p                      r6_human W  [91s elapsed, eta 455s]
+  [4/18]  r6_human (P1) vs current_v2 (P2)  100p                    current_v2 W  [91s elapsed, eta 320s]
+  [5/18]  current_v2 (P1) vs r6_human (P2)  100p                      r6_human W  [95s elapsed, eta 246s]
+  [6/18]  r6_human (P1) vs current_v2 (P2)  100p                      r6_human W  [105s elapsed, eta 211s]
+  [7/18]  r6_only (P1) vs r6_human (P2)   31p                       r6_only W  [126s elapsed, eta 198s]
+  [8/18]  r6_human (P1) vs r6_only (P2)   39p                      r6_human W  [129s elapsed, eta 161s]
+  [9/18]  r6_only (P1) vs r6_human (P2)  100p                       r6_only W  [142s elapsed, eta 142s]
+  [10/18]  r6_human (P1) vs r6_only (P2)  100p                      r6_human W  [162s elapsed, eta 129s]
+  [11/18]  r6_human (P1) vs r6_only (P2)  100p                               D  [164s elapsed, eta 104s]
+  [12/18]  r6_only (P1) vs r6_human (P2)  100p                      r6_human W  [196s elapsed, eta 98s]
+  [13/18]  current_v2 (P1) vs r6_only (P2)  100p                    current_v2 W  [204s elapsed, eta 79s]
+  [14/18]  r6_only (P1) vs current_v2 (P2)  100p                    current_v2 W  [235s elapsed, eta 67s]
+  [15/18]  r6_only (P1) vs current_v2 (P2)  100p                       r6_only W  [240s elapsed, eta 48s]
+  [16/18]  current_v2 (P1) vs r6_only (P2)  100p                    current_v2 W  [243s elapsed, eta 30s]
+  [17/18]  current_v2 (P1) vs r6_only (P2)  100p                       r6_only W  [267s elapsed, eta 16s]
+  [18/18]  r6_only (P1) vs current_v2 (P2)  100p                    current_v2 W  [274s elapsed, eta 0s]
+
+Match summary (row beats column, score %):
+                          r6_human     current_v2        r6_only
+r6_human                          -            n/a    58% (3-2-1)
+current_v2              33% (2-4-0)              -    67% (4-2-0)
+r6_only                 42% (3-2-1)    33% (4-2-0)              -
+
+Elo ratings (anchored at 1000 for 'current_v2', 95% CI from 200 bootstrap resamples):
+   1. r6_human                   1059.6   [  808.6,  1330.5]
+   2. current_v2                 1000.0   [ 1000.0,  1000.0]
+   3. r6_only                     940.4   [  714.4,  1141.2]
+
+Saved checkpoints/_tourney_3way.json

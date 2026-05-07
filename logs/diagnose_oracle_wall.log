@@ -1,0 +1,22 @@
+Loaded checkpoints/best.pt
+
+=== Rusher = P1, bot = P2 ===
+  Bot to move.  rusher_path=3, bot_path=3, bot_walls_left=10
+  (bot is winning race; defensive wall less critical)
+  Best objective wall: H/V(1)(5,3)  delays opponent by 1 square(s), increases own path by 0
+  Policy says: prob=0.0028  rank=4/132 legal moves
+  Top-3 policy moves:
+    1. pawn(2,4)  p=0.974
+    2. pawn(3,5)  p=0.006
+    3. wall(5,4)  p=0.004
+
+=== Rusher = P2, bot = P1 ===
+  Bot to move.  rusher_path=3, bot_path=4, bot_walls_left=10
+  (bot is LOSING race by 1 square(s); needs defensive wall)
+  Best objective wall: H/V(1)(0,3)  delays opponent by 1 square(s), increases own path by 0
+  Policy says: prob=0.0013  rank=9/132 legal moves
+  Top-3 policy moves:
+    1. pawn(5,4)  p=0.862
+    2. pawn(4,5)  p=0.058
+    3. pawn(4,3)  p=0.026
+
