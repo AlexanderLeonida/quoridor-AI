@@ -1,0 +1,23 @@
+Building wider student: 14×192
+  11.72M parameters
+
+Sampling 8000 positions from data/quoridor_v3.db...
+  got 8000 positions
+
+Generating net-teacher targets (checkpoints/best.pt, sims=800, 6 workers)...
+  8000 net-teacher targets in 5941s
+
+Distilling into wider net on mps...
+  epoch 1/10  loss=4.9895 (p=4.2993 v=0.6902)  val=4.3000  [best]
+  epoch 2/10  loss=2.2604 (p=2.0781 v=0.1823)  val=1.8902  [best]
+  epoch 3/10  loss=1.3136 (p=1.2466 v=0.0670)  val=1.3217  [best]
+  epoch 4/10  loss=1.0951 (p=1.0586 v=0.0365)  val=1.2839  [best]
+  epoch 5/10  loss=1.0151 (p=0.9913 v=0.0238)  val=1.1950  [best]
+  epoch 6/10  loss=0.9477 (p=0.9303 v=0.0174)  val=1.2752
+  epoch 7/10  loss=0.8979 (p=0.8854 v=0.0125)  val=1.1204  [best]
+  epoch 8/10  loss=0.8631 (p=0.8540 v=0.0090)  val=1.1117  [best]
+  epoch 9/10  loss=0.8448 (p=0.8370 v=0.0078)  val=1.1118
+  epoch 10/10  loss=0.8375 (p=0.8308 v=0.0067)  val=1.1113  [best]
+
+Saved checkpoints/best_widened_14x192.pt
+  config: 14×192 (11.72M params)

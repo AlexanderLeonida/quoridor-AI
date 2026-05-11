@@ -1,13 +1,3 @@
 Sampling 8000 positions from data/quoridor_v3.db...
   got 8000 positions
 Generating teacher targets (ab, 6 workers)...
-  8000 teacher targets in 13210s (1.65s/pos)
-Sampling 3428 rehearsal triples (30% of final mix) from data/quoridor_v3.db...
-  got 3428 rehearsal triples
-Distilling into student on mps...
-  KL regularisation enabled, reg_lambda=0.5
-  epoch 1/4  loss=1.7703 (p=1.4115 v=0.1268 kl=0.4640)  val=1.1491  [best]
-  epoch 2/4  loss=1.1270 (p=0.7863 v=0.0521 kl=0.5773)  val=1.0763  [best]
-  epoch 3/4  loss=0.9605 (p=0.6246 v=0.0389 kl=0.5940)  val=1.0670  [best]
-  epoch 4/4  loss=0.8968 (p=0.5665 v=0.0339 kl=0.5928)  val=1.0425  [best]
-Saved checkpoints/best_ab_distilled_r6.pt

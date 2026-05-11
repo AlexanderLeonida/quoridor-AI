@@ -1,0 +1,45 @@
+=== post-widen pipeline starting at 2026-05-10T01:20:34Z ===
+Waiting for checkpoints/best_widened_14x192.pt ...
+checkpoints/best_widened_14x192.pt detected at 2026-05-10T03:11:57Z
+-rw-r--r--@ 1 aleon1  staff  46960711 May  9 20:11 checkpoints/best_widened_14x192.pt
+Backup: pre_widen_backup.pt = current best.pt
+
+=== Bench widened vs current best.pt (16 games, 200 sims) ===
+Players (2 after dedup): ['widened_14x192', 'current_best']
+Total games: 16  (16 per pair × 1 pairs)
+  [1/16]  widened_14x192 (P1) vs current_best (P2)   30p                  current_best W  [38s elapsed, eta 573s]
+  [2/16]  widened_14x192 (P1) vs current_best (P2)   57p                widened_14x192 W  [54s elapsed, eta 375s]
+  [3/16]  widened_14x192 (P1) vs current_best (P2)  100p                  current_best W  [76s elapsed, eta 328s]
+  [4/16]  current_best (P1) vs widened_14x192 (P2)  100p                  current_best W  [87s elapsed, eta 260s]
+  [5/16]  current_best (P1) vs widened_14x192 (P2)  100p                  current_best W  [101s elapsed, eta 222s]
+  [6/16]  current_best (P1) vs widened_14x192 (P2)  100p                widened_14x192 W  [112s elapsed, eta 187s]
+  [7/16]  widened_14x192 (P1) vs current_best (P2)  100p                widened_14x192 W  [121s elapsed, eta 155s]
+  [8/16]  current_best (P1) vs widened_14x192 (P2)  100p                widened_14x192 W  [136s elapsed, eta 136s]
+  [9/16]  widened_14x192 (P1) vs current_best (P2)  100p                  current_best W  [173s elapsed, eta 135s]
+  [10/16]  widened_14x192 (P1) vs current_best (P2)   51p                widened_14x192 W  [175s elapsed, eta 105s]
+  [11/16]  current_best (P1) vs widened_14x192 (P2)  100p                  current_best W  [175s elapsed, eta 80s]
+  [12/16]  widened_14x192 (P1) vs current_best (P2)  100p                               D  [176s elapsed, eta 59s]
+  [13/16]  current_best (P1) vs widened_14x192 (P2)  100p                widened_14x192 W  [197s elapsed, eta 45s]
+  [14/16]  widened_14x192 (P1) vs current_best (P2)   40p                  current_best W  [206s elapsed, eta 29s]
+  [15/16]  current_best (P1) vs widened_14x192 (P2)  100p                  current_best W  [216s elapsed, eta 14s]
+  [16/16]  current_best (P1) vs widened_14x192 (P2)  100p                  current_best W  [253s elapsed, eta 0s]
+
+Match summary (row beats column, score %):
+                    widened_14x192   current_best
+widened_14x192                    -            n/a
+current_best            59% (9-6-1)              -
+
+Elo ratings (anchored at 1000 for 'current_best', 95% CI from 200 bootstrap resamples):
+   1. widened_14x192             1114.3   [  -60.0,  1447.4]
+   2. current_best               1000.0   [ 1000.0,  1000.0]
+
+Saved checkpoints/_tourney_widen_vs_best.json
+
+Bench result: widened=1114.2850806079045 current=1000.0
+Promote widened? yes
+Promoted widened_14x192 to best.pt
+
+=== post-widen pipeline finished at 2026-05-10T03:16:12Z ===
+Final best.pt:
+  meta: {'iteration': 0, 'best_iteration': 0, 'widened_from': 'checkpoints/best.pt', 'widened_blocks': 14, 'widened_filters': 192, 'ab_co_teacher': False, 'widen_distill_val_loss': 1.111338676251471}
+  params: 11,724,625

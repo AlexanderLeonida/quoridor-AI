@@ -1,177 +1,153 @@
 # quoridor-AI
 
-A Quoridor engine and AI in pure Python (no dependencies).
+Quoridor engine, search agents and AlphaZero-style training pipeline
+implemented in Python. The codebase contains:
 
-## Layout
+- A classic search engine (negamax/PVS) with practical Quoridor pruning
+- An AlphaZero-style MCTS + PyTorch policy/value network for self-play
+- Utilities for logging games to a SQLite DB, supervised training, and
+  a small Tkinter GUI + a terminal play mode.
+
+This repository is intended for experimentation and research rather than
+production deployment.
+
+## Quick start
+
+1. Create a virtual environment and install dependencies:
+
+```sh
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+Notes:
+- The core engine and DB code have no mandatory heavy dependencies.
+  `torch` is optional for using the neural network and training scripts;
+  it is installed via `requirements.txt` if you intend to train or run
+  neural-network-guided self-play.
+
+## Layout (key files)
 
 ```
-quoridor/
-  board.py      rules, state, move generation, BFS
-  ai.py         negamax + PVS, TT, killers, wall pruning
-  encoding.py   state/move/action tensors for the neural net
-  database.py   SQLite store of played games (for training data)
-  net.py        PyTorch policy+value network (AlphaZero-style)
-  recorder.py   convenience wrapper that logs a game into the DB
-  mcts.py       AlphaZero MCTS (PUCT, Dirichlet noise, FPU)
-gui.py          Tkinter GUI (mouse play, hover preview)
-play.py         terminal play (human-vs-AI, AI-vs-AI)
-train.py        supervised trainer over the games DB
-selfplay.py     AlphaZero self-play pipeline (generate → train → gate)
-test_quoridor.py
-test_ml.py
+quoridor/             # game engine, search, MCTS, encoding, DB
+gui.py                # small Tkinter GUI for human play
+play.py               # terminal-based play (human vs AI, AI vs AI)
+train.py              # supervised training over games DB
+selfplay.py           # AlphaZero self-play pipeline (generate → train → gate)
+checkpoints/          # trained model checkpoints and evaluation snapshots
+data/                  # game DB (SQLite) and generated artifacts
 ```
 
-## GUI
+## Running
+
+- GUI:
 
 ```sh
 python3 gui.py
 ```
 
-- A "Choose side" dialog appears first: click **Player 1 (Red)** or **Player 2 (Blue)**.
-- The board is oriented so that you are always at the top and the AI at the bottom.
-- **Move:** click one of the highlighted cells. Legal targets are marked with a small blue dot.
-- **Wall:** hover over the gap between two cells — horizontal gaps preview a horizontal wall, vertical gaps preview a vertical wall. Click to place. Previews are orange when legal, red when not.
-- The **Difficulty** dropdown controls AI search depth and time budget (Easy / Medium / Hard). **New Game** reopens the side dialog.
-
-## Play
+- Terminal play:
 
 ```sh
-python3 play.py                # prompts for P1 or P2
-python3 play.py --player 1     # skip prompt, play as P1 (Red)
-python3 play.py --player 2     # play as P2 (Blue)
+python3 play.py                # interactive prompt
+python3 play.py --player 1     # play as Player 1 (Red)
+python3 play.py --player 2     # play as Player 2 (Blue)
 python3 play.py --selfplay     # AI vs AI
 python3 play.py --depth 4 --time 8
 python3 play.py --no-color     # disable ANSI colors
 ```
 
-**Board.** Columns are `a`-`i` (left to right); rows are `1`-`9`.
+Move notation examples (at the `play.py` prompt):
 
-- Player 1 (**Red**, moves first) starts at `e1` and must reach row 9.
-- Player 2 (**Blue**, moves second) starts at `e9` and must reach row 1.
-- The display is oriented so that you (the human) are always at the top of the screen and the AI at the bottom.
+- `e2`    — move pawn to e2
+- `e5h`   — place a horizontal wall anchored at e5
+- `e5v`   — place a vertical wall anchored at e5
+- `moves` — list legal moves
+- `q`     — quit
 
-**Move notation at the prompt:**
+Board coordinates: columns `a`–`i`, rows `1`–`9`. Player 1 (Red)
+starts at `e1` and aims for row 9; Player 2 (Blue) starts at `e9`.
 
-| Input   | Meaning                                                    |
-|---------|------------------------------------------------------------|
-| `e2`    | move your pawn to e2                                       |
-| `e5h`   | place a horizontal wall anchored at e5 (rows 1-8, cols a-h)|
-| `e5v`   | place a vertical wall anchored at e5                       |
-| `moves` | list all legal moves in this notation                      |
-| `q`     | quit                                                       |
+## Training and self-play
 
-## How the AI works
+- Supervised training from the games DB:
 
-- **Search**: iterative-deepening **negamax with Principal Variation Search (PVS)**. Hard difficulty is given a 30 s per-move budget and a depth ceiling of 20 — iterative deepening stops at whatever depth it completes before the clock expires.
-- **Transposition table**: 64-bit **Zobrist hashing** with EXACT / LOWER / UPPER bounds. The TT's best-move is used as the first move at every node (dominant ordering heuristic).
-- **Killer moves**: two slots per ply for moves that produced recent beta-cutoffs.
-- **Move ordering**: TT move → killers → pawn moves toward goal → walls ordered by **disruption** (how much the wall lengthens opponent's shortest path minus how much it lengthens ours).
-- **Wall pruning**: only anchors adjacent to a cell on either player's current shortest path are considered. This is the standard practical pruning for Quoridor and keeps the branching factor tractable.
-- **Evaluation (from the side-to-move's perspective)**:
-  `(opp_path − my_path) · 100 + wall_diff · 6 + mobility_diff · 2 + advance_diff + tempo`.
-- **Terminal scores** decay with ply (`WIN_SCORE − ply`) so the engine prefers shorter wins and longer losses.
+```sh
+python3 train.py --epochs 10 --batch-size 256 --lr 1e-3 \
+                 --out checkpoints/v1.pt
+```
 
-### Difficulty levels (gui.py)
+- Full AlphaZero-style self-play loop:
 
-| Level  | Time budget | Depth ceiling |
-|--------|-------------|---------------|
-| Easy   | 2 s         | 3             |
-| Medium | 8 s         | 20 (time-bound) |
-| Hard   | 30 s        | 20 (time-bound) |
+```sh
+python3 selfplay.py --iterations 100 --games-per-iter 50 \
+                    --simulations 400 --checkpoint-dir checkpoints/
+```
 
-## Learning from past games
+See `selfplay.py` for available CLI flags. `train.py` and `selfplay.py`
+auto-select the best available device (CUDA → MPS → CPU); override with
+`--device` if needed.
 
-Every game played via `play.py` or `gui.py` is automatically logged to a
-SQLite database at `data/quoridor.db`. Pass `--no-record` to `play.py` to
-disable logging for a single session.
+## Database
 
-### Database
+Games are logged to a SQLite DB (default `data/quoridor.db`) when using
+`play.py` or `gui.py`. To disable recording for a single play session,
+pass `--no-record` to `play.py`.
 
-Schema (see `quoridor/database.py`):
+Schema highlights (see `quoridor/database.py`):
 
-- `games(id, created_at, finished_at, winner, num_plies, p1_source, p2_source, p1_time_limit, p2_time_limit, model_version, notes)`
-- `moves(id, game_id, ply, side, move_kind, move_r, move_c, elapsed_ms, policy_blob)`
+- `games`: metadata (winner, timestamps, number of plies, sources)
+- `moves`: per-ply move records and optional `policy_blob` (MCTS targets)
 
-Only move lists are stored (not tensors). States are re-materialized on
-demand by replaying from the initial position, which keeps the DB ~40×
-smaller and robust to encoding changes.
+The DB stores move lists only; states are re-materialized by replaying
+moves on demand which keeps the DB compact and stable across encoder
+changes.
+
+Example usage:
 
 ```python
 from quoridor import GameDB
 with GameDB() as db:
-    print(db.count_games(), "games,", db.count_positions(), "positions")
+    print(db.count_games(), "games")
     for board, move, z in db.iter_training_samples():
-        ...   # z is +1/-1 from the side-to-move's POV
+        pass
 ```
 
-### Neural network
+## How the AI works (overview)
 
-`quoridor/net.py` defines an AlphaZero-style residual conv net:
+- Search engine: iterative-deepening negamax with Principal Variation
+  Search (PVS), transposition table (Zobrist hashing), killer moves and
+  practical wall pruning to keep branching manageable.
+- AlphaZero stack: MCTS (PUCT) with Dirichlet root noise, a residual
+  conv policy/value network (`quoridor/net.py`), and a supervised +
+  self-play training loop.
 
-- **Input**: `(7, 9, 9)` canonical tensor — side-to-move is always P0.
-  Planes: my pawn, opp pawn, h-walls, v-walls, my walls-left / 10,
-  opp walls-left / 10, all-ones bias.
-- **Trunk**: 3×3 conv stem → N residual blocks (default `blocks=6`, `filters=64`).
-- **Policy head**: 1×1 conv → FC → 209 logits over the flat action space
-  (81 pawn cells + 64 H-walls + 64 V-walls).
-- **Value head**: 1×1 conv → FC(64) → FC(1) → `tanh`.
-
-PyTorch is imported lazily, so the engine/DB/encoding still work on a
-machine without `torch` installed.
-
-### Training (supervised / behaviour cloning)
-
-```sh
-pip install -r requirements.txt
-python3 train.py --epochs 10 --batch-size 256 --lr 1e-3 \
-                 --out checkpoints/v1.pt
-# resume from a previous checkpoint
-python3 train.py --resume checkpoints/v1.pt --epochs 5
-```
-
-Training minimises `CE(policy, action_taken) + MSE(value, z)`. It picks
-the best available device automatically (CUDA → MPS → CPU); override with
-`--device`.
-
-### Self-play training (AlphaZero loop)
-
-`selfplay.py` implements the full AlphaZero training pipeline:
-
-1. **Self-play** — generate games using MCTS guided by the current
-   neural network.  MCTS visit-count distributions are stored as soft
-   policy targets in the DB's `policy_blob` column.
-2. **Training** — update the network on recent games with soft
-   cross-entropy (policy) + MSE (value) + L2 regularisation, gradient
-   clipping, and cosine LR annealing.
-3. **Evaluation / gating** — pit the new network against the current
-   best via greedy MCTS.  Promote only when win-rate > 55 %.
-4. **Repeat.**
-
-```sh
-# Start from scratch (random network):
-python3 selfplay.py --iterations 100 --games-per-iter 50 \
-                    --simulations 400 --checkpoint-dir checkpoints/
-
-# Resume from a checkpoint:
-python3 selfplay.py --resume checkpoints/best.pt --iterations 50
-
-# Quick smoke-test:
-python3 selfplay.py --iterations 2 --games-per-iter 4 \
-                    --simulations 50 --eval-games 4 --epochs 2
-```
-
-**MCTS details** (`quoridor/mcts.py`):
-
-- PUCT exploration with log-scaling c\_puct (MuZero formula)
-- Dirichlet noise at root (α = 0.3, ε = 0.25)
-- First Play Urgency (FPU) reduction for unvisited children
-- Temperature schedule: proportional sampling for the first 15 full
-  moves, then greedy
-- Correct negamax value propagation for the two-player zero-sum game
+See in-file docstrings and the modules in `quoridor/` for implementation
+details (e.g., `quoridor/ai.py`, `quoridor/mcts.py`, `quoridor/net.py`).
 
 ## Tests
 
+Run the small test suites:
+
 ```sh
-python3 test_quoridor.py   # engine + alpha-beta
+python3 test_quoridor.py   # engine + alpha-beta unitchecks
 python3 test_ml.py         # encoding round-trips + DB round-trip
 ```
+
+## Checkpoints
+
+Model checkpoints and evaluation snapshots live in the `checkpoints/`
+directory. These are used by `selfplay.py` and evaluation scripts.
+
+## Contributing
+
+Contributions are welcome. Typical contributions include bug fixes,
+improvements to search heuristics, and experiments with network
+architectures or training regimes. If you change the DB schema, include
+backwards-compatible migration code or notes.
+
+## License
+
+This repository does not include an explicit license file. Add one if you
+intend to publish or share the project publicly.
