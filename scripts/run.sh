@@ -13,13 +13,13 @@
 #       :2004-2008 explicitly prescribes 0.1–0.3 for post-distillation nets)
 
 set -eu
-cd "$(dirname "$0")"
+cd "$(dirname "$0")/.."
 
 mkdir -p logs checkpoints
 
 LOG="logs/train.log"
 
-python3 -u selfplay.py \
+python3 -u training/selfplay.py \
   --iterations 12 --games-per-iter 100 --simulations 1000 \
   --eval-games 30 --epochs 2 --window 5000 --workers 8 \
   --lr 3e-4 --weight-decay 5e-4 \

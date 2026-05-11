@@ -1,5 +1,9 @@
 """Sanity tests for the Quoridor engine and AI."""
 
+# --- path bootstrap so this file can be run from anywhere ---
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))))
+# -------------------------------------------------------------
 from quoridor import (
     BOARD_SIZE,
     Board,

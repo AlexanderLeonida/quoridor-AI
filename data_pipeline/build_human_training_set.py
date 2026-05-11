@@ -29,6 +29,10 @@ from typing import List, Optional, Tuple
 
 import numpy as np
 
+# --- path bootstrap so this file can be run from anywhere ---
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))))
+# -------------------------------------------------------------
 from quoridor import Board, GameDB
 from quoridor.ai import find_best_move
 from quoridor.board import (

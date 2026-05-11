@@ -4,6 +4,6 @@
 # defaults to the "Neural Net" difficulty.
 
 set -eu
-cd "$(dirname "$0")"
+cd "$(dirname "$0")/.."
 
 exec python3 gui.py

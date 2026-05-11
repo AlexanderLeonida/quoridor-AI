@@ -7,13 +7,13 @@
 # Backup at checkpoints/pre_r6_backup.pt (= r5 weights) for rollback.
 
 set -eu
-cd "$(dirname "$0")"
+cd "$(dirname "$0")/.."
 
 mkdir -p logs checkpoints
 
 LOG="logs/distill_deep_r6.log"
 
-python3 -u distill_deep.py \
+python3 -u distillation/distill_deep.py \
   --teacher ab \
   --student checkpoints/best.pt \
   --out checkpoints/best_ab_distilled_r6.pt \

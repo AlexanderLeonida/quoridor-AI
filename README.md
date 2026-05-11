@@ -30,13 +30,18 @@ Notes:
 ## Layout (key files)
 
 ```
-quoridor/             # game engine, search, MCTS, encoding, DB
+quoridor/             # core library: engine, search, MCTS, encoding, DB, net
+training/             # selfplay.py, train.py, train_from_npz.py, train_human_walls.py, verify_human_walls.py
+distillation/         # distill.py, distill_deep.py, widen_distill.py
+eval/                 # bench.py, bench_matrix.py, tournament.py
+diagnostics/          # analyze_*.py, diagnose_*.py, inspect_*.py
+data_pipeline/        # build_human_training_set.py, consolidate_human_games.py
+tests/                # test_quoridor.py, test_ml.py
+scripts/              # run.sh, run_r6.sh, post_r6_pipeline.sh, rungame.sh
 gui.py                # small Tkinter GUI for human play
 play.py               # terminal-based play (human vs AI, AI vs AI)
-train.py              # supervised training over games DB
-selfplay.py           # AlphaZero self-play pipeline (generate → train → gate)
 checkpoints/          # trained model checkpoints and evaluation snapshots
-data/                  # game DB (SQLite) and generated artifacts
+data/                 # game DB (SQLite) and generated artifacts
 ```
 
 ## Running
@@ -74,20 +79,28 @@ starts at `e1` and aims for row 9; Player 2 (Blue) starts at `e9`.
 - Supervised training from the games DB:
 
 ```sh
-python3 train.py --epochs 10 --batch-size 256 --lr 1e-3 \
-                 --out checkpoints/v1.pt
+python3 training/train.py --epochs 10 --batch-size 256 --lr 1e-3 \
+                          --out checkpoints/v1.pt
 ```
 
 - Full AlphaZero-style self-play loop:
 
 ```sh
-python3 selfplay.py --iterations 100 --games-per-iter 50 \
-                    --simulations 400 --checkpoint-dir checkpoints/
+python3 training/selfplay.py --iterations 100 --games-per-iter 50 \
+                             --simulations 400 --checkpoint-dir checkpoints/
 ```
 
-See `selfplay.py` for available CLI flags. `train.py` and `selfplay.py`
+See `training/selfplay.py` for available CLI flags. Training scripts
 auto-select the best available device (CUDA → MPS → CPU); override with
 `--device` if needed.
+
+For long pinned-flag runs, prefer the wrappers in `scripts/`:
+
+```sh
+./scripts/run.sh                 # 12-iter self-play with the anti-drift stack
+./scripts/run_r6.sh              # depth-10 AB deep distillation
+./scripts/post_r6_pipeline.sh    # gate → promote → targeted-train → gate
+```
 
 ## Database
 
@@ -131,8 +144,9 @@ details (e.g., `quoridor/ai.py`, `quoridor/mcts.py`, `quoridor/net.py`).
 Run the small test suites:
 
 ```sh
-python3 test_quoridor.py   # engine + alpha-beta unitchecks
-python3 test_ml.py         # encoding round-trips + DB round-trip
+python3 tests/test_quoridor.py   # engine + alpha-beta unit checks
+# tests/test_ml.py contains pytest-style functions; invoke with pytest
+# or import-and-call individual tests.
 ```
 
 ## Checkpoints

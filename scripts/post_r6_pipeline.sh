@@ -13,7 +13,7 @@
 # Backups always taken before any swap.
 
 set -eu
-cd "$(dirname "$0")"
+cd "$(dirname "$0")/.."
 mkdir -p logs checkpoints
 
 LOG="logs/post_r6_pipeline.log"
@@ -39,7 +39,7 @@ echo "Backup: pre_r6_bench_backup.pt = current best.pt" | tee -a "$LOG"
 echo "" | tee -a "$LOG"
 echo "=== Bench r6 vs current best.pt (8 games, 200 sims) ===" | tee -a "$LOG"
 TOURNEY_OUT="checkpoints/_tourney_r6_vs_human_v2.json"
-python3 -u tournament.py \
+python3 -u eval/tournament.py \
     --ckpt "$R6_PATH:r6_d10" \
     --ckpt "checkpoints/best.pt:current_best" \
     --games 8 --sims 200 --workers 6 \
@@ -80,7 +80,7 @@ PRE_TARGETED_PATH="checkpoints/pre_targeted_${BASE_FOR_TARGETED}_backup.pt"
 cp checkpoints/best.pt "$PRE_TARGETED_PATH"
 echo "Backup: $PRE_TARGETED_PATH" | tee -a "$LOG"
 
-python3 -u train_from_npz.py \
+python3 -u training/train_from_npz.py \
     --in checkpoints/best.pt \
     --out checkpoints/best_${BASE_FOR_TARGETED}_human_v3.pt \
     --npz data/human_training_set.npz \
@@ -93,7 +93,7 @@ python3 -u train_from_npz.py \
 echo "" | tee -a "$LOG"
 echo "=== Bench targeted-trained vs pre-targeted (8 games, 200 sims) ===" | tee -a "$LOG"
 TOURNEY_OUT2="checkpoints/_tourney_${BASE_FOR_TARGETED}_targeted.json"
-python3 -u tournament.py \
+python3 -u eval/tournament.py \
     --ckpt "checkpoints/best_${BASE_FOR_TARGETED}_human_v3.pt:targeted" \
     --ckpt "$PRE_TARGETED_PATH:pre_targeted" \
     --games 8 --sims 200 --workers 6 \

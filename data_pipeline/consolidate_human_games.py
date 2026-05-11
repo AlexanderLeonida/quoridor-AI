@@ -3,6 +3,10 @@ so future training pulls from one source.  Idempotent: skips games
 already in v3.
 """
 import sqlite3
+# --- path bootstrap so this file can be run from anywhere ---
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))))
+# -------------------------------------------------------------
 from quoridor import Board, GameDB
 from quoridor.encoding import serialize_policy
 

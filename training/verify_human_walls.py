@@ -17,6 +17,10 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 
+# --- path bootstrap so this file can be run from anywhere ---
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))))
+# -------------------------------------------------------------
 from quoridor import Board, GameDB
 from quoridor.board import MOVE_PAWN, Move
 from quoridor.encoding import (

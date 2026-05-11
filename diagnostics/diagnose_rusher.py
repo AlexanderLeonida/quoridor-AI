@@ -26,6 +26,10 @@ from typing import Optional, Tuple, List
 import numpy as np
 import torch
 
+# --- path bootstrap so this file can be run from anywhere ---
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))))
+# -------------------------------------------------------------
 from quoridor import Board
 from quoridor.ai import find_best_move
 from quoridor.board import MOVE_PAWN, Move

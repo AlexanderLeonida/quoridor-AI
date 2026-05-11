@@ -14,6 +14,10 @@ import torch
 import torch.nn.functional as F
 import numpy as np
 
+# --- path bootstrap so this file can be run from anywhere ---
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))))
+# -------------------------------------------------------------
 from quoridor import Board
 from quoridor.board import MOVE_PAWN, Move
 from quoridor.encoding import (
