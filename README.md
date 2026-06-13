@@ -2,19 +2,14 @@
 
 <p align="center">
   <a href="https://github.com/AlexanderLeonida/quoridor-AI/raw/main/media/quoridor-demo.mp4">
-    <video
-      src="https://github.com/AlexanderLeonida/quoridor-AI/raw/main/media/quoridor-demo.mp4"
-      poster="https://github.com/AlexanderLeonida/quoridor-AI/raw/main/media/quoridor-demo-poster.jpg"
-      controls
-      muted
-      width="720">
-    </video>
+    <img src="media/quoridor-demo.gif" alt="Demo of the live web showcase" width="720">
   </a>
 </p>
 
-> **▶ Demo** — if the inline player above doesn't load on your viewer, click the image to open the
-> [60-second walkthrough](https://github.com/AlexanderLeonida/quoridor-AI/raw/main/media/quoridor-demo.mp4)
-> showing the live web showcase (self-play, before/after RL, round-robin tournament, training dashboard).
+> **▶ Demo** — 60-second walkthrough of the live web showcase (self-play,
+> before/after RL, round-robin tournament, training dashboard). The
+> animation above plays at **5× speed**; click it for the
+> [full-resolution video](https://github.com/AlexanderLeonida/quoridor-AI/raw/main/media/quoridor-demo.mp4).
 
 Quoridor engine, search agents and AlphaZero-style training pipeline
 implemented in Python. The codebase contains:
