@@ -1,0 +1,56 @@
+INFO:     Started server process [69081]
+INFO:     Waiting for application startup.
+[webapp] tournament agents: Iter 20=checkpoints/iter_0020.pt, Iter 40=checkpoints/iter_0040.pt, Iter 60=checkpoints/iter_0060.pt, Iter 80=checkpoints/iter_0082.pt, Champion=checkpoints/best.pt
+[webapp] starting runner: selfplay
+[webapp] starting runner: generations
+[webapp] starting runner: tournament
+[webapp] starting runner: metrics
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     127.0.0.1:58212 - "GET /api/streams HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58218 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58220 - "GET /assets/index-b56q2IbY.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58218 - "GET /assets/index-u3pdRlzS.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58218 - "GET /api/project_stats HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58220 - "GET /api/streams HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58222 - "GET /favicon.ico HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58227 - "WebSocket /ws/metrics" [accepted]
+INFO:     connection open
+INFO:     127.0.0.1:58230 - "WebSocket /ws/selfplay" [accepted]
+INFO:     connection open
+INFO:     127.0.0.1:58232 - "WebSocket /ws/generations" [accepted]
+INFO:     connection open
+INFO:     127.0.0.1:58233 - "WebSocket /ws/tournament" [accepted]
+INFO:     connection open
+INFO:     127.0.0.1:58255 - "WebSocket /ws/selfplay" [accepted]
+INFO:     connection open
+INFO:     connection closed
+INFO:     127.0.0.1:58257 - "GET /favicon.ico HTTP/1.1" 200 OK
+INFO:     connection closed
+INFO:     connection closed
+INFO:     connection closed
+INFO:     127.0.0.1:58259 - "WebSocket /ws/generations" [accepted]
+INFO:     connection open
+INFO:     connection closed
+INFO:     127.0.0.1:58262 - "WebSocket /ws/tournament" [accepted]
+INFO:     connection open
+INFO:     connection closed
+INFO:     127.0.0.1:58264 - "WebSocket /ws/metrics" [accepted]
+INFO:     connection open
+INFO:     connection closed
+INFO:     127.0.0.1:58266 - "GET /api/streams HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58268 - "WebSocket /ws/metrics" [accepted]
+INFO:     connection closed
+INFO:     connection open
+INFO:     127.0.0.1:58272 - "WebSocket /ws/selfplay" [accepted]
+INFO:     connection open
+INFO:     127.0.0.1:58273 - "WebSocket /ws/generations" [accepted]
+INFO:     connection open
+INFO:     127.0.0.1:58274 - "WebSocket /ws/tournament" [accepted]
+INFO:     connection open
+INFO:     Shutting down
+INFO:     connection closed
+INFO:     connection closed
+INFO:     connection closed
+INFO:     connection closed
+INFO:     Waiting for background tasks to complete. (CTRL+C to force quit)

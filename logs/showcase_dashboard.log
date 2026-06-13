@@ -1,0 +1,25 @@
+Fatal Python error: PyEval_RestoreThread: the function must be called with the GIL held, after Python initialization and before Python finalization, but the GIL is released (the current Python thread state is NULL)
+Python runtime state: initialized
+
+Current thread 0x00000002001c6240 (most recent call first):
+  File "/opt/homebrew/lib/python3.14/site-packages/matplotlib/axis.py", line 896 in reset_ticks
+  File "/opt/homebrew/lib/python3.14/site-packages/matplotlib/axis.py", line 881 in clear
+  File "/opt/homebrew/lib/python3.14/site-packages/matplotlib/axes/_base.py", line 1330 in __clear
+  File "/opt/homebrew/lib/python3.14/site-packages/matplotlib/axes/_base.py", line 1452 in clear
+  File "/Users/aleon1/Desktop/quoridor-AI/viz/training_dashboard.py", line 147 in _draw
+  File "/opt/homebrew/lib/python3.14/site-packages/matplotlib/animation.py", line 1801 in _draw_frame
+  File "/opt/homebrew/lib/python3.14/site-packages/matplotlib/animation.py", line 1169 in _draw_next_frame
+  File "/opt/homebrew/lib/python3.14/site-packages/matplotlib/animation.py", line 1150 in _step
+  File "/opt/homebrew/lib/python3.14/site-packages/matplotlib/animation.py", line 1462 in _step
+  File "/opt/homebrew/lib/python3.14/site-packages/matplotlib/backend_bases.py", line 1152 in _on_timer
+  File "/opt/homebrew/lib/python3.14/site-packages/matplotlib/backends/_backend_tk.py", line 170 in _on_timer
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/tkinter/__init__.py", line 876 in callit
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/tkinter/__init__.py", line 2088 in __call__
+  File "/opt/homebrew/Cellar/python@3.14/3.14.2/Frameworks/Python.framework/Versions/3.14/lib/python3.14/tkinter/__init__.py", line 1613 in mainloop
+  File "/opt/homebrew/lib/python3.14/site-packages/matplotlib/backends/_backend_tk.py", line 572 in start_main_loop
+  File "/opt/homebrew/lib/python3.14/site-packages/matplotlib/backend_bases.py", line 3550 in show
+  File "/opt/homebrew/lib/python3.14/site-packages/matplotlib/pyplot.py", line 613 in show
+  File "/Users/aleon1/Desktop/quoridor-AI/viz/training_dashboard.py", line 176 in main
+  File "/Users/aleon1/Desktop/quoridor-AI/viz/training_dashboard.py", line 180 in <module>
+
+Extension modules: numpy._core._multiarray_umath, numpy.linalg._umath_linalg, PIL._imaging, kiwisolver._cext, PIL._imagingtk (total: 5)
